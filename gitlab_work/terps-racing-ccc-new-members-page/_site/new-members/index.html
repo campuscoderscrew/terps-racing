@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Terps Racing | New Members</title>
+</head>
+
+<body>
+	<header>Header!</header>
+	<div><style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@700&family=Roboto:wght@700&display=swap');
+
+.nm * { box-sizing: border-box; margin: 0; padding: 0; }
+
+.nm {
+  background: #000;
+  color: #fff;
+}
+
+/* NAV bar */
+.nm-nav {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 3.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nm-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  list-style: none;
+}
+.nm-nav__links a {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #000;
+  text-decoration: none;
+}
+.nm-nav__join {
+  background: #C30000;
+  border: 2px solid #000;
+  border-radius: 999px;
+  padding: 0.35rem 1.25rem;
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Hero */
+.nm-hero {
+  position: relative;
+  width: 100%;
+  min-height: calc(100dvh - 3.5rem);
+  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/new-members/heroTRNM2400.jpeg') center 80% / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 4%;
+}
+.nm-hero__text {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3.6vw, 5rem);
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.75);
+  text-align: center;
+  max-width: 88%;
+  margin-bottom: 15%;
+}
+
+/* Requirements */
+.nm-requirements {
+  background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)),
+  url('/new-members/rqbg.jpg') center 60% / cover no-repeat #111;
+  padding: 3.5rem 2rem 3rem;
+  min-height: 40%;
+}
+.nm-section-label {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.5vw, 2rem);
+  color: #C30000;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.nm-requirements__heading {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.2vw, 2.5rem);
+  color: #fff;
+  margin: 0.2rem 0 0.3rem;
+}
+.nm-requirements__subtitle {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.2vw, 1.5rem);
+  color: #FFD200;
+  margin-bottom: 3rem;
+}
+.nm-requirements__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+@media (max-width: 900px) {
+  .nm-requirements__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 500px) {
+  .nm-requirements__grid { grid-template-columns: 1fr; }
+}
+.nm-req-card__label {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.5vw, 1.8rem);
+  color: #C30000;
+  margin-bottom: 0.5rem;
+}
+.nm-req-card__img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 0.75rem;
+  background: #222;
+}
+.nm-req-card__desc {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: clamp(0.8rem, 1.2vw, 1.5rem);
+  color: #fff;
+  line-height: 1.45;
+}
+
+/* Commitment */
+.nm-middle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 768px) {
+  .nm-middle { grid-template-columns: 1fr; }
+}
+
+.nm-commitment {
+  position: relative;
+  background: url('/new-members/sparks.jpg') center / cover no-repeat #111;
+  padding: 4rem 2.5rem;
+  min-height: 50%;
+}
+.nm-commitment::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+.nm-commitment > * { position: relative; z-index: 1; }
+
+.nm-section-heading {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.2vw, 2.5rem);
+  color: #fff;
+  margin: 0.25rem 0 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.nm-bullet-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.nm-bullet-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.2vw, 1.5rem);
+  color: #fff;
+}
+.nm-bullet-list li::before {
+  content: '';
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: #FFD200;
+  flex-shrink: 0;
+}
+
+.nm-teams {
+  background: #000;
+  padding: 4rem 2.5rem;
+}
+.nm-team-entry { margin-bottom: 2.5rem; }
+.nm-team-entry__name {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.5vw, 2rem);
+  color: #C30000;
+}
+.nm-team-entry__rule {
+  border: none;
+  border-top: 3px solid #FFD200;
+  margin: 0.3rem 0 0.6rem;
+  width: clamp(4rem, 10rem, 25rem);
+}
+.nm-team-entry__desc {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.2vw, 1.5rem);
+  color: #FFFDF4;
+  line-height: 1.55;
+  margin-bottom: 0.75rem;
+}
+.nm-team-meeting {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.2vw, 1.5rem);
+  color: #FFFDF4;
+  line-height: 1.5;
+}
+.nm-team-meeting::before {
+  content: '';
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: #FFD200;
+  flex-shrink: 0;
+  margin-top: 0.45em;
+}
+
+/* Footer */
+.nm-foot {
+  background: #000;
+  padding: 4rem 2rem 3.5rem;
+  text-align: center;
+}
+.nm-foot__heading {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.2vw, 2.5rem);
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 2.5rem;
+}
+</style>
+
+<div class="nm">
+
+  <!-- NAV -->
+  <nav class="nm-nav">
+    <ul class="nm-nav__links">
+      <li><a href="/ic">Formula IC</a></li>
+      <li><a href="/ev">Formula EV</a></li>
+      <li><a href="/baja">Baja</a></li>
+      <li><a href="/sponsors">Sponsors</a></li>
+    </ul>
+    <a href="#join" class="nm-nav__join">Join</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="nm-hero">
+    <p class="nm-hero__text">COME REPRESENT UMD ON THE INTERNATIONAL STAGE</p>
+  </section>
+
+  <!-- Requirements -->
+  <section class="nm-requirements">
+    <p class="nm-section-label">Requirements</p>
+    <h1 class="nm-requirements__heading">What we're looking for</h1>
+    <p class="nm-requirements__subtitle">No experience needed — just show up ready to work and learn.</p>
+    <div class="nm-requirements__grid">
+      <div class="nm-req-card">
+        <p class="nm-req-card__label">Hands on drive</p>
+        <img src="/new-members/sparks.jpg" alt="Welding sparks" class="nm-req-card__img">
+        <p class="nm-req-card__desc">Eager to build, test, and solve real engineering problems.</p>
+      </div>
+      <div class="nm-req-card">
+        <p class="nm-req-card__label">Team Player</p>
+        <img src="/new-members/outside.jpg" alt="Team working together" class="nm-req-card__img">
+        <p class="nm-req-card__desc">We collaborate across disciplines and depend on each other.</p>
+      </div>
+      <div class="nm-req-card">
+        <p class="nm-req-card__label">Willingness to Learn</p>
+        <img src="/new-members/weld.jpg" alt="Student learning in the shop" class="nm-req-card__img">
+        <p class="nm-req-card__desc">We'll teach CAD, machining, and engineering — bring curiosity.</p>
+      </div>
+      <div class="nm-req-card">
+        <p class="nm-req-card__label">Any Major is Welcome</p>
+        <img src="/new-members/collab.jpg" alt="Students at computers" class="nm-req-card__img">
+        <p class="nm-req-card__desc">Engineering, computer science, business, design — every skill has a place here.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commitment + Teams -->
+  <div class="nm-middle">
+
+    <section class="nm-commitment">
+      <p class="nm-section-label">Commitment</p>
+      <h2 class="nm-section-heading">What to expect</h2>
+      <ul class="nm-bullet-list">
+        <li>2-3 Meetings per week</li>
+        <li>High time commitment (5-10+ hours weekly)</li>
+        <li>Seasonal competitions</li>
+      </ul>
+    </section>
+
+    <section class="nm-teams">
+      <p class="nm-section-label">Teams</p>
+      <h2 class="nm-section-heading">Which team is right for you?</h2>
+
+      <div class="nm-team-entry">
+        <p class="nm-team-entry__name">Baja</p>
+        <hr class="nm-team-entry__rule">
+        <p class="nm-team-entry__desc">Terps Racing Baja SAE is an engineering project team that designs, builds, and races an off-road vehicle to compete in the SAE Collegiate Baja Design Series</p>
+        <p class="nm-team-meeting">Baja meets in J.M Patterson Hall 1225 on Tuesdays and Thursdays at 6:30 PM and Sundays at 11 AM</p>
+      </div>
+
+      <div class="nm-team-entry">
+        <p class="nm-team-entry__name">Formula IC</p>
+        <hr class="nm-team-entry__rule">
+        <p class="nm-team-entry__desc">Terps Racing Formula SAE is an engineering project team that designs, builds, and races a formula style racecar to compete in the SAE Collegiate Formula Design Series.</p>
+        <p class="nm-team-meeting">IC meets in J.M Patterson Hall 1225 on Mondays and Wednesdays at 5 PM and Saturdays at 10 AM</p>
+      </div>
+
+      <div class="nm-team-entry">
+        <p class="nm-team-entry__name">Formula EV</p>
+        <hr class="nm-team-entry__rule">
+        <p class="nm-team-entry__desc">Founded in 2019, Terps Racing Formula SAE is Terps Racing's newest branch, and is faced with a modern challenge: convert the classic formula-style experience that has been around for decades into something sustainable and clean.</p>
+        <p class="nm-team-meeting">EV meets in the Cypress Building from 6-8 PM on Mondays and Wednesdays</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <section id="join" class="nm-foot">
+    <h2 class="nm-foot__heading">Ready to Join?<br>Just show up to a meeting and start your engine!</h2>
+  </section>
+
+</div>
+</div>
+	<footer>Footer!</footer>
+
+
+
+</body>
+</html>

@@ -5,17 +5,18 @@ import { Routes, Route } from 'react-router-dom';
 
 // import Crew from './src/pages/Crew';
 
-import About from './pages/about.js';
-import Committees from './pages/committees.js';
-import CommitteePage from './components/committee_page.js';
+import Home from './pages/home.js';
+import Members from './pages/members.js';
+import Baja from './pages/baja.js';
+
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<About />} />
-      <Route path="about" element={<About />} />
-      <Route path="committees" element={<Committees />} />
-      <Route path="committeepage" element={<CommitteePage/>} />
+      <Route path="/" element={<Home />} />
+      <Route path="about" element={<Home />} />
+      <Route path="members" element={<Members />} />
+      <Route path="baja" element={<Baja />} />
     </Routes>
   );
 }

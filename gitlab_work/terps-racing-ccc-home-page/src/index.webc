@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terps Racing – University of Maryland</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Roboto+Condensed:wght@400;700&family=Roboto+Mono:wght@400;500&family=Goldman&family=Inter:wght@400;500;600&family=Roboto:ital,wght@0,400;0,500;0,700;1,900&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+    ============================================================ */
+    :root {
+      /* Colors */
+      --color-black:        #000000;
+      --color-white:        #ffffff;
+      --color-yellow:       #ffd200;
+      --color-yellow-alt:   #ffda13;
+      --color-red:          #c30000;
+      --color-dark-red:     #ad0000;
+      --color-near-black:   #1f1f1f;
+      --color-text-dark:    #1e1e1e;
+      --color-gold:         #ffd084;
+
+      /* Typography */
+      --font-barlow:       'Barlow Condensed', sans-serif;
+      --font-roboto-cond:  'Roboto Condensed', sans-serif;
+      --font-roboto-mono:  'Roboto Mono', monospace;
+      --font-goldman:      'Goldman', cursive;
+      --font-inter:        'Inter', sans-serif;
+      --font-roboto:       'Roboto', sans-serif;
+
+      /* Font sizes – desktop */
+      --fs-hero-heading:   clamp(2.4rem, 4vw, 3.35rem);
+      --fs-section-title:  clamp(2rem, 3.5vw, 2.8rem);
+      --fs-body:           clamp(0.95rem, 1.4vw, 1.15rem);
+      --fs-nav:            0.92rem;
+      --fs-button:         0.9rem;
+
+      /* Spacing */
+      --sp-nav-h:          72px;
+      --sp-section-v:      80px;
+      --sp-container-h:    80px;
+
+      /* Misc */
+      --radius-card:       14px;
+      --radius-btn:        100px;
+      --radius-pill:       100px;
+      --shadow-card:       0 8px 24px rgba(0,0,0,0.45);
+    }
+
+    /* ============================================================
+       RESET / BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--color-black);
+      color: var(--color-white);
+      font-family: var(--font-inter);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    button { cursor: pointer; border: none; background: none; font: inherit; }
+
+    /* ============================================================
+       LAYOUT HELPERS
+    ============================================================ */
+    .container {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 var(--sp-container-h);
+    }
+
+    /* ============================================================
+       HEADER / NAVBAR
+    ============================================================ */
+    .header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 100;
+      height: var(--sp-nav-h);
+      background: var(--color-black);
+      border-bottom: 1px solid #222;
+      display: flex;
+      align-items: center;
+    }
+
+    .header__inner {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 var(--sp-container-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header__logo {
+      flex-shrink: 0;
+      height: 44px;
+    }
+    .header__logo img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .nav__list {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav__item a,
+    .nav__item span {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-roboto-mono);
+      font-size: var(--fs-nav);
+      font-weight: 400;
+      color: var(--color-white);
+      line-height: 1.3;
+      transition: background 0.2s;
+    }
+    .nav__item a:hover { background: rgba(255,255,255,0.08); }
+
+    .nav__item--contact a {
+      background: var(--color-yellow-alt);
+      color: var(--color-text-dark);
+      /*font-family: var(--font-inter);
+      font-weight: 400;*/
+    }
+    .nav__item--contact a:hover { background: #ffe94a; }
+
+    .nav__item--sponsors a {
+      background: var(--color-red);
+      color: var(--color-white);
+    }
+    .nav__item--sponsors a:hover { background: #e00000; }
+
+
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      position: relative;
+      height: 70vh;
+      /* min-height: 640px; */
+      overflow: hidden;
+      padding-top: var(--sp-nav-h);
+    }
+
+    .hero__bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .hero__bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 50%;
+    }
+    .hero__bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(102,102,102,0) 0%,
+        rgba(51,51,51,0.5) 75%,
+        rgba(26,26,26,0.62) 87.5%,
+        rgba(0,0,0,0.75) 100%
+      );
+    }
+
+    .hero__watermark {
+      position: absolute;
+      left: 33%;
+      top: 55%;
+      width: 38%;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       ABOUT
+    ============================================================ */
+    .about {
+      position: relative;
+      background: var(--color-black);
+      padding: var(--sp-section-v) 0 calc(var(--sp-section-v) * 1.2);
+    }
+
+    .about__inner {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .about__text-col {}
+
+    .section-label {
+      font-family: var(--font-barlow);
+      font-weight: 700;
+      font-style: normal;
+      font-size: var(--fs-section-title);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--color-white);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .about__body {
+      font-family: var(--font-roboto-cond);
+      font-weight: 400;
+      font-size: var(--fs-body);
+      color: var(--color-white);
+      line-height: 1.6;
+      margin-bottom: 32px;
+      max-width: 900px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 28px;
+      border-radius: var(--radius-btn);
+      font-family: var(--font-roboto-mono);
+      font-size: var(--fs-button);
+      font-weight: 400;
+      line-height: 1.3;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn--yellow { background: var(--color-yellow-alt); color: var(--color-text-dark); }
+    .btn--black  { background: var(--color-black);      color: var(--color-white); }
+    .btn--white  { background: var(--color-white);      color: var(--color-black); }
+
+    .about__nav-pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Competitive Success side panel */
+    .about__success-col {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        align-items: center;
+
+    }
+
+    .about__success-title {
+        font-family: var(--font-barlow);
+        font-weight: 700;
+        font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+        letter-spacing: -0.02em;
+        color: var(--color-white);
+        text-transform: uppercase;
+        text-align: left;
+        line-height: 1.2;
+        margin-bottom: 16px;
+    }
+
+    .about__success-text{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: left;
+    }
+
+    /* ---- Interactive Carousel ---- */
+    .carousel {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      height: 320px;
+      background: var(--color-near-black);
+      user-select: none;
+      width: 100%;
+    }
+
+    .carousel__track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    .carousel__slide {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .carousel__slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    /* Prev / Next buttons */
+    .carousel__btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.55);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      color: var(--color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      padding: 0;
+      line-height: 1;
+      font-size: 1.1rem;
+    }
+    .carousel__btn:hover {
+      background: rgba(255,210,0,0.85);
+      border-color: var(--color-yellow);
+      color: var(--color-black);
+    }
+    .carousel__btn--prev { left: 10px; }
+    .carousel__btn--next { right: 10px; }
+
+    /* Dot indicators */
+    .carousel__dots {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 7px;
+      z-index: 10;
+    }
+    .carousel__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .carousel__dot.is-active {
+      background: var(--color-yellow);
+      transform: scale(1.25);
+    }
+
+    .about__results {
+      margin-top: 24px;
+      font-family: var(--font-roboto-cond);
+      font-size: 0.95rem;
+      color: var(--color-white);
+      line-height: 1.7;
+    }
+    .about__results ul {
+      list-style: disc;
+      padding-left: 20px;
+    }
+
+    /* ============================================================
+       PROCESS
+    ============================================================ */
+    .process {
+        padding: calc(var(--sp-section-v) * 0.6) 0;
+      position: relative;
+      padding: var(--sp-section-v) 0;
+      overflow: hidden;
+    }
+
+    .process__label { margin-bottom: 32px; }
+
+    .process__steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .process__step {
+      position: relative;
+      height: 150px;
+      border-radius: 50px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .process__step img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .process__step-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 60px;
+    }
+
+    .process__step-word {
+      font-family: var(--font-barlow);
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 4.5rem);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      text-transform: uppercase;
+      /* Outlined text */
+      color: transparent;
+      -webkit-text-stroke: 2px var(--color-white);
+      text-shadow: 3px 3px 0 var(--color-black);
+    }
+
+    /* ============================================================
+       TEAMS
+    ============================================================ */
+    .teams {
+      padding: var(--sp-section-v) 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .teams__intro {
+      margin-bottom: 40px;
+    }
+
+    .teams__body {
+      font-family: var(--font-roboto-cond);
+      font-weight: 400;
+      font-size: var(--fs-body);
+      color: var(--color-white);
+      line-height: 1.6;
+      max-width: 900px;
+      margin-top: 16px;
+    }
+
+    .teams__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .team-card {
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-card);
+      border: 1.5px solid transparent;
+    }
+    .team-card--formula-ic {
+      background: var(--color-dark-red);
+      border-color: var(--color-dark-red);
+    }
+    .team-card--ev {
+      background: var(--color-black);
+      border-color: var(--color-gold);
+    }
+    .team-card--baja {
+      background: var(--color-yellow);
+      border-color: #d9d9d9;
+    }
+
+    .team-card__image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      position: relative;
+    }
+    .team-card__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .team-card--baja .team-card__image {
+      background: var(--color-yellow);
+    }
+    .team-card--formula-ic .team-card__image {
+      background: #050000;
+      border-radius: 10px;
+    }
+
+    .team-card__body {
+      padding: 20px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .team-card__name {
+      font-family: var(--font-inter);
+      font-weight: 500;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .team-card--formula-ic .team-card__name { color: var(--color-white); }
+    .team-card--ev .team-card__name          { color: var(--color-yellow); }
+    .team-card--baja .team-card__name        { color: var(--color-black); }
+
+    .team-card__desc {
+      font-family: var(--font-inter);
+      font-weight: 600;
+      font-size: clamp(0.78rem, 1.1vw, 0.88rem);
+      line-height: 1.5;
+      flex: 1;
+      margin-bottom: 20px;
+    }
+    .team-card--formula-ic .team-card__desc { color: var(--color-white); }
+    .team-card--ev .team-card__desc          { color: var(--color-yellow); }
+    .team-card--baja .team-card__desc        { color: var(--color-black); }
+
+    .team-card__btn {
+      align-self: center;
+      padding: 10px 32px;
+      border-radius: var(--radius-btn);
+      font-family: var(--font-roboto);
+      font-weight: 500;
+      font-size: 0.875rem;
+      letter-spacing: 0.01em;
+      transition: opacity 0.2s;
+    }
+    .team-card__btn:hover { opacity: 0.85; }
+    .team-card--formula-ic .team-card__btn { background: var(--color-black); color: var(--color-white); }
+    .team-card--ev .team-card__btn          { background: var(--color-yellow); color: var(--color-black); }
+    .team-card--baja .team-card__btn        { background: var(--color-black); color: var(--color-white); }
+
+    /* ============================================================
+       HISTORY
+    ============================================================ */
+    .history {
+      position: relative;
+      padding: var(--sp-section-v) 0 calc(var(--sp-section-v) * 1.5);
+      overflow: hidden;
+    }
+
+    .history__body {
+      font-family: var(--font-roboto-cond);
+      font-weight: 400;
+      font-size: var(--fs-body);
+      color: var(--color-white);
+      line-height: 1.6;
+      max-width: 960px;
+      margin-top: 20px;
+      margin-bottom: 56px;
+    }
+
+    .history__cta-row-bg{
+        display: flex;
+        background-color: var(--color-yellow);
+        flex-wrap: wrap;
+        justify-content: center;
+        min-height: fit-content;
+        padding: 10px;
+    }
+    /* CTA row */
+    .history__cta-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+      
+    }
+
+    .cta-pill {
+        
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 56px;
+      border-radius: var(--radius-pill);
+      border: 2px solid var(--color-black);
+      font-family: var(--font-goldman);
+      font-size: clamp(1rem, 1.8vw, 1.35rem);
+      font-weight: 400;
+      color: var(--color-white);
+      background: var(--color-black);
+      letter-spacing: 0.01em;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .cta-pill:hover { background: #111; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      position: relative;
+      overflow: hidden;
+      background: var(--color-black);
+    }
+
+    .footer__bg {
+      position: relative;
+      width: 100%;
+      min-height: 260px;
+      overflow: hidden;
+    }
+    .footer__bg img {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .footer__bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+    }
+
+    .footer__headline {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .footer__headline-text {
+      font-family: var(--font-barlow);
+      font-weight: 900;
+      font-style: italic;
+      font-size: clamp(3rem, 8vw, 7rem);
+      letter-spacing: -0.02em;
+      color: var(--color-white);
+      text-transform: uppercase;
+    }
+
+    .footer__bottom {
+      background: #0a0a0a;
+      padding: 20px var(--sp-container-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer__links {
+      display: flex;
+      gap: 24px;
+    }
+    .footer__links a {
+      font-family: var(--font-roboto-mono);
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.55);
+      transition: color 0.2s;
+    }
+    .footer__links a:hover { color: var(--color-white); }
+
+    .footer__copy {
+      font-family: var(--font-roboto-mono);
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ============================================================
+       BACKGROUND DECORATIONS (polygons, shapes)
+    ============================================================ */
+    .deco-polygon {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.12;
+      z-index: 0;
+    }
+    .deco-polygon--tl {
+      top: -80px;
+      left: -120px;
+      width: 500px;
+    }
+    .deco-polygon--br {
+      bottom: -60px;
+      right: -80px;
+      width: 420px;
+      transform: rotate(180deg);
+    }
+
+    /* ensure sections have z-index so content is above decos */
+    .about__inner,
+    .teams__grid,
+    .process__steps,
+    .history__body,
+    .history__cta-row { position: relative; z-index: 1; }
+
+    /* ============================================================
+       RESPONSIVE – TABLET  (max-width: 1024px)
+    ============================================================ */
+    @media (max-width: 1024px) {
+      :root {
+        --sp-container-h: 40px;
+        --sp-nav-h: 64px;
+      }
+
+      .nav__list { gap: 4px; }
+      .nav__item a, .nav__item span { padding: 6px 10px; font-size: 0.82rem; }
+
+      .about__inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .teams__grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .process__step { height: 160px; border-radius: 40px; }
+      .process__step-word { font-size: clamp(2.5rem, 8vw, 5rem); }
+
+      .about__carousel { height: 240px; }
+    }
+
+    /* ============================================================
+       RESPONSIVE – MOBILE  (max-width: 768px)
+    ============================================================ */
+    @media (max-width: 768px) {
+      :root {
+        --sp-container-h: 20px;
+        --sp-section-v: 56px;
+        --sp-nav-h: 58px;
+      }
+
+      .header__logo { height: 34px; }
+
+      .hero { min-height: 520px; }
+
+      .section-label { font-size: clamp(1.8rem, 7vw, 2.4rem); }
+
+      .process__step { height: 130px; border-radius: 24px; margin-bottom: 10px; }
+      .process__step-label { padding: 0 24px; }
+      .process__step-word { font-size: clamp(2rem, 10vw, 3.5rem); }
+
+      .history__cta-row {
+        flex-direction: column;
+        align-items: center;
+      }
+      .cta-pill { width: 100%; max-width: 320px; }
+
+      .footer__bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 20px;
+      }
+
+      .footer__bg { min-height: 180px; }
+      .footer__headline-text { font-size: clamp(2rem, 10vw, 3.5rem); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="header" role="banner">
+    <div class="header__inner">
+
+      <a class="header__logo" href="#" aria-label="Terps Racing Home">
+        <img
+          src="https://www.figma.com/api/mcp/asset/2c8310c2-238d-48a5-b611-2122a12163d3"
+          alt="Terps Racing logo"
+        />
+      </a>
+
+      <!-- Desktop navigation -->
+      <nav aria-label="Primary navigation">
+        <ul class="nav__list" role="list">
+          <li class="nav__item"><a href="#about">Home</a></li>
+          <li class="nav__item"><a href="./ic/index.html">Formula IC</a></li>
+          <li class="nav__item"><a href="./ev/index.html">EV</a></li>
+          <li class="nav__item"><a href="./baja/index.html">Baja</a></li>
+          <li class="nav__item nav__item--contact"><a href="#contact">Contact</a></li>
+          <li class="nav__item nav__item--sponsors"><a href="#sponsors">Sponsors</a></li>
+        </ul>
+      </nav>
+
+    
+
+  </header>
+
+  <main>
+    
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="hero" aria-label="Hero">
+      <div class="hero__bg">
+        <img
+          src="https://www.figma.com/api/mcp/asset/ac4b7ca2-e5ad-470c-9341-b433c3ff6386"
+          alt="Terps Racing car on track during testing day"
+          loading="eager"
+        />
+      </div>
+
+      <!-- Watermark logo -->
+      <div class="hero__watermark" aria-hidden="true">
+        <img
+          src="https://www.figma.com/api/mcp/asset/2c8310c2-238d-48a5-b611-2122a12163d3"
+          alt=""
+        />
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ABOUT
+    ============================================================ -->
+    <section class="about" id="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="about__inner">
+
+          <!-- Left: text -->
+          <div class="about__text-col">
+            <h2 class="section-label" id="about-title">About Us</h2>
+            <p class="about__body">
+              Terps Racing is a student-run organization of over 120 members who participate in collegiate design competitions each year. We design, build, test, and race a formula-style racecar, an electric formula-style racecar, and a baja-style off-road vehicle.
+            </p>
+            <div class="about__nav-pills">
+              <a href="#about" class="btn btn--yellow">Learn More</a>
+              <a href="new-members/index.html" class="btn btn--yellow" style="background:#ffda13;">New Members</a>
+            </div>
+          </div>
+
+          <!-- Right: Competitive Success -->
+          <div class="about__success-col">
+            <div class="carousel" role="region" aria-label="Competitive success photos" id="success-carousel">
+              <div class="carousel__track" id="carousel-track">
+                <div class="carousel__slide">
+                  <img src="https://www.figma.com/api/mcp/asset/ce4e004e-c0ea-4bdf-bae3-031112006373" alt="Terps Racing car at SAE competition" />
+                </div>
+                <div class="carousel__slide">
+                  <img src="https://www.figma.com/api/mcp/asset/de85b000-e744-4f5c-875f-ccecff21c7de" alt="Terps Racing car on track during testing" />
+                </div>
+                <div class="carousel__slide">
+                  <img src="https://www.figma.com/api/mcp/asset/0118e194-4491-45e2-928a-31159fd9f8eb" alt="Team members building the race car" />
+                </div>
+                <div class="carousel__slide">
+                  <img src="https://www.figma.com/api/mcp/asset/1d879009-2778-42cb-a363-b0b4af641356" alt="Terps Racing competing at a race event" />
+                </div>
+              </div>
+
+              <button class="carousel__btn carousel__btn--prev" aria-label="Previous slide">&#8249;</button>
+              <button class="carousel__btn carousel__btn--next" aria-label="Next slide">&#8250;</button>
+
+              <div class="carousel__dots" role="tablist" aria-label="Slide indicators">
+                <button class="carousel__dot is-active" role="tab" aria-label="Slide 1" aria-selected="true" data-index="0"></button>
+                <button class="carousel__dot" role="tab" aria-label="Slide 2" aria-selected="false" data-index="1"></button>
+                <button class="carousel__dot" role="tab" aria-label="Slide 3" aria-selected="false" data-index="2"></button>
+                <button class="carousel__dot" role="tab" aria-label="Slide 4" aria-selected="false" data-index="3"></button>
+              </div>
+            </div>
+            <div class="about__success-text">
+                <h3 class="about__success-title">Competitive<br>Success</h3>
+                
+                <div class="about__results">
+                <p style="margin-bottom:6px;font-weight:600;">2025 Formula SAE Placings:</p>
+                <ul>
+                    <li>25th overall (top 20%)</li>
+                    <li>11th in design</li>
+                    <li>12th in cost</li>
+                    <li>8th in business</li>
+                    <li>24th in acceleration</li>
+                    <li>21st in skidpad</li>
+                    <li>25th in autocross</li>
+                </ul>
+                </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THE PROCESS
+    ============================================================ -->
+    <section class="process" id="process" aria-labelledby="process-title">
+      <div class="container">
+        <h2 class="section-label process__label" id="process-title">The Process</h2>
+        <div class="process__steps">
+
+          <div class="process__step">
+            <img
+              src="https://www.figma.com/api/mcp/asset/309a2c4d-ce08-4bdd-85e3-106f4328e642"
+              alt="Design phase – engineers reviewing CAD models"
+            />
+            <div class="process__step-label">
+              <span class="process__step-word">Design</span>
+            </div>
+          </div>
+
+          <div class="process__step">
+            <img
+              src="https://www.figma.com/api/mcp/asset/0118e194-4491-45e2-928a-31159fd9f8eb"
+              alt="Build phase – students fabricating car parts in the machine shop"
+            />
+            <div class="process__step-label">
+              <span class="process__step-word">Build</span>
+            </div>
+          </div>
+
+          <div class="process__step">
+            <img
+              src="https://www.figma.com/api/mcp/asset/de85b000-e744-4f5c-875f-ccecff21c7de"
+              alt="Test phase – car undergoing performance testing on track"
+            />
+            <div class="process__step-label">
+              <span class="process__step-word">Test</span>
+            </div>
+          </div>
+
+          <div class="process__step">
+            <img
+              src="https://www.figma.com/api/mcp/asset/1d879009-2778-42cb-a363-b0b4af641356"
+              alt="Race phase – Terps Racing car competing at SAE event"
+            />
+            <div class="process__step-label">
+              <span class="process__step-word">Race</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THE TEAMS
+    ============================================================ -->
+    <section class="teams" id="teams" aria-labelledby="teams-title">
+      <div class="container">
+
+        <div class="teams__intro">
+          <h2 class="section-label" id="teams-title">The Teams</h2>
+          <p class="teams__body">
+            Terps Racing is made up of four teams: Formula SAE, Formula SAE Electric, Baja SAE, and a Business Operations Team. Formula SAE and Formula SAE Electric are collegiate competitions that challenge students to design, build, and race a formula style race car. Baja SAE has a similar competition structure to formula, but the goal is to design, build, and race an off-road vehicle that will survive the severe punishment of rough terrain.
+          </p>
+        </div>
+
+        <div class="teams__grid">
+
+          <!-- Formula IC -->
+          <article class="team-card team-card--formula-ic" aria-label="Formula IC team">
+            <div class="team-card__image">
+              <!-- placeholder: no image asset provided in design for Formula IC card -->
+               <img
+                src="./homepage_imgs/drivingcar1.png"
+                alt="Terps Racing Formula IC car on track"
+              />
+            </div>
+            <div class="team-card__body">
+              <h3 class="team-card__name">Formula IC</h3>
+              <p class="team-card__desc">
+                Terps Racing Formula IC is a top-class team with both a high-performance, thoroughly validated aerodynamic package and lightweight, high strength carbon fiber composite chassis.
+              </p>
+              <a href="./ic/index.html" class="team-card__btn btn">Learn More</a>
+            </div>
+          </article>
+
+          <!-- EV -->
+          <article class="team-card team-card--ev" aria-label="Formula EV team">
+            <div class="team-card__image">
+              <img
+                src="https://www.figma.com/api/mcp/asset/e3b84c0a-8d7e-4438-80ae-9b52510e3e18"
+                alt="Terps Racing EV formula electric car on track"
+              />
+            </div>
+            <div class="team-card__body">
+              <h3 class="team-card__name">EV</h3>
+              <p class="team-card__desc">
+                Founded in 2019, Terps Racing Formula SAE is Terps Racing's newest branch, and is faced with a modern challenge: convert the classic formula-style experience that has been around for decades into something sustainable and clean.
+              </p>
+              <a href="./ev/index.html" class="team-card__btn btn">Learn More</a>
+            </div>
+          </article>
+
+          <!-- Baja -->
+          <article class="team-card team-card--baja" aria-label="Baja SAE team">
+            <div class="team-card__image">
+              <img
+                src="https://www.figma.com/api/mcp/asset/b5475b81-8c5e-4122-ba73-0b2c8cf730c5"
+                alt="Terps Racing Baja off-road vehicle navigating rough terrain"
+              />
+            </div>
+            <div class="team-card__body">
+              <h3 class="team-card__name">Baja</h3>
+              <p class="team-card__desc">
+                Terps Racing Baja SAE is an engineering project team that designs, builds, and races an off-road vehicle to compete in the SAE Collegiate Baja Design Series. The baja car faces suspension, maneuverability, towing, and endurance challenges.
+              </p>
+              <a href="./baja/index.html" class="team-card__btn btn">Learn More</a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         HISTORY
+    ============================================================ -->
+    <section class="history" id="history" aria-labelledby="history-title">
+      <div class="container">
+        <h2 class="section-label" id="history-title">History</h2>
+        <p class="history__body">
+          At Maryland, Terps Racing is one of the most popular student projects in both the Department of Mechanical Engineering and the A. James Clark School of Engineering. Established in 1982, Terps Racing has participated in over 60 races. The program allows students to develop fabrication, project management, and teamwork skills. The Baja, Formula IC, and EV teams engage students through hands-on experience, team-building, collaboration, and much more. The team has a full machine shop and assembly space with a variety of metal-working manual machines and CNC machines to which we have exclusive access.
+        </p>
+
+        
+      </div>
+    </section>
+
+  </main>
+    <div class="history__cta-row-bg" id="three-buttons">
+            <div class="history__cta-row">
+            <a href="#donate" class="cta-pill">Donate</a>
+            <a href="./new-members/index.html" class="cta-pill">Join Us</a>
+            <a href="#sponsor" class="cta-pill">Sponsor</a>
+            </div>
+    </div>
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" id="contact" role="contentinfo">
+    <div class="footer__bg" style="min-height:100px;">
+      <img
+        src="https://www.figma.com/api/mcp/asset/9dc7ca6d-f37e-4fd3-b1ef-6abd5a32c10d"
+        alt="Terps Racing cars lined up at competition"
+        style="min-height:100px;object-fit:cover; max-height:130px;"
+      />
+      
+    </div>
+    <!--<div class="footer__bottom">
+       <nav class="footer__links" aria-label="Footer navigation">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Teams</a>
+        <a href="#">Contact</a>
+        <a href="#">Sponsors</a>
+      </nav> 
+      <p class="footer__copy">&copy; 2025 Terps Racing – University of Maryland</p>
+    </div>-->
+  </footer>
+
+  <script>
+    // ============================================================
+    // carousel
+    // ============================================================
+    (function () {
+      const track   = document.getElementById('carousel-track');
+      const slides  = track ? track.querySelectorAll('.carousel__slide') : [];
+      const dots    = document.querySelectorAll('.carousel__dot');
+      const prevBtn = document.querySelector('.carousel__btn--prev');
+      const nextBtn = document.querySelector('.carousel__btn--next');
+
+      if (!track || slides.length === 0) return;
+
+      let current = 0;
+      let autoTimer = null;
+
+      function goTo(index) {
+        current = (index + slides.length) % slides.length;
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        dots.forEach(function (dot, i) {
+          dot.classList.toggle('is-active', i === current);
+          dot.setAttribute('aria-selected', i === current ? 'true' : 'false');
+        });
+      }
+
+      function startAuto() {
+        autoTimer = setInterval(function () { goTo(current + 1); }, 4000);
+      }
+      function stopAuto() {
+        clearInterval(autoTimer);
+      }
+
+      prevBtn && prevBtn.addEventListener('click', function () {
+        stopAuto(); goTo(current - 1); startAuto();
+      });
+      nextBtn && nextBtn.addEventListener('click', function () {
+        stopAuto(); goTo(current + 1); startAuto();
+      });
+      dots.forEach(function (dot) {
+        dot.addEventListener('click', function () {
+          stopAuto(); goTo(parseInt(this.dataset.index, 10)); startAuto();
+        });
+      });
+
+      // Touch/swipe support
+      var touchStartX = 0;
+      track.addEventListener('touchstart', function (e) {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+      track.addEventListener('touchend', function (e) {
+        var diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) { stopAuto(); goTo(diff > 0 ? current + 1 : current - 1); startAuto(); }
+      }, { passive: true });
+
+      // Keyboard support
+      document.getElementById('success-carousel').addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft')  { stopAuto(); goTo(current - 1); startAuto(); }
+        if (e.key === 'ArrowRight') { stopAuto(); goTo(current + 1); startAuto(); }
+      });
+
+      startAuto();
+    })();
+  </script>
+
+</body>
+</html>

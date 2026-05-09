@@ -1,0 +1,406 @@
+---
+title: Baja
+---
+
+<style webc:keep>
+  :root {
+    --red: #e31933;
+    --bg: #0a0a0a;
+    --card-bg: #141414;
+    --text: #f0f0f0;
+    --muted: #aaaaaa;
+    --border: #2a2a2a;
+    --font: 'Source Sans 3', 'Source Sans Pro', Helvetica, Arial, sans-serif;
+  }
+
+  /* ─── BASE RESETS ─── */
+  body { 
+    margin: 0; 
+    padding: 0; 
+    background-color: var(--bg); 
+  }
+  
+  .baja *, .baja *::before, .baja *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .baja {
+    font-family: var(--font);
+    color: var(--text);
+    line-height: 1.8;
+    background: var(--bg);
+  }
+
+  /* ─── HERO SECTIONS ─── */
+  .hero-section {
+    display: grid;
+    grid-template-columns: 58% 42%;
+    min-height: 420px;
+  }
+  .hero-section.flip {
+    grid-template-columns: 42% 58%;
+  }
+  .hero-img {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; /* Prevents the image from duplicating */
+    min-height: 420px;
+  }
+  
+  /* Using rgba(10,10,10,0) fixes the white gradient rendering bug in some browsers */
+  .hero-section:not(.flip) .hero-img::after {
+    content: '';
+    position: absolute; inset: 0;
+background: linear-gradient(to right, rgba(10, 10, 10, 0) 40%, var(--bg) 95%);  }
+  .hero-section.flip .hero-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to left, rgba(10, 10, 10, 0) 55%, var(--bg) 100%);
+  }
+  .hero-content {
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* ─── TITLES ─── */
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--red);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  /* ─── WHAT WE DO ─── */
+  #s-what .hero-img { background-image: url('https://racing.umd.edu/files/2026/03/anjali-background2.png'); 
+  background-size: 200%;
+  background-position: 10% 60%;}
+  .what-desc { font-size: 1.05rem; color: var(--muted); margin-bottom: 22px; }
+  .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+  .stat-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    padding: 12px 14px;
+    font-size: .9rem;
+    color: var(--muted);
+    border-radius: 2px;
+  }
+  .stat-box strong { color: var(--red); }
+
+  /* Accordion */
+  .accordion {
+    border-top: 1px solid var(--border);
+    overflow: hidden;
+    /* height is set by JS on load so it never changes */
+  }
+  .accordion-item { border-bottom: 1px solid var(--border); }
+  .accordion-btn {
+    width: 100%; background: none; border: none;
+    font-family: var(--font); font-size: .95rem; font-weight: 600;
+    color: var(--text); padding: 13px 0; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  }
+  .acc-icon {
+    flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid var(--red); color: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; line-height: 1;
+  }
+  /* Body uses height (not max-height) so open/close are perfectly in sync */
+  .accordion-body {
+    font-size: .9rem; color: var(--muted);
+    overflow: hidden;
+    height: 0;
+    transition: height .35s ease, padding .35s ease;
+  }
+  .accordion-body.open { padding-bottom: 14px; /* height set by JS */ }
+
+  /* ─── DYNAMIC EVENTS ─── */
+  #s-dynamic .hero-img { background-image: url('https://racing.umd.edu/files/2026/04/Untitled-design.png'); 
+  background-size: 130%;
+  background-position: 100% 60%;}
+  .dynamic-intro { font-size: .9rem; color: var(--muted); margin-bottom: 20px; }
+  .event-list { display: flex; flex-direction: column; gap: 16px; }
+  .event-name { font-weight: 700; color: var(--red); font-size: .95rem; display: block; margin-bottom: 2px; }
+  .event-desc { font-size: .9rem; color: var(--muted); }
+
+  /* ─── STATIC EVENTS ─── */
+  #s-static .hero-img { background-image: url('https://racing.umd.edu/files/2026/04/Untitled-design-4.png'); 
+  background-size: 250%;
+  background-position: 20% 60%;}
+  .static-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 4px; }
+  .static-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+  }
+  .card-img {
+    width: 100%; aspect-ratio: 4/3; object-fit: contain;
+    background: #181818; padding: 8px; display: block;
+  }
+  .card-body { padding: 10px 12px 12px; }
+  .card-title { font-weight: 700; color: var(--red); font-size: .88rem; margin-bottom: 4px; }
+  .card-desc { font-size: .82rem; color: var(--muted); line-height: 1.5; }
+
+  /* ─── GALLERY ─── */
+  #s-gallery { background: var(--bg); margin-top: 60px;}
+  .gallery-wrap { position: relative; overflow: hidden; }
+  .gallery-track { display: flex; transition: transform .45s cubic-bezier(.4,0,.2,1); }
+  .gallery-slide { flex: 0 0 25%; aspect-ratio: 16/9; overflow: hidden; }
+  .gallery-slide img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; }
+  .gallery-slide img:hover { transform: scale(1.04); }
+  .gallery-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(0,0,0,.7); border: 1px solid rgba(255,255,255,.2);
+    color: #fff; font-size: 1.8rem; width: 48px; height: 48px;
+    border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    z-index: 2; transition: background .2s, border-color .2s;
+  }
+  .gallery-btn:hover { background: var(--red); border-color: var(--red); }
+  .gallery-btn.prev { left: 14px; }
+  .gallery-btn.next { right: 14px; }
+
+  /* ─── VIDEO ─── */
+  #s-video { background: var(--bg); padding: 48px 8%; }
+  .video-wrap { position: relative; padding-bottom: 56.25%; height: 0; }
+  .video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; border-radius: 4px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 860px) {
+    .hero-section, .hero-section.flip { grid-template-columns: 1fr; }
+    .hero-img { min-height: 260px !important; }
+    .hero-section:not(.flip) .hero-img::after,
+    .hero-section.flip .hero-img::after {
+      background: linear-gradient(to bottom, rgba(10, 10, 10, 0) 50%, var(--bg) 100%);
+    }
+    .hero-section.flip .hero-img { order: 0; }
+    .hero-section.flip .hero-content { order: 1; }
+    .gallery-slide { flex: 0 0 50%; }
+  }
+  @media (max-width: 560px) {
+    .gallery-slide { flex: 0 0 100%; }
+    .stats-row, .static-grid { grid-template-columns: 1fr; }
+    .hero-content { padding: 32px 20px; }
+    #s-video { padding: 32px 4%; }
+  }
+</style>
+
+<div class="baja">
+
+  <!-- 1. WHAT WE DO -->
+  <section id="s-what">
+    <div class="hero-section">
+      <div class="hero-img"></div>
+      <div class="hero-content">
+        <h2 class="section-title">What We Do</h2>
+        <p class="what-desc">
+          Terps Racing Baja SAE is an engineering project team that designs, builds, and races
+          an off-road vehicle to compete in the SAE Collegiate Baja Design Series.
+        </p>
+        <div class="stats-row">
+          <div class="stat-box">Hands-on engineering for <strong>&gt;40</strong> students annually</div>
+          <div class="stat-box"><strong>3</strong> yearly North American competitions with <strong>100s</strong> of teams</div>
+        </div>
+        <div class="accordion">
+          <div class="accordion-item">
+            <button class="accordion-btn" onclick="toggleAcc(this)">
+              Design Process <span class="acc-icon">−</span>
+            </button>
+            <div class="accordion-body open">
+              The design process goes through three stages of review before the final design is chosen:
+              the Preliminary Review, the Critical Review, and the Final Review. The team also modifies
+              older cars to test new designs on prior years' vehicles. Following the final review, the
+              team moves into the build phase, continually innovating and redesigning even the smallest
+              components.
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn" onclick="toggleAcc(this)">
+              Competition Challenge <span class="acc-icon">+</span>
+            </button>
+            <div class="accordion-body">
+              The competition requires students to balance design and cost with dynamic performance while
+              following strict safety guidelines and standardized rules. The team balances hard work with
+              a passion for their car and believes that passion makes a significant difference in the
+              competition.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. DYNAMIC EVENTS -->
+  <section id="s-dynamic">
+    <div class="hero-section flip">
+      <div class="hero-content">
+        <h2 class="section-title">Dynamic Events</h2>
+        <p class="dynamic-intro">
+          Cars take on a series of challenges such as maneuverability, acceleration, hill climb
+          or tractor pull, and a special event unique to each competition.
+        </p>
+        <div class="event-list">
+          <div>
+            <span class="event-name">Time Trials</span>
+            <span class="event-desc">Teams compete individually on the third day in time-trial events
+            that test specific aspects of vehicle performance.</span>
+          </div>
+          <div>
+            <span class="event-name">Specialized Performance</span>
+            <span class="event-desc">Often focuses on suspension, traction, or rock crawling —
+            pushing teams to adapt to different terrain and design demands.</span>
+          </div>
+          <div>
+            <span class="event-name">Endurance Race</span>
+            <span class="event-desc">On the final day, all teams compete wheel-to-wheel in a
+            four-hour endurance race testing durability, reliability, and overall performance.</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-img"></div>
+    </div>
+  </section>
+
+  <!-- 3. STATIC EVENTS -->
+  <section id="s-static">
+    <div class="hero-section">
+      <div class="hero-img"></div>
+      <div class="hero-content">
+        <h2 class="section-title">Static Events</h2>
+        <div class="static-grid">
+          <div class="static-card">
+            <img class="card-img" src="https://racing.umd.edu/files/2026/03/sales_presentation-e1775000595550.png" alt="Sales Presentation">
+            <div class="card-body">
+              <div class="card-title">Sales Presentation</div>
+              <p class="card-desc">Teams market their car as a highly specialized vehicle to a series of industry judges.</p>
+            </div>
+          </div>
+          <div class="static-card">
+            <img class="card-img" src="https://racing.umd.edu/files/2026/03/design_presentation.png" alt="Design Presentation">
+            <div class="card-body">
+              <div class="card-title">Design Presentation</div>
+              <p class="card-desc">Teams present the design, research, and testing done throughout the year to technical judges.</p>
+            </div>
+          </div>
+          <div class="static-card">
+            <img class="card-img" src="https://racing.umd.edu/files/2026/04/technical_inspection-1-e1775005735832.png" alt="Technical Inspection">
+            <div class="card-body">
+              <div class="card-title">Technical Inspection</div>
+              <p class="card-desc">Judges inspect every aspect of the car to make sure it meets competition rules and specifications.</p>
+            </div>
+          </div>
+          <div class="static-card">
+            <img class="card-img" src="https://racing.umd.edu/files/2026/04/talking0-2.png" alt="Design Judging">
+            <div class="card-body">
+              <div class="card-title">Design Judging</div>
+              <p class="card-desc">Teams explain what separates their car, what testing drove decisions, and highlight innovations.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. GALLERY -->
+  <section id="s-gallery">
+    <div class="gallery-wrap">
+      <button class="gallery-btn prev" onclick="moveGallery(-1)">&#8249;</button>
+      <div class="gallery-track" id="galleryTrack">
+        <div class="gallery-slide"><img src="https://racing.umd.edu/files/2024/06/IMG_6908-1.jpg" alt="Baja team"></div>
+        <div class="gallery-slide"><img src="https://racing.umd.edu/files/2026/03/anjali-picture.jpg" alt="Team member"></div>
+        <div class="gallery-slide"><img src="https://racing.umd.edu/files/2026/04/Team-Picture.jpg" alt="Team picture"></div>
+        <div class="gallery-slide"><img src="https://racing.umd.edu/files/2026/03/kenesto.jpg" alt="Competition"></div>
+        <div class="gallery-slide"><img src="https://racing.umd.edu/files/2024/06/Ben-loan-killing-it.jpg" alt="Driver"></div>
+      </div>
+      <button class="gallery-btn next" onclick="moveGallery(1)">&#8250;</button>
+    </div>
+  </section>
+
+  <!-- 5. VIDEO -->
+  <section id="s-video">
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/Pyz2je1ebBc"
+        title="Baja Butler Bash 2022"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </section>
+
+</div>
+
+<script webc:keep>
+  // On load: measure each body's natural scrollHeight, then lock the accordion
+  // to a fixed height = buttons + tallest body. One is always open.
+  (function initAccordion() {
+    const accordion = document.querySelector('.accordion');
+    if (!accordion) return;
+
+    const bodies = Array.from(accordion.querySelectorAll('.accordion-body'));
+    const buttons = Array.from(accordion.querySelectorAll('.accordion-btn'));
+
+    // Temporarily expand all bodies to measure their true heights
+    bodies.forEach(b => {
+      b.style.transition = 'none';
+      b.style.height = 'auto';
+    });
+
+    const naturalHeights = bodies.map(b => b.scrollHeight);
+    const tallest = Math.max(...naturalHeights);
+
+    // Set the open height on each body (same value = perfectly in sync when swapping)
+    bodies.forEach(b => {
+      b.dataset.openHeight = tallest;
+      b.style.height = '';
+      b.style.transition = '';
+    });
+
+    // Apply open height to the currently open body
+    const openBody = accordion.querySelector('.accordion-body.open');
+    if (openBody) openBody.style.height = tallest + 'px';
+
+    // Lock the accordion container height so it never moves
+    const btnsTotalHeight = buttons.reduce((sum, btn) => {
+      return sum + btn.offsetHeight + 1; // +1 for border
+    }, 0);
+    accordion.style.height = (btnsTotalHeight + tallest + 14) + 'px'; // 14 = padding-bottom
+  })();
+
+  function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const icon = btn.querySelector('.acc-icon');
+  if (body.classList.contains('open')) return; 
+
+  const accordion = btn.closest('.accordion');
+
+  // Close all others
+  accordion.querySelectorAll('.accordion-body').forEach(b => {
+    b.classList.remove('open');
+    b.style.height = '0';
+  });
+  accordion.querySelectorAll('.acc-icon').forEach(i => i.textContent = '+');
+
+  // Open this one
+  body.classList.add('open');
+  // scrollHeight gets the actual height of the content inside, no matter how much text there is
+  body.style.height = body.scrollHeight + "px"; 
+  icon.textContent = '−';
+}
+
+  let pos = 0;
+  const perView = () => window.innerWidth <= 560 ? 1 : window.innerWidth <= 860 ? 2 : 4;
+  
+  function moveGallery(dir) {
+    const track = document.getElementById('galleryTrack');
+    const max = track.children.length - perView();
+    pos += dir;
+    
+    // Looping Logic Added
+    if (pos > max) {
+      pos = 0; // Wrap back to the start
+    } else if (pos < 0) {
+      pos = max; // Wrap to the end
+    }
+    
+    track.style.transform = `translateX(-${pos * (100 / perView())}%)`;
+  }
+</script>

@@ -10,7 +10,8 @@ export default {
     extend: {
       fontFamily: {
         notable: ['Notable', 'sans-serif'],
-        neuton: ['Neuton']
+        neuton: ['Neuton'],
+        mono: ['Roboto Mono', 'monospace'],
       },
     },
   },
