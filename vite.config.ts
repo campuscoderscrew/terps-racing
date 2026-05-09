@@ -3,13 +3,6 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  base: "/terps-racing/",
   plugins: [tailwindcss(), tsconfigPaths()],
 });
-
-/**
- * 
- * export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
-});
-
- */
