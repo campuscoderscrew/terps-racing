@@ -8,7 +8,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/home.js';
 import Members from './pages/members.js';
 import Baja from './pages/baja.js';
-
+import IC from './pages/ic.js';
 
 export default function App() {
   return (
@@ -17,6 +17,7 @@ export default function App() {
       <Route path="about" element={<Home />} />
       <Route path="members" element={<Members />} />
       <Route path="baja" element={<Baja />} />
+      <Route path="IC" element={<IC/>} />
     </Routes>
   );
 }

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import logo from "https://campuscoderscrew.github.io/terps-racing/public/TR_logo.png"
+import logo from "../public/TR_logo.png"
 
 export default function NavBar(){
     return(

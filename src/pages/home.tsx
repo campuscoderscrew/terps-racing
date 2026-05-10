@@ -20,7 +20,7 @@ const ASSETS = {
   processBuild:  "https://www.figma.com/api/mcp/asset/0118e194-4491-45e2-928a-31159fd9f8eb",
   processTest:   "https://www.figma.com/api/mcp/asset/de85b000-e744-4f5c-875f-ccecff21c7de",
   processRace:   "https://www.figma.com/api/mcp/asset/1d879009-2778-42cb-a363-b0b4af641356",
-  teamIC:     "./homepage_imgs/drivingcar1.png",
+  teamIC:     "../public/images/homepage/drivingcar1.png",
   teamEV:     "https://www.figma.com/api/mcp/asset/e3b84c0a-8d7e-4438-80ae-9b52510e3e18",
   teamBaja:   "https://www.figma.com/api/mcp/asset/b5475b81-8c5e-4122-ba73-0b2c8cf730c5",
 };
@@ -467,7 +467,7 @@ function CtaRow() {
   );
 }
 
-import footerImage from "https://campuscoderscrew.github.io/terps-racing/public/homePage/Footer.png"
+import footerImage from "../public/images/homePage/Footer.png"
 // ── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
   return (

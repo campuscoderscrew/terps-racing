@@ -4,12 +4,12 @@ import NavBar2
 
 
 
-import heroImg   from "https://campuscoderscrew.github.io/terps-racing/public/newMembers/heroTRNM2400.jpeg";
-import sparksImg from "https://campuscoderscrew.github.io/terps-racing/public/newMembers/sparks.jpg";
-import outsideImg from "https://campuscoderscrew.github.io/terps-racing/public/newMembers/outside.jpg";
-import weldImg   from "https://campuscoderscrew.github.io/terps-racing/public/newMembers/weld.jpg";
-import collabImg from "https://campuscoderscrew.github.io/terps-racing/public/newMembers/collab.jpg";
-import rqbgImg   from "https://campuscoderscrew.github.io/terps-racing/public/newMembers/rqbg.jpg";
+import heroImg   from "../public/images/newMembers/heroTRNM2400.jpeg";
+import sparksImg from "../public/images/newMembers/sparks.jpg";
+import outsideImg from "../public/images/newMembers/outside.jpg";
+import weldImg   from "../public/images/newMembers/weld.jpg";
+import collabImg from "../public/images/newMembers/collab.jpg";
+import rqbgImg   from "../public/images/newMembers/rqbg.jpg";
 
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
@@ -140,7 +140,7 @@ function Commitment() {
     <section
       className="relative px-10 py-16"
       style={{
-        background: "url('https://campuscoderscrew.github.io/terps-racing/public/newMembers/sparks.jpg') center / cover no-repeat #111",
+        background: "url('../public/newMembers/sparks.jpg') center / cover no-repeat #111",
       }}
     >
       {/* dark overlay */}
