@@ -1,8 +1,8 @@
 import React from "react"
 
 import NavBar from "~/components/navbar"
-import logo from "../assets/images/TR_logo.png"
-import driverPhoto from "../assets/images/home_page_driver_photo.png"
+import logo from "https://campuscoderscrew.github.io/terps-racing/public/TR_logo.png"
+import driverPhoto from "https://campuscoderscrew.github.io/terps-racing/public/home_page_driver_photo.png"
 
 
 export default function Home() {

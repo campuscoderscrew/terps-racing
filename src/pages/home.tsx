@@ -467,7 +467,7 @@ function CtaRow() {
   );
 }
 
-import footerImage from "../assets/images/homePage/Footer.png"
+import footerImage from "https://campuscoderscrew.github.io/terps-racing/public/homePage/Footer.png"
 // ── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
   return (
