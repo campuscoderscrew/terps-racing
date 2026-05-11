@@ -222,7 +222,7 @@ const TEAMS = [
   {
     id: "formula-ic",
     name: "Formula IC",
-    href: "./ic/index.html",
+    to: "ic",
     img: ASSETS.teamIC,
     alt: "Terps Racing Formula IC car on track",
     desc: "Terps Racing Formula IC is a top-class team with both a high-performance, thoroughly validated aerodynamic package and lightweight, high strength carbon fiber composite chassis.",
@@ -232,7 +232,7 @@ const TEAMS = [
   {
     id: "ev",
     name: "EV",
-    href: "./ev/index.html",
+    to: "/ev",
     img: ASSETS.teamEV,
     alt: "Terps Racing EV formula electric car on track",
     desc: "Founded in 2019, Terps Racing Formula SAE Electric is Terps Racing's newest branch, faced with a modern challenge: convert the classic formula-style experience into something sustainable and clean.",
@@ -242,7 +242,7 @@ const TEAMS = [
   {
     id: "baja",
     name: "Baja",
-    href: "./baja/index.html",
+    to: "baja",
     img: ASSETS.teamBaja,
     alt: "Terps Racing Baja off-road vehicle navigating rough terrain",
     desc: "Terps Racing Baja SAE is an engineering project team that designs, builds, and races an off-road vehicle to compete in the SAE Collegiate Baja Design Series.",
@@ -288,11 +288,11 @@ function Teams() {
                 }}>
                   {team.desc}
                 </p>
-                <a href={team.href}
+                <Link to={team.to}
                   className={`self-center px-8 py-[10px] rounded-full text-[0.875rem] font-medium tracking-[0.01em] transition-opacity duration-200 hover:opacity-85 ${team.btnBg}`}
                   style={{ fontFamily: "'Roboto', sans-serif" }}>
-                  Learn More
-                </a>
+                    Learn More
+                </Link>
               </div>
             </article>
           ))}

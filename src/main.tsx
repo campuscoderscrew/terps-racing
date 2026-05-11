@@ -19,6 +19,7 @@ import Members from './pages/members.js';
 import Baja from './pages/baja.js';
 import IC from './pages/ic.js';
 import Sponsors from './pages/sponsors.js';
+import EV from './pages/ev.js';
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="baja" element={<Baja />} />
         <Route path="IC" element={<IC />} />
         <Route path="sponsors" element={<Sponsors />} />
+        <Route path="ev" element={<EV />} />
       </Routes>
     </>
   );
