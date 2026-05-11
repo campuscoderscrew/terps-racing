@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import NavBar2 from "~/components/navbar2";
+import NavBar from "~/components/navbar";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface AccordionItem { title: string; body: string; }
@@ -276,7 +276,7 @@ export default function Baja() {
       className="text-[#f0f0f0] leading-[1.8] bg-[#0a0a0a]"
       style={{ fontFamily: "'Source Sans 3', 'Source Sans Pro', Helvetica, Arial, sans-serif" }}
     >
-      <NavBar2/>
+      <NavBar/>
       <div className="pt-[72px]">
         <WhatWeDo />
         <DynamicEvents />

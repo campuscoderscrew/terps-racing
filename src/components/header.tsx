@@ -5,7 +5,7 @@ interface Header2{
     text:string
 }
 
-export default function Header2(props: Header2){
+export default function Header(props: Header2){
     return(
         <>
             <h2

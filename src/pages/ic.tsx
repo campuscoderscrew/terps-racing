@@ -1,9 +1,9 @@
-import NavBar2 from "~/components/navbar2";
+import NavBar from "~/components/navbar";
 
 import race_car_image from "../public/images/IC/ic_racecar_image.png"
 import race_schedule_car from "../public/images/IC/race_schedule_car.png"
 
-import Header2 from "~/components/header2";
+import Header from "~/components/header";
 import { header2_className, header2_style } from "~/siteInfo";
 import Paragraph from "~/components/paragraph";
 import statsOverlayImage from "../public/images/IC/stats_overlay_image.png"
@@ -51,7 +51,7 @@ function WhoWeAre() {
 
   return (
     <div className="bg-black px-[clamp(20px,5vw,80px)] py-10">
-      <Header2 text="Who We Are" />
+      <Header text="Who We Are" />
       <Paragraph text={whoWeAreText} />
     </div>
   );
@@ -83,7 +83,7 @@ function RaceSchedule() {
         </h2>
         {sections.map((section) => (
           <div key={section.title} className={`${section.bg} rounded-lg p-3`}>
-            <Header2 text={section.title} />
+            <Header text={section.title} />
             <Paragraph text={section.caption} />
           </div>
         ))}
@@ -164,7 +164,7 @@ const SUBTEAMS = [
 function SubteamsGrid() {
   return (
     <div className="bg-black w-full pt-10 px-[clamp(20px,5vw,80px)] pb-10">
-      <Header2 text="Our Divisions" />
+      <Header text="Our Divisions" />
 
       {/* Desktop grid */}
       <div
@@ -245,7 +245,7 @@ function SubteamCell({ name, image, area }: { name: string; image: string; area:
 export default function IC() {
   return (
     <div className="bg-black">
-      <NavBar2/>
+      <NavBar/>
       <TopImage />
       <WhoWeAre />
       <RaceSchedule />

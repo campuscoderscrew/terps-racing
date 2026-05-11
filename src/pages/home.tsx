@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import NavBar2 from "../components/navbar2"
+import NavBar from "../components/navbar"
 import { Link } from "react-router-dom";
 const FONTS = `
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Roboto+Condensed:wght@400;700&family=Roboto+Mono:wght@400;500&family=Goldman&family=Inter:wght@400;500;600&family=Roboto:ital,wght@0,400;0,500;0,700;1,900&display=swap');
@@ -18,7 +18,7 @@ import ic_image from "../public/images/homePage/IC.png"
 import ev_image from "../public/images/homePage/EV.png"
 import baja_image from "../public/images/homePage/baja.png"
 import { header2_style, header2_className, p_className, p_style } from "~/siteInfo";
-import Header2 from "~/components/header2";
+import Header from "~/components/header";
 import Paragraph from "~/components/paragraph";
 import footerImage from "../public/images/homePage/Footer.png"
 
@@ -126,7 +126,7 @@ function AboutSection() {
       <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
         <div className="flex flex-col gap-10">
           <div>
-            <Header2 id="about-title" text="About Us" />
+            <Header id="about-title" text="About Us" />
             <Paragraph text="Terps Racing is a student-run organization of over 120 members who participate in collegiate design
               competitions each year. We design, build, test, and race a formula-style racecar, an electric
               formula-style racecar, and a baja-style off-road vehicle." />
@@ -191,7 +191,7 @@ function Process() {
   return (
     <section className="relative py-[clamp(40px,6vw,80px)] overflow-hidden" id="process" aria-labelledby="process-title">
       <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
-        <Header2 id="process-title" text="The Process" />
+        <Header id="process-title" text="The Process" />
         <div className="flex flex-col gap-3">
           {PROCESS_STEPS.map(({ word, img, alt }) => (
             <div key={word} className="relative overflow-hidden rounded-[clamp(20px,4vw,50px)]"
@@ -256,7 +256,7 @@ function Teams() {
     <section className="py-[clamp(40px,6vw,80px)] relative overflow-hidden" id="teams" aria-labelledby="teams-title">
       <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
         <div className="mb-10">
-          <Header2 text="The Teams" />
+          <Header text="The Teams" />
           <Paragraph text="Terps Racing is made up of four teams: Formula SAE, Formula SAE Electric, Baja SAE, and a Business
             Operations Team. Formula SAE and Formula SAE Electric challenge students to design, build, and race a
             formula style race car. Baja SAE has a similar structure, but the goal is to design, build, and race an
@@ -310,7 +310,7 @@ function History() {
     <section className="relative py-[clamp(40px,6vw,80px)] pb-[clamp(60px,8vw,120px)] overflow-hidden"
       id="history" aria-labelledby="history-title">
       <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
-        <Header2 text="History" />
+        <Header text="History" />
         <Paragraph text="At Maryland, Terps Racing is one of the most popular student projects in both the Department of Mechanical
           Engineering and the A. James Clark School of Engineering. Established in 1982, Terps Racing has participated
           in over 60 races. The program allows students to develop fabrication, project management, and teamwork
@@ -359,7 +359,7 @@ export default function Home() {
     <>
       <style>{FONTS}</style>
       <div className="bg-black text-white overflow-x-hidden">
-        <NavBar2 />
+        <NavBar />
         <main>
           <Hero />
           <AboutSection />

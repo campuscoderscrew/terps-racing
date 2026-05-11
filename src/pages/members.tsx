@@ -1,6 +1,6 @@
 const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Roboto+Condensed:wght@400;700&family=Roboto+Mono:wght@400;500&family=Goldman&family=Inter:wght@400;500;600&family=Roboto:ital,wght@0,400;0,500;0,700;1,900&display=swap');`;
-import NavBar2
- from "~/components/navbar2";
+import NavBar
+ from "~/components/navbar";
 
 
 
@@ -305,7 +305,7 @@ export default function Members() {
     <>
       <style>{FONTS}</style>
       <div className="bg-black text-white">
-        <NavBar2 />
+        <NavBar />
         <Hero />
         <Requirements />
         {/* Middle: Commitment + Teams side by side */}
