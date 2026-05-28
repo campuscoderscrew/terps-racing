@@ -1,5 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import NavBar from "~/components/navbar";
+
+import BajaSponsorKenesto  from "../public/images/Baja/sponsors/Platinum/KenestoPNG.png"
+import BajaSponsorViveLab  from "../public/images/Baja/sponsors/Gold/vivelab-blue-bottom-grey-slogan-SVG.svg"
+import BajaSponsorDewalt   from "../public/images/Baja/sponsors/Silver/dewalt-logo.png"
+import BajaSponsorPrecision from "../public/images/Baja/sponsors/Bronze/precision.jpg.webp"
+import BajaSponsorKodiak   from "../public/images/Baja/sponsors/Bronze/kodiak.jpg"
+import BajaSponsorGMN      from "../public/images/Baja/sponsors/Bronze/GMN-Logo-Stacked-Blue-Text-Transparent.png"
+import BajaSponsorASCo     from "../public/images/Baja/sponsors/Bronze/American-Stripping-Company-Logo.png"
+import BajaSponsorEandD    from "../public/images/Baja/sponsors/Bronze/e-and-d-auto-cropped.jpg"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface AccordionItem { title: string; body: string; }
@@ -269,6 +278,149 @@ function Video() {
   );
 }
 
+// ── Sponsors ──────────────────────────────────────────────────────────────────
+interface BajaSponsor {
+  name: string;
+  logo: string;
+  href: string;
+  logoSize?: string;
+}
+
+interface BajaSponsorTierData {
+  label: string;
+  labelColor: string;
+  amount: string;
+  amountColor: string;
+  sponsors: BajaSponsor[];
+  desktopCols: number;
+  boxMaxWidth?: string;
+}
+
+const BAJA_SPONSOR_TIERS: BajaSponsorTierData[] = [
+  {
+    label: "Platinum",
+    labelColor: "#e5e4e2",
+    amount: "$10,000 +",
+    amountColor: "#e31933",
+    desktopCols: 1,
+    boxMaxWidth: "max-w-md",
+    sponsors: [
+      { name: "Kenesto", logo: BajaSponsorKenesto, href: "https://www.kenesto.com/" },
+    ],
+  },
+  {
+    label: "Gold",
+    labelColor: "#ffd200",
+    amount: "$5,000 - $10,000",
+    amountColor: "#e31933",
+    desktopCols: 1,
+    boxMaxWidth: "max-w-md",
+    sponsors: [
+      { name: "ViveLab Ergo", logo: BajaSponsorViveLab, href: "https://www.vivelab.cloud/" },
+    ],
+  },
+  {
+    label: "Silver",
+    labelColor: "#c0c0c0",
+    amount: "$1,000 - $5,000",
+    amountColor: "#e31933",
+    desktopCols: 1,
+    boxMaxWidth: "max-w-md",
+    sponsors: [
+      { name: "DeWalt", logo: BajaSponsorDewalt, href: "http://www.dewalt.com/" },
+    ],
+  },
+  {
+    label: "Bronze",
+    labelColor: "#cd7f32",
+    amount: "$0 - $1,000",
+    amountColor: "#e31933",
+    desktopCols: 3,
+    sponsors: [
+      { name: "Precision Heat Treating", logo: BajaSponsorPrecision, href: "https://www.phtc.net/",                                  logoSize: "max-h-24" },
+      { name: "Kodiak Cutting Tools",    logo: BajaSponsorKodiak,    href: "https://www.kodiakcuttingtools.com/",                    logoSize: "max-h-24" },
+      { name: "GMN Bearing USA",         logo: BajaSponsorGMN,       href: "https://www.gmnbt.com/",                                logoSize: "max-h-24" },
+      { name: "ASCo",                    logo: BajaSponsorASCo,      href: "https://www.ascoweb.com/" },
+      { name: "E&D Auto",                logo: BajaSponsorEandD,     href: "https://explorekensington.com/e-d-auto-care-center/" },
+    ],
+  },
+];
+
+function BajaSponsorLogoCell({ sponsor }: { sponsor: BajaSponsor }) {
+  return (
+    <a
+      href={sponsor.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center justify-center bg-white p-4 min-h-[80px] md:min-h-[100px] transition-all duration-200 hover:brightness-90 hover:scale-[1.03]"
+    >
+      <img
+        src={sponsor.logo}
+        alt={sponsor.name}
+        className={`${sponsor.logoSize ?? "max-h-16"} w-full object-contain`}
+        loading="lazy"
+      />
+    </a>
+  );
+}
+
+function BajaSponsorTierSection({ tier }: { tier: BajaSponsorTierData }) {
+  return (
+    <div className={`w-full ${tier.boxMaxWidth ?? "max-w-4xl"} mx-auto`}>
+      <div
+        className="text-center mb-3"
+        style={{
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontWeight: 900,
+          fontStyle: "italic",
+          fontSize: "clamp(1rem, 2.5vw, 1.6rem)",
+        }}
+      >
+        <span style={{ color: tier.labelColor }}>{tier.label}: </span>
+        <span style={{ color: tier.amountColor }}>{tier.amount}</span>
+      </div>
+      <div
+        className="border border-white overflow-hidden"
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${tier.desktopCols}, 1fr)`,
+          gap: "1px",
+          backgroundColor: "white",
+        }}
+      >
+        {tier.sponsors.map((sponsor) => (
+          <BajaSponsorLogoCell key={sponsor.name} sponsor={sponsor} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BajaSponsorsSection() {
+  return (
+    <section className="bg-black px-[clamp(20px,5vw,80px)] py-12">
+      <h2
+        className="mb-10"
+        style={{
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontWeight: 900,
+          fontStyle: "italic",
+          fontSize: "clamp(1.8rem, 5vw, 3rem)",
+          letterSpacing: "-0.02em",
+          color: "#e31933",
+        }}
+      >
+        Our Sponsors
+      </h2>
+      <div className="flex flex-col gap-10">
+        {BAJA_SPONSOR_TIERS.map((tier) => (
+          <BajaSponsorTierSection key={tier.label} tier={tier} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function Baja() {
   return (
@@ -283,6 +435,7 @@ export default function Baja() {
         <StaticEvents />
         <Gallery />
         <Video />
+        <BajaSponsorsSection />
       </div>
     </div>
   );
