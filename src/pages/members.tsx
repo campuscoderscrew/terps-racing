@@ -1,21 +1,22 @@
-const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@700&family=Roboto:wght@700&display=swap');`;
-import NavBar2
- from "~/components/navbar2";
+const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Roboto+Condensed:wght@400;700&family=Roboto+Mono:wght@400;500&family=Goldman&family=Inter:wght@400;500;600&family=Roboto:ital,wght@0,400;0,500;0,700;1,900&display=swap');`;
+import NavBar
+ from "~/components/navbar";
 
 
 
-import heroImg   from "../assets/images/newMembers/heroTRNM2400.jpeg";
-import sparksImg from "../assets/images/newMembers/sparks.jpg";
-import outsideImg from "../assets/images/newMembers/outside.jpg";
-import weldImg   from "../assets/images/newMembers/weld.jpg";
-import collabImg from "../assets/images/newMembers/collab.jpg";
-import rqbgImg   from "../assets/images/newMembers/rqbg.jpg";
+import heroImg   from "../public/images/newMembers/heroTRNM2400.jpeg";
+import sparksImg from "../public/images/newMembers/sparks.jpg";
+import outsideImg from "../public/images/newMembers/outside.jpg";
+import weldImg   from "../public/images/newMembers/weld.jpg";
+import collabImg from "../public/images/newMembers/collab.jpg";
+import rqbgImg   from "../public/images/newMembers/rqbg.jpg";
 
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
     <section
+      id="about"
       className="relative w-full flex items-center justify-center p-[3rem_4%]"
       style={{
         minHeight: "calc(100dvh - 3.5rem)",
@@ -26,7 +27,7 @@ function Hero() {
       <p
         className="text-white text-center max-w-[88%] mb-[15%]"
         style={{
-          fontFamily: "'Barlow', sans-serif",
+          fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 700,
           fontSize: "clamp(1.5rem, 3.6vw, 5rem)",
           textShadow: "0 2px 10px rgba(0,0,0,0.75)",
@@ -64,7 +65,7 @@ function Requirements() {
       <p
         className="uppercase tracking-[0.06em] text-[#C30000]"
         style={{
-          fontFamily: "'Barlow', sans-serif",
+          fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 700,
           fontSize: "clamp(1rem, 1.5vw, 2rem)",
         }}
@@ -74,7 +75,7 @@ function Requirements() {
       <h1
         className="text-white mt-1 mb-1"
         style={{
-          fontFamily: "'Barlow', sans-serif",
+          fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 700,
           fontSize: "clamp(1.2rem, 2.2vw, 2.5rem)",
         }}
@@ -84,7 +85,7 @@ function Requirements() {
       <p
         className="text-[#FFD200] mb-12"
         style={{
-          fontFamily: "'Barlow', sans-serif",
+          fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 700,
           fontSize: "clamp(1rem, 1.2vw, 1.5rem)",
         }}
@@ -98,7 +99,7 @@ function Requirements() {
             <p
               className="text-[#C30000] mb-2"
               style={{
-                fontFamily: "'Barlow', sans-serif",
+                fontFamily: "'Barlow Condensed', sans-serif",
                 fontWeight: 700,
                 fontSize: "clamp(1rem, 1.5vw, 1.8rem)",
               }}
@@ -114,7 +115,7 @@ function Requirements() {
             <p
               className="text-white leading-[1.45]"
               style={{
-                fontFamily: "'Roboto', sans-serif",
+                fontFamily: "'Roboto Condensed', sans-serif",
                 fontWeight: 700,
                 fontSize: "clamp(0.8rem, 1.2vw, 1.5rem)",
               }}
@@ -140,7 +141,7 @@ function Commitment() {
     <section
       className="relative px-10 py-16"
       style={{
-        background: "url('../assets/images/newMembers/sparks.jpg') center / cover no-repeat #111",
+        background: "url('../public/newMembers/sparks.jpg') center / cover no-repeat #111",
       }}
     >
       {/* dark overlay */}
@@ -149,7 +150,7 @@ function Commitment() {
         <p
           className="uppercase tracking-[0.06em] text-[#C30000]"
           style={{
-            fontFamily: "'Barlow', sans-serif",
+            fontFamily: "'Barlow Condensed', sans-serif",
             fontWeight: 700,
             fontSize: "clamp(1rem, 1.5vw, 2rem)",
           }}
@@ -159,7 +160,7 @@ function Commitment() {
         <h2
           className="text-white mt-1 mb-12"
           style={{
-            fontFamily: "'Barlow', sans-serif",
+            fontFamily: "'Barlow Condensed', sans-serif",
             fontWeight: 700,
             fontSize: "clamp(1.2rem, 2.2vw, 2.5rem)",
           }}
@@ -172,7 +173,7 @@ function Commitment() {
               key={item}
               className="flex items-center gap-3 text-white"
               style={{
-                fontFamily: "'Roboto', sans-serif",
+                fontFamily: "'Roboto Condensed', sans-serif",
                 fontWeight: 700,
                 fontSize: "clamp(0.9rem, 1.2vw, 1.5rem)",
               }}
@@ -218,7 +219,7 @@ function Teams() {
       <p
         className="uppercase tracking-[0.06em] text-[#C30000]"
         style={{
-          fontFamily: "'Barlow', sans-serif",
+          fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 700,
           fontSize: "clamp(1rem, 1.5vw, 2rem)",
         }}
@@ -228,7 +229,7 @@ function Teams() {
       <h2
         className="text-white mt-1 mb-12"
         style={{
-          fontFamily: "'Barlow', sans-serif",
+          fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 700,
           fontSize: "clamp(1.2rem, 2.2vw, 2.5rem)",
         }}
@@ -241,7 +242,7 @@ function Teams() {
           <p
             className="text-[#C30000]"
             style={{
-              fontFamily: "'Barlow', sans-serif",
+              fontFamily: "'Barlow Condensed', sans-serif",
               fontWeight: 700,
               fontSize: "clamp(1rem, 1.5vw, 2rem)",
             }}
@@ -255,7 +256,7 @@ function Teams() {
           <p
             className="text-[#FFFDF4] leading-[1.55] mb-3"
             style={{
-              fontFamily: "'Roboto', sans-serif",
+              fontFamily: "'Roboto Condensed', sans-serif",
               fontWeight: 700,
               fontSize: "clamp(0.9rem, 1.2vw, 1.5rem)",
             }}
@@ -265,7 +266,7 @@ function Teams() {
           <div
             className="flex items-start gap-[0.65rem] text-[#FFFDF4] leading-[1.5]"
             style={{
-              fontFamily: "'Roboto', sans-serif",
+              fontFamily: "'Roboto Condensed', sans-serif",
               fontWeight: 700,
               fontSize: "clamp(0.9rem, 1.2vw, 1.5rem)",
             }}
@@ -286,7 +287,7 @@ function Footer() {
       <h2
         className="text-white leading-[1.2]"
         style={{
-          fontFamily: "'Barlow', sans-serif",
+          fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 700,
           fontSize: "clamp(1.2rem, 2.2vw, 2.5rem)",
         }}
@@ -304,7 +305,7 @@ export default function Members() {
     <>
       <style>{FONTS}</style>
       <div className="bg-black text-white">
-        <NavBar2 currentPage="" />
+        <NavBar />
         <Hero />
         <Requirements />
         {/* Middle: Commitment + Teams side by side */}

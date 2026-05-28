@@ -1,28 +1,35 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import NavBar2 from "../components/navbar2"
+import NavBar from "../components/navbar"
 import { Link } from "react-router-dom";
-// ── Design tokens (mirroring original CSS vars) ──────────────────────────────
 const FONTS = `
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Roboto+Condensed:wght@400;700&family=Roboto+Mono:wght@400;500&family=Goldman&family=Inter:wght@400;500;600&family=Roboto:ital,wght@0,400;0,500;0,700;1,900&display=swap');
 `;
 
-// ── Image assets (Figma MCP URLs) ─────────────────────────────────────────────
+import logo from "../public/images/homePage/TR_logo.png"
+import hero_bg from "../public/images/homePage/hero_bg.png"
+import caraousel_1 from "../public/images/homePage/carousel/racer_head_shot.png"
+const caraousel = [caraousel_1]
+
+import design_image from "../public/images/homePage/design.png"
+import build_image from "../public/images/homePage/build.png"
+import test_image from "../public/images/homePage/test.png"
+import race_image from "../public/images/homePage/race.png"
+import ic_image from "../public/images/homePage/IC.png"
+import ev_image from "../public/images/homePage/EV.png"
+import baja_image from "../public/images/homePage/baja.png"
+import { header2_style, header2_className, p_className, p_style } from "~/siteInfo";
+import Header from "~/components/header";
+import Paragraph from "~/components/paragraph";
+import footerImage from "../public/images/homePage/Footer.png"
+
 const ASSETS = {
-  logo:       "https://www.figma.com/api/mcp/asset/2c8310c2-238d-48a5-b611-2122a12163d3",
-  heroBg:     "https://www.figma.com/api/mcp/asset/ac4b7ca2-e5ad-470c-9341-b433c3ff6386",
-  carousel:  [
-    "https://www.figma.com/api/mcp/asset/ce4e004e-c0ea-4bdf-bae3-031112006373",
-    "https://www.figma.com/api/mcp/asset/de85b000-e744-4f5c-875f-ccecff21c7de",
-    "https://www.figma.com/api/mcp/asset/0118e194-4491-45e2-928a-31159fd9f8eb",
-    "https://www.figma.com/api/mcp/asset/1d879009-2778-42cb-a363-b0b4af641356",
-  ],
-  processDesign: "https://www.figma.com/api/mcp/asset/309a2c4d-ce08-4bdd-85e3-106f4328e642",
-  processBuild:  "https://www.figma.com/api/mcp/asset/0118e194-4491-45e2-928a-31159fd9f8eb",
-  processTest:   "https://www.figma.com/api/mcp/asset/de85b000-e744-4f5c-875f-ccecff21c7de",
-  processRace:   "https://www.figma.com/api/mcp/asset/1d879009-2778-42cb-a363-b0b4af641356",
-  teamIC:     "./homepage_imgs/drivingcar1.png",
-  teamEV:     "https://www.figma.com/api/mcp/asset/e3b84c0a-8d7e-4438-80ae-9b52510e3e18",
-  teamBaja:   "https://www.figma.com/api/mcp/asset/b5475b81-8c5e-4122-ba73-0b2c8cf730c5",
+  processDesign: design_image,
+  processBuild:  build_image,
+  processTest:   test_image,
+  processRace:   race_image,
+  teamIC:        ic_image,
+  teamEV:        ev_image,
+  teamBaja:      baja_image,
 };
 
 // ── Carousel ──────────────────────────────────────────────────────────────────
@@ -30,24 +37,15 @@ function Carousel({ slides }: { slides: string[] }) {
   const [current, setCurrent] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-
-  const goTo = useCallback((idx: number) => {
-    setCurrent((idx + slides.length) % slides.length);
-  }, [slides.length]);
-
-  const startAuto = useCallback(() => {
-    timerRef.current = setInterval(() => goTo(current + 1), 4000);
-  }, [current, goTo]);
-
   useEffect(() => {
     timerRef.current = setInterval(() => {
       setCurrent((c) => (c + 1) % slides.length);
     }, 4000);
-    return () => {if (timerRef.current) clearInterval(timerRef.current);}
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [slides.length]);
 
   const handleNav = (dir: number) => {
-    {if (timerRef.current) clearInterval(timerRef.current);}
+    if (timerRef.current) clearInterval(timerRef.current);
     setCurrent((c) => (c + dir + slides.length) % slides.length);
     timerRef.current = setInterval(() => {
       setCurrent((c) => (c + 1) % slides.length);
@@ -56,12 +54,11 @@ function Carousel({ slides }: { slides: string[] }) {
 
   return (
     <div
-      className="relative rounded-[18px] overflow-hidden bg-[#1f1f1f] select-none"
-      style={{ height: 320 }}
+      className="relative rounded-[18px] overflow-hidden bg-[#1f1f1f] select-none w-full"
+      style={{ height: "clamp(200px, 30vw, 320px)" }}
       role="region"
       aria-label="Competitive success photos"
     >
-      {/* Track */}
       <div
         className="flex h-full transition-transform duration-[450ms]"
         style={{ transform: `translateX(-${current * 100}%)`, willChange: "transform" }}
@@ -72,74 +69,51 @@ function Carousel({ slides }: { slides: string[] }) {
           </div>
         ))}
       </div>
-
-      {/* Prev */}
-      <button
-        onClick={() => handleNav(-1)}
-        aria-label="Previous slide"
+      <button onClick={() => handleNav(-1)} aria-label="Previous slide"
         className="absolute left-[10px] top-1/2 -translate-y-1/2 z-10 w-[38px] h-[38px] rounded-full
           bg-black/55 border border-white/25 text-white flex items-center justify-center
-          hover:bg-[#ffd200]/85 hover:border-[#ffd200] hover:text-black transition-all text-lg leading-none"
-      >
+          hover:bg-[#ffd200]/85 hover:border-[#ffd200] hover:text-black transition-all text-lg leading-none">
         ‹
       </button>
-
-      {/* Next */}
-      <button
-        onClick={() => handleNav(1)}
-        aria-label="Next slide"
+      <button onClick={() => handleNav(1)} aria-label="Next slide"
         className="absolute right-[10px] top-1/2 -translate-y-1/2 z-10 w-[38px] h-[38px] rounded-full
           bg-black/55 border border-white/25 text-white flex items-center justify-center
-          hover:bg-[#ffd200]/85 hover:border-[#ffd200] hover:text-black transition-all text-lg leading-none"
-      >
+          hover:bg-[#ffd200]/85 hover:border-[#ffd200] hover:text-black transition-all text-lg leading-none">
         ›
       </button>
-
-      {/* Dots */}
       <div className="absolute bottom-[10px] left-1/2 -translate-x-1/2 flex gap-[7px] z-10">
         {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => { {if (timerRef.current) clearInterval(timerRef.current);}; setCurrent(i); }}
+          <button key={i} onClick={() => { if (timerRef.current) clearInterval(timerRef.current); setCurrent(i); }}
             aria-label={`Slide ${i + 1}`}
             className={`w-2 h-2 rounded-full border-none p-0 transition-all duration-200
-              ${i === current ? "bg-[#ffd200] scale-125" : "bg-white/40"}`}
-          />
+              ${i === current ? "bg-[#ffd200] scale-125" : "bg-white/40"}`} />
         ))}
       </div>
     </div>
   );
 }
 
-
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section className="relative overflow-hidden pt-[72px]" style={{ height: "120vh" }} aria-label="Hero">
-      {/* BG image */}
-      <div className="absolute inset-0 overflow-hidden -top-96">
+    <section className="relative overflow-hidden pt-[72px]" style={{ height: "100svh" }} aria-label="Hero">
+      <div className="absolute inset-0 overflow-hidden">
         <img
-          src={ASSETS.heroBg}
+          src={hero_bg}
           alt="Terps Racing car on track during testing day"
           className="w-full h-full object-cover object-center"
           loading="eager"
         />
-        {/* gradient overlay */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(102,102,102,0) 0%, rgba(51,51,51,0.5) 75%, rgba(26,26,26,0.62) 87.5%, rgba(0,0,0,0.75) 100%)",
-          }}
-        />
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(180deg, rgba(102,102,102,0) 0%, rgba(51,51,51,0.5) 75%, rgba(26,26,26,0.62) 87.5%, rgba(0,0,0,0.75) 100%)",
+        }} />
       </div>
-      {/* Watermark */}
       <div
         className="absolute pointer-events-none opacity-30"
-        style={{ left: "33%", top: "35%", width: "38%" }}
+        style={{ left: "50%", top: "35%", width: "clamp(160px, 38%, 480px)", transform: "translateX(-50%)" }}
         aria-hidden="true"
       >
-        <img src={ASSETS.logo} alt="" />
+        <img src={logo} alt="" className="w-full" />
       </div>
     </section>
   );
@@ -148,71 +122,44 @@ function Hero() {
 // ── About ─────────────────────────────────────────────────────────────────────
 function AboutSection() {
   return (
-    <section className="relative bg-black py-[80px]" id="about" aria-labelledby="about-title">
-      <div className="w-full max-w-[1440px] mx-auto px-[80px]">
-        <div className="flex flex-col gap-12">
-
-          {/* Text col */}
+    <section className="relative bg-black py-[clamp(40px,6vw,80px)]" id="about" aria-labelledby="about-title">
+      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
+        <div className="flex flex-col gap-10">
           <div>
-            <h2
-              id="about-title"
-              className="uppercase text-white mb-6 leading-[1.2] tracking-[-0.02em]"
-              style={{
-                fontFamily: "'Barlow Condensed', sans-serif",
-                fontWeight: 700,
-                fontSize: "clamp(2rem, 3.5vw, 2.8rem)",
-              }}
-            >
-              About Us
-            </h2>
-            <p
-              className="text-white leading-[1.6] mb-8 max-w-[900px]"
-              style={{
-                fontFamily: "'Roboto Condensed', sans-serif",
-                fontSize: "clamp(0.95rem, 1.4vw, 1.15rem)",
-              }}
-            >
-              Terps Racing is a student-run organization of over 120 members who participate in collegiate design
+            <Header id="about-title" text="About Us" />
+            <Paragraph text="Terps Racing is a student-run organization of over 120 members who participate in collegiate design
               competitions each year. We design, build, test, and race a formula-style racecar, an electric
-              formula-style racecar, and a baja-style off-road vehicle.
-            </p>
+              formula-style racecar, and a baja-style off-road vehicle." />
             <div className="flex gap-[10px] flex-wrap">
-              <a
-                href="#about"
-                className="inline-flex items-center justify-center px-7 py-[10px] rounded-full bg-[#ffda13] text-[#1e1e1e] text-[0.9rem] leading-[1.3] transition-all duration-200 hover:opacity-[0.88] hover:-translate-y-px"
-                style={{ fontFamily: "'Roboto Mono', monospace" }}
-              >
-                Learn More
-              </a>
-              <Link
-                to="/newMembers"
-                className="inline-flex items-center justify-center px-7 py-[10px] rounded-full bg-[#ffda13] text-[#1e1e1e] text-[0.9rem] leading-[1.3] transition-all duration-200 hover:opacity-[0.88] hover:-translate-y-px"
-                style={{ fontFamily: "'Roboto Mono', monospace" }}
-              >
+              
+              {/** Learn More button seems unnecessary since we're already on the Home Page
+               * Could potentially implement a more detailed about pages
+                <a href="#about"
+                  className="inline-flex items-center justify-center px-7 py-[10px] rounded-full bg-[#ffda13] text-[#1e1e1e] text-[clamp(0.8rem,1.2vw,0.9rem)] leading-[1.3] transition-all duration-200 hover:opacity-[0.88] hover:-translate-y-px"
+                  style={{ fontFamily: "'Roboto Mono', monospace" }}>
+                  Learn More
+                </a>
+               */}
+              
+
+
+              <Link to="/members"
+                className="inline-flex items-center justify-center px-7 py-[10px] rounded-full bg-[#ffda13] text-[#1e1e1e] text-[clamp(0.8rem,1.2vw,0.9rem)] leading-[1.3] transition-all duration-200 hover:opacity-[0.88] hover:-translate-y-px"
+                style={{ fontFamily: "'Roboto Mono', monospace" }}>
                 New Members
               </Link>
             </div>
           </div>
 
-          {/* Success col */}
-          <div className="grid grid-cols-2 gap-8 items-center">
-            <Carousel slides={ASSETS.carousel} />
-
+          {/* Success col — stacks on mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <Carousel slides={caraousel} />
             <div className="flex flex-col justify-center text-left">
-              <h3
-                className="uppercase text-white leading-[1.2] tracking-[-0.02em] mb-4"
-                style={{
-                  fontFamily: "'Barlow Condensed', sans-serif",
-                  fontWeight: 700,
-                  fontSize: "clamp(1.5rem, 2.5vw, 2.1rem)",
-                }}
-              >
+              <h3 className={header2_className} style={header2_style}>
                 Competitive<br />Success
               </h3>
-              <div
-                className="text-white leading-[1.7]"
-                style={{ fontFamily: "'Roboto Condensed', sans-serif", fontSize: "0.95rem" }}
-              >
+              <div className="text-white leading-[1.7]"
+                style={{ fontFamily: "'Roboto Condensed', sans-serif", fontSize: "clamp(0.85rem,1.5vw,0.95rem)" }}>
                 <p className="mb-[6px] font-semibold">2025 Formula SAE Placings:</p>
                 <ul className="list-disc pl-5">
                   <li>25th overall (top 20%)</li>
@@ -226,7 +173,6 @@ function AboutSection() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>
@@ -243,39 +189,23 @@ const PROCESS_STEPS = [
 
 function Process() {
   return (
-    <section className="relative py-[80px] overflow-hidden" id="process" aria-labelledby="process-title">
-      <div className="w-full max-w-[1440px] mx-auto px-[80px]">
-        <h2
-          id="process-title"
-          className="uppercase text-white mb-8 leading-[1.2] tracking-[-0.02em]"
-          style={{
-            fontFamily: "'Barlow Condensed', sans-serif",
-            fontWeight: 700,
-            fontSize: "clamp(2rem, 3.5vw, 2.8rem)",
-          }}
-        >
-          The Process
-        </h2>
-        <div className="flex flex-col gap-0">
+    <section className="relative py-[clamp(40px,6vw,80px)] overflow-hidden" id="process" aria-labelledby="process-title">
+      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
+        <Header id="process-title" text="The Process" />
+        <div className="flex flex-col gap-3">
           {PROCESS_STEPS.map(({ word, img, alt }) => (
-            <div
-              key={word}
-              className="relative overflow-hidden rounded-[50px] mb-3"
-              style={{ height: 150 }}
-            >
+            <div key={word} className="relative overflow-hidden rounded-[clamp(20px,4vw,50px)]"
+              style={{ height: "clamp(80px,12vw,150px)" }}>
               <img src={img} alt={alt} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 flex items-center justify-center px-[60px]">
-                <span
-                  className="uppercase leading-none tracking-[-0.02em]"
-                  style={{
-                    fontFamily: "'Barlow Condensed', sans-serif",
-                    fontWeight: 700,
-                    fontSize: "clamp(2.2rem, 6vw, 4.5rem)",
-                    color: "transparent",
-                    WebkitTextStroke: "2px white",
-                    textShadow: "3px 3px 0 black",
-                  }}
-                >
+              <div className="absolute inset-0 flex items-center justify-center px-[clamp(20px,5vw,60px)]">
+                <span className="uppercase leading-none tracking-[-0.02em]" style={{
+                  fontFamily: "'Barlow Condensed', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "clamp(1.8rem, 6vw, 4.5rem)",
+                  color: "transparent",
+                  WebkitTextStroke: "2px white",
+                  textShadow: "3px 3px 0 black",
+                }}>
                   {word}
                 </span>
               </div>
@@ -292,116 +222,77 @@ const TEAMS = [
   {
     id: "formula-ic",
     name: "Formula IC",
-    href: "./ic/index.html",
+    to: "ic",
     img: ASSETS.teamIC,
     alt: "Terps Racing Formula IC car on track",
     desc: "Terps Racing Formula IC is a top-class team with both a high-performance, thoroughly validated aerodynamic package and lightweight, high strength carbon fiber composite chassis.",
-    cardBg: "#ad0000",
-    cardBorder: "#ad0000",
-    nameCls: "text-white",
-    descCls: "text-white",
-    btnBg: "bg-black text-white",
-    imgBg: "#050000",
+    cardBg: "#ad0000", cardBorder: "#ad0000",
+    nameCls: "text-white", descCls: "text-white", btnBg: "bg-black text-white", imgBg: "#050000",
   },
   {
     id: "ev",
     name: "EV",
-    href: "./ev/index.html",
+    to: "/ev",
     img: ASSETS.teamEV,
     alt: "Terps Racing EV formula electric car on track",
     desc: "Founded in 2019, Terps Racing Formula SAE Electric is Terps Racing's newest branch, faced with a modern challenge: convert the classic formula-style experience into something sustainable and clean.",
-    cardBg: "#000000",
-    cardBorder: "#ffd084",
-    nameCls: "text-[#ffd200]",
-    descCls: "text-[#ffd200]",
-    btnBg: "bg-[#ffd200] text-black",
-    imgBg: "transparent",
+    cardBg: "#000000", cardBorder: "#ffd084",
+    nameCls: "text-[#ffd200]", descCls: "text-[#ffd200]", btnBg: "bg-[#ffd200] text-black", imgBg: "transparent",
   },
   {
     id: "baja",
     name: "Baja",
-    href: "./baja/index.html",
+    to: "baja",
     img: ASSETS.teamBaja,
     alt: "Terps Racing Baja off-road vehicle navigating rough terrain",
-    desc: "Terps Racing Baja SAE is an engineering project team that designs, builds, and races an off-road vehicle to compete in the SAE Collegiate Baja Design Series. The baja car faces suspension, maneuverability, towing, and endurance challenges.",
-    cardBg: "#ffd200",
-    cardBorder: "#d9d9d9",
-    nameCls: "text-black",
-    descCls: "text-black",
-    btnBg: "bg-black text-white",
-    imgBg: "#ffd200",
+    desc: "Terps Racing Baja SAE is an engineering project team that designs, builds, and races an off-road vehicle to compete in the SAE Collegiate Baja Design Series.",
+    cardBg: "#ffd200", cardBorder: "#d9d9d9",
+    nameCls: "text-black", descCls: "text-black", btnBg: "bg-black text-white", imgBg: "#ffd200",
   },
 ];
 
 function Teams() {
   return (
-    <section className="py-[80px] relative overflow-hidden" id="teams" aria-labelledby="teams-title">
-      <div className="w-full max-w-[1440px] mx-auto px-[80px]">
+    <section className="py-[clamp(40px,6vw,80px)] relative overflow-hidden" id="teams" aria-labelledby="teams-title">
+      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
         <div className="mb-10">
-          <h2
-            id="teams-title"
-            className="uppercase text-white leading-[1.2] tracking-[-0.02em]"
-            style={{
-              fontFamily: "'Barlow Condensed', sans-serif",
-              fontWeight: 700,
-              fontSize: "clamp(2rem, 3.5vw, 2.8rem)",
-            }}
-          >
-            The Teams
-          </h2>
-          <p
-            className="text-white leading-[1.6] max-w-[900px] mt-4"
-            style={{ fontFamily: "'Roboto Condensed', sans-serif", fontSize: "clamp(0.95rem, 1.4vw, 1.15rem)" }}
-          >
-            Terps Racing is made up of four teams: Formula SAE, Formula SAE Electric, Baja SAE, and a Business
+          <Header text="The Teams" />
+          <Paragraph text="Terps Racing is made up of four teams: Formula SAE, Formula SAE Electric, Baja SAE, and a Business
             Operations Team. Formula SAE and Formula SAE Electric challenge students to design, build, and race a
             formula style race car. Baja SAE has a similar structure, but the goal is to design, build, and race an
-            off-road vehicle that will survive the severe punishment of rough terrain.
-          </p>
+            off-road vehicle that will survive the severe punishment of rough terrain." />
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
+        {/* 1 col mobile → 2 col tablet → 3 col desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {TEAMS.map((team) => (
-            <article
-              key={team.id}
+            <article key={team.id}
               className="rounded-[14px] overflow-hidden flex flex-col shadow-[0_8px_24px_rgba(0,0,0,0.45)] border-[1.5px]"
               style={{ background: team.cardBg, borderColor: team.cardBorder }}
-              aria-label={`${team.name} team`}
-            >
-              <div
-                className="w-full overflow-hidden relative"
-                style={{ aspectRatio: "16/9", background: team.imgBg }}
-              >
+              aria-label={`${team.name} team`}>
+              <div className="w-full overflow-hidden relative" style={{ aspectRatio: "16/9", background: team.imgBg }}>
                 <img src={team.img} alt={team.alt} className="w-full h-full object-cover" />
               </div>
               <div className="p-5 pb-6 flex flex-col flex-1">
-                <h3
-                  className={`leading-[1.4] mb-[10px] ${team.nameCls}`}
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontWeight: 500,
-                    fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
-                  }}
-                >
+                <h3 className={`leading-[1.4] mb-[10px] ${team.nameCls}`} style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontWeight: 500,
+                  fontSize: "clamp(1.4rem, 3vw, 2.4rem)",
+                }}>
                   {team.name}
                 </h3>
-                <p
-                  className={`leading-[1.5] flex-1 mb-5 ${team.descCls}`}
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontWeight: 600,
-                    fontSize: "clamp(0.78rem, 1.1vw, 0.88rem)",
-                  }}
-                >
+                <p className={`leading-[1.5] flex-1 mb-5 ${team.descCls}`} style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "clamp(0.78rem, 1.1vw, 0.88rem)",
+                }}>
                   {team.desc}
                 </p>
-                <a
-                  href={team.href}
+                <Link to={team.to}
                   className={`self-center px-8 py-[10px] rounded-full text-[0.875rem] font-medium tracking-[0.01em] transition-opacity duration-200 hover:opacity-85 ${team.btnBg}`}
-                  style={{ fontFamily: "'Roboto', sans-serif" }}
-                >
-                  Learn More
-                </a>
+                  style={{ fontFamily: "'Roboto', sans-serif" }}>
+                    Learn More
+                </Link>
               </div>
             </article>
           ))}
@@ -411,73 +302,51 @@ function Teams() {
   );
 }
 
+
+
 // ── History ───────────────────────────────────────────────────────────────────
 function History() {
   return (
-    <section
-      className="relative py-[80px] pb-[120px] overflow-hidden"
-      id="history"
-      aria-labelledby="history-title"
-    >
-      <div className="w-full max-w-[1440px] mx-auto px-[80px]">
-        <h2
-          id="history-title"
-          className="uppercase text-white leading-[1.2] tracking-[-0.02em]"
-          style={{
-            fontFamily: "'Barlow Condensed', sans-serif",
-            fontWeight: 700,
-            fontSize: "clamp(2rem, 3.5vw, 2.8rem)",
-          }}
-        >
-          History
-        </h2>
-        <p
-          className="text-white leading-[1.6] max-w-[960px] mt-5 mb-14"
-          style={{ fontFamily: "'Roboto Condensed', sans-serif", fontSize: "clamp(0.95rem, 1.4vw, 1.15rem)" }}
-        >
-          At Maryland, Terps Racing is one of the most popular student projects in both the Department of Mechanical
+    <section className="relative py-[clamp(40px,6vw,80px)] pb-[clamp(60px,8vw,120px)] overflow-hidden"
+      id="history" aria-labelledby="history-title">
+      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
+        <Header text="History" />
+        <Paragraph text="At Maryland, Terps Racing is one of the most popular student projects in both the Department of Mechanical
           Engineering and the A. James Clark School of Engineering. Established in 1982, Terps Racing has participated
           in over 60 races. The program allows students to develop fabrication, project management, and teamwork
-          skills. The Baja, Formula IC, and EV teams engage students through hands-on experience, team-building,
-          collaboration, and much more. The team has a full machine shop and assembly space with a variety of
-          metal-working manual machines and CNC machines to which we have exclusive access.
-        </p>
+          skills." />
       </div>
     </section>
   );
 }
 
 // ── CTA Row ───────────────────────────────────────────────────────────────────
+// TODO: Implement Donate & Sponsor buttons
 function CtaRow() {
   return (
-    <div className="flex bg-[#ffd200] flex-wrap justify-center min-h-fit p-[10px]">
-      <div className="flex gap-6 flex-wrap justify-center">
-        {["Donate", "Join Us", "Sponsor"].map((label) => (
-          <a
+    <div className="flex bg-[#ffd200] flex-wrap justify-center min-h-fit p-[clamp(8px,2vw,10px)]">
+      <div className="flex gap-4 flex-wrap justify-center">
+        {[/*"Donate", */"Join Us", /*"Sponsor"*/].map((label) => (
+          <Link
             key={label}
-            href={label === "Join Us" ? "./new-members/index.html" : `#${label.toLowerCase()}`}
-            className="inline-flex items-center justify-center px-14 py-[10px] rounded-full border-2 border-black bg-black text-white text-[clamp(1rem,1.8vw,1.35rem)] tracking-[0.01em] transition-all duration-200 hover:bg-[#111] cursor-pointer"
-            style={{ fontFamily: "'Goldman', cursive" }}
-          >
-            {label}
-          </a>
+            to={label == "Join Us" ? "/members" : "/404"}
+            className="inline-flex items-center justify-center px-[clamp(24px,6vw,56px)] py-[10px] rounded-full border-2 border-black bg-black text-white tracking-[0.01em] transition-all duration-200 hover:bg-[#111] cursor-pointer"
+            style={{ fontFamily: "'Goldman', cursive", fontSize: "clamp(0.85rem, 1.8vw, 1.35rem)" }}>
+              {label}
+            </Link>
+  
         ))}
       </div>
     </div>
   );
 }
 
-import footerImage from "../assets/images/homePage/Footer.png"
 // ── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
   return (
     <footer className="relative overflow-hidden bg-black" id="contact" role="contentinfo">
       <div className="relative w-full overflow-hidden" style={{ minHeight: 100 }}>
-        <img
-          src={footerImage}
-          alt="Terps Racing cars lined up at competition"
-          className="w-full object-cover"
-        />
+        <img src={footerImage} alt="Terps Racing cars lined up at competition" className="w-full object-cover" />
         <div className="absolute inset-0 bg-black/55" />
       </div>
     </footer>
@@ -490,7 +359,7 @@ export default function Home() {
     <>
       <style>{FONTS}</style>
       <div className="bg-black text-white overflow-x-hidden">
-        <NavBar2 currentPage="Home"/>
+        <NavBar />
         <main>
           <Hero />
           <AboutSection />
