@@ -7,8 +7,15 @@ const FONTS = `
 
 import logo from "../public/images/homePage/TR_logo.png"
 import hero_bg from "../public/images/homePage/hero_bg.png"
-import caraousel_1 from "../public/images/homePage/carousel/racer_head_shot.png"
-const caraousel = [caraousel_1]
+
+import caraousel_1 from "../public/images/homePage/carousel/IC_car_zoom_in.png"
+import caraousel_2 from "../public/images/homePage/carousel/IC_car_zoom_in_sponsors.png"
+import caraousel_3 from "../public/images/homePage/carousel/racing_cones_2.png"
+import caraousel_4 from "../public/images/homePage/carousel/racing_cones_3.png"
+import caraousel_5 from "../public/images/homePage/carousel/racing_cones.png"
+import caraousel_6 from "../public/images/homePage/carousel/racer_head_shot.png"
+
+const caraousel = [caraousel_1, caraousel_2, caraousel_3, caraousel_4, caraousel_5, caraousel_6]
 
 import design_image from "../public/images/homePage/design.png"
 import build_image from "../public/images/homePage/build.png"
