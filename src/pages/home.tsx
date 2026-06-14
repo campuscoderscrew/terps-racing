@@ -8,11 +8,11 @@ const FONTS = `
 import logo from "../public/images/homePage/TR_logo.png"
 import hero_bg from "../public/images/homePage/hero_bg.png"
 
-import caraousel_1 from "../public/images/homePage/carousel/IC_car_zoom_in.png"
-import caraousel_2 from "../public/images/homePage/carousel/IC_car_zoom_in_sponsors.png"
-import caraousel_3 from "../public/images/homePage/carousel/racing_cones_2.png"
-import caraousel_4 from "../public/images/homePage/carousel/racing_cones_3.png"
-import caraousel_5 from "../public/images/homePage/carousel/racing_cones.png"
+import caraousel_1 from "../public/images/homePage/carousel/IC_car_zoom_in.jpg"
+import caraousel_2 from "../public/images/homePage/carousel/IC_car_zoom_in_sponsors.jpg"
+import caraousel_3 from "../public/images/homePage/carousel/racing_cones_2.jpg"
+import caraousel_4 from "../public/images/homePage/carousel/racing_cones_3.jpg"
+import caraousel_5 from "../public/images/homePage/carousel/racing_cones.jpg"
 import caraousel_6 from "../public/images/homePage/carousel/racer_head_shot.png"
 
 const caraousel = [caraousel_1, caraousel_2, caraousel_3, caraousel_4, caraousel_5, caraousel_6]
@@ -39,8 +39,51 @@ const ASSETS = {
   teamBaja:      baja_image,
 };
 
+// News thingy
+function ImageTicker({ slides }: { slides: string[] }) {
+  const REPEATS = 4;
+  const tiled = Array.from({ length: REPEATS }, () => slides).flat();
+
+  return (
+    <div
+      className="overflow-hidden bg-[#1f1f1f] rounded-[18px] w-full"
+      style={{ height: "clamp(200px, 30vw, 320px)" }}
+    >
+      <div
+        className="flex h-full"
+        style={{
+          width: `${tiled.length * 100}%`,
+          animation: `ticker ${slides.length * 8}s linear infinite`, //timing for how fast it goes
+        }}
+        onMouseEnter={e => (e.currentTarget.style.animationPlayState = "paused")}
+        onMouseLeave={e => (e.currentTarget.style.animationPlayState = "running")}
+      >
+        {tiled.map((src, i) => (
+          <div
+            key={i}
+            className="h-full overflow-hidden"
+            style={{ width: `${100 / tiled.length}%` }}
+          >
+            <img
+              src={src}
+              alt={`Slide ${(i % slides.length) + 1}`}
+              className="w-full h-full object-cover pointer-events-none"
+            />
+          </div>
+        ))}
+      </div>
+
+      <style>{`
+        @keyframes ticker {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-${100 / REPEATS}%); }
+        }
+      `}</style>
+    </div>
+  );
+}
 // ── Carousel ──────────────────────────────────────────────────────────────────
-function Carousel({ slides }: { slides: string[] }) {
+/*function Carousel({ slides }: { slides: string[] }) {
   const [current, setCurrent] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -98,7 +141,7 @@ function Carousel({ slides }: { slides: string[] }) {
       </div>
     </div>
   );
-}
+}*/
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
@@ -157,11 +200,12 @@ function AboutSection() {
               </Link>
             </div>
           </div>
-
+          <ImageTicker slides={caraousel} />
           {/* Success col — stacks on mobile */}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <Carousel slides={caraousel} />
-            <div className="flex flex-col justify-center text-left">
+            
+            <div className="flex flex-col justify-center">
               <h3 className={header2_className} style={header2_style}>
                 Competitive<br />Success
               </h3>
