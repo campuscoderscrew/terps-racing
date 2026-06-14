@@ -82,66 +82,6 @@ function ImageTicker({ slides }: { slides: string[] }) {
     </div>
   );
 }
-// ── Carousel ──────────────────────────────────────────────────────────────────
-/*function Carousel({ slides }: { slides: string[] }) {
-  const [current, setCurrent] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setCurrent((c) => (c + 1) % slides.length);
-    }, 4000);
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [slides.length]);
-
-  const handleNav = (dir: number) => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    setCurrent((c) => (c + dir + slides.length) % slides.length);
-    timerRef.current = setInterval(() => {
-      setCurrent((c) => (c + 1) % slides.length);
-    }, 4000);
-  };
-
-  return (
-    <div
-      className="relative rounded-[18px] overflow-hidden bg-[#1f1f1f] select-none w-full"
-      style={{ height: "clamp(200px, 30vw, 320px)" }}
-      role="region"
-      aria-label="Competitive success photos"
-    >
-      <div
-        className="flex h-full transition-transform duration-[450ms]"
-        style={{ transform: `translateX(-${current * 100}%)`, willChange: "transform" }}
-      >
-        {slides.map((src, i) => (
-          <div key={i} className="flex-none w-full h-full overflow-hidden">
-            <img src={src} alt={`Slide ${i + 1}`} className="w-full h-full object-cover pointer-events-none" />
-          </div>
-        ))}
-      </div>
-      <button onClick={() => handleNav(-1)} aria-label="Previous slide"
-        className="absolute left-[10px] top-1/2 -translate-y-1/2 z-10 w-[38px] h-[38px] rounded-full
-          bg-black/55 border border-white/25 text-white flex items-center justify-center
-          hover:bg-[#ffd200]/85 hover:border-[#ffd200] hover:text-black transition-all text-lg leading-none">
-        ‹
-      </button>
-      <button onClick={() => handleNav(1)} aria-label="Next slide"
-        className="absolute right-[10px] top-1/2 -translate-y-1/2 z-10 w-[38px] h-[38px] rounded-full
-          bg-black/55 border border-white/25 text-white flex items-center justify-center
-          hover:bg-[#ffd200]/85 hover:border-[#ffd200] hover:text-black transition-all text-lg leading-none">
-        ›
-      </button>
-      <div className="absolute bottom-[10px] left-1/2 -translate-x-1/2 flex gap-[7px] z-10">
-        {slides.map((_, i) => (
-          <button key={i} onClick={() => { if (timerRef.current) clearInterval(timerRef.current); setCurrent(i); }}
-            aria-label={`Slide ${i + 1}`}
-            className={`w-2 h-2 rounded-full border-none p-0 transition-all duration-200
-              ${i === current ? "bg-[#ffd200] scale-125" : "bg-white/40"}`} />
-        ))}
-      </div>
-    </div>
-  );
-}*/
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
@@ -203,11 +143,11 @@ function AboutSection() {
           <ImageTicker slides={caraousel} />
           {/* Success col — stacks on mobile */}
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          
             
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center text-center">
               <h3 className={header2_className} style={header2_style}>
-                Competitive<br />Success
+                Competitive Success
               </h3>
               <div className="text-white leading-[1.7]"
                 style={{ fontFamily: "'Roboto Condensed', sans-serif", fontSize: "clamp(0.85rem,1.5vw,0.95rem)" }}>
@@ -223,7 +163,7 @@ function AboutSection() {
                 </ul>
               </div>
             </div>
-          </div>
+          
         </div>
       </div>
     </section>
