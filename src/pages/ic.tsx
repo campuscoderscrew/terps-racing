@@ -8,18 +8,37 @@ import { header2_className, header2_style } from "~/siteInfo";
 import Paragraph from "~/components/paragraph";
 import statsOverlayImage from "../public/images/IC/stats_overlay_image.png"
 
-import SponsorKenesto  from "../public/images/IC/sponsors/Platinum/KenestoPNG.png"
-import SponsorSiemens  from "../public/images/IC/sponsors/Platinum/Siemens.png"
-import SponsorMRAS     from "../public/images/IC/sponsors/Gold/MRAS.jpg"
-import SponsorDevcom   from "../public/images/IC/sponsors/Gold/Devcom.png"
-import SponsorVR3      from "../public/images/IC/sponsors/Silver/vr3.Cartesian.Large_.png"
-import SponsorTicon    from "../public/images/IC/sponsors/Silver/Ticon.png"
-import SponsorDewalt   from "../public/images/IC/sponsors/Silver/dewalt-logo.png"
-import SponsorSTEng    from "../public/images/IC/sponsors/Silver/STeng.png"
-import SponsorPlascore from "../public/images/IC/sponsors/Silver/Plascore.png"
-import SponsorAirtech  from "../public/images/IC/sponsors/Bronze/Airtech.png"
-import SponsorIntralox from "../public/images/IC/sponsors/Bronze/Intralox.jpg"
-import SponsorEandD    from "../public/images/IC/sponsors/Bronze/e-and-d-auto-cropped.jpg"
+import SponsorRELI from "../public/images/IC/sponsors/Platinum/RELI_Group.png"
+import SponsorXcorp from "../public/images/IC/sponsors/Platinum/X_Corp.png"
+import SponsorChell from "../public/images/IC/sponsors/Gold/Chell_Instruments.png"
+import SponsorDC from "../public/images/IC/sponsors/Gold/DC_SAE.png"
+import SponsorLockheed from "../public/images/IC/sponsors/Gold/Lockheed_Martin.png"
+import SponsorMoTech from "../public/images/IC/sponsors/Gold/MotionTech.png"
+import SponsorGrumman from "../public/images/IC/sponsors/Gold/Northrop_Grumman.png"
+import SponsorRapid from "../public/images/IC/sponsors/Gold/Rapid_Harness.png"
+import SponsorSiemens from "../public/images/IC/sponsors/Gold/SIEMENS.png"
+import SponsorSKF from "../public/images/IC/sponsors/Gold/SKF.png"
+import SponsorST from "../public/images/IC/sponsors/Gold/ST_Engineering.png"
+import SponsorSurrey from "../public/images/IC/sponsors/Gold/Surrey_Sensors.png"
+import SponsorEpson from "../public/images/IC/sponsors/Silver/EPSON.png"
+import SponsorGill from "../public/images/IC/sponsors/Silver/Gill_Corp.png"
+import SponsorIzze from "../public/images/IC/sponsors/Silver/IZZE.png"
+import SponsorClark from "../public/images/IC/sponsors/Silver/James_Clark.png"
+import SponsorL3 from "../public/images/IC/sponsors/Silver/L3_Harris.png"
+import SponsorNGP from "../public/images/IC/sponsors/Silver/NGP.png"
+import SponsorScanivalve from "../public/images/IC/sponsors/Silver/Scanivalve.png"
+import SponsorTerpWorks from "../public/images/IC/sponsors/Silver/Terrapin_Works.png"
+import SponsorTeslong from "../public/images/IC/sponsors/Silver/Teslong.png"
+import Sponsor1987 from "../public/images/IC/sponsors/Bronze/1987.png"
+import SponsorCardinal from "../public/images/IC/sponsors/Bronze/Cardinal_Scientific.png"
+import SponsorDeWalt from "../public/images/IC/sponsors/Bronze/DeWalt.png"
+import SponsorFK from "../public/images/IC/sponsors/Bronze/FK.png"
+import SponsorPetVet from "../public/images/IC/sponsors/Bronze/Healthy_Pet_Mobile_Vet.png"
+import SponsorIntralox from "../public/images/IC/sponsors/Bronze/Intralox.png"
+import SponsorMSBR from "../public/images/IC/sponsors/Bronze/MSBR_alt.png"
+import SponsorSAE from "../public/images/IC/sponsors/Bronze/SAE_International.png"
+import SponsorSHD from "../public/images/IC/sponsors/Bronze/SHD_Composites.png"
+import SponsorSunlu from "../public/images/IC/sponsors/Bronze/SUNLU.png"
 
 import Chasis from "../public/images/IC/subteams/Chassis.png"
 import Powertrain from "../public/images/IC/subteams/Manufacturing.png"
@@ -279,8 +298,8 @@ const SPONSOR_TIERS: SponsorTierData[] = [
     amountColor: "#C30000",
     desktopCols: 2,
     sponsors: [
-      { name: "Kenesto", logo: SponsorKenesto, href: "https://www.kenesto.com/" },
-      { name: "Siemens", logo: SponsorSiemens, href: "https://www.siemens.com/global/en.html" },
+      { name: "RELI Group", logo: SponsorRELI, href: "https://www.religroupinc.com/" },
+      { name: "X Corp Solutions", logo: SponsorXcorp, href: "https://xcorpsolutions.com/", logoSize: "max-h-32" },
     ],
   },
   {
@@ -290,8 +309,16 @@ const SPONSOR_TIERS: SponsorTierData[] = [
     amountColor: "#C30000",
     desktopCols: 2,
     sponsors: [
-      { name: "MRAS",   logo: SponsorMRAS,   href: "https://mras-usa.com/", logoSize: "max-h-32" },
-      { name: "DEVCOM", logo: SponsorDevcom, href: "https://devcom.army.mil/" },
+      { name: "Chell Instruments",   logo: SponsorChell,   href: "https://chell.co.uk/", logoSize: "max-h-32" },
+      { name: "DC SAE", logo: SponsorDC, href: "https://www.sae.org/memberships/find-your-section/doc-washington-dc", logoSize: "max-h-24" },
+      { name: "Lockheed Martin", logo: SponsorLockheed, href: "https://www.lockheedmartin.com/en-us/index.html" },
+      { name: "MotionTech", logo: SponsorMoTech, href: "https://www.motiontech.com/" },
+      { name: "Northrop Grumman", logo: SponsorGrumman, href: "https://www.northropgrumman.com/" },
+      { name: "Rapid Harness", logo: SponsorRapid, href: "https://rapidharness.com/" },
+      { name: "SIEMENS", logo: SponsorSiemens, href: "https://www.siemens.com/en-us/" },
+      { name: "SKF", logo: SponsorSKF, href: "https://www.skf.com/group" },
+      { name: "ST Engineering", logo: SponsorST, href: "https://www.stengg.com/" },
+      { name: "SurreySensors", logo: SponsorSurrey, href: "https://www.surreysensors.com/", logoSize: "max-h-32" }
     ],
   },
   {
@@ -301,11 +328,15 @@ const SPONSOR_TIERS: SponsorTierData[] = [
     amountColor: "#C30000",
     desktopCols: 3,
     sponsors: [
-      { name: "VR3 Engineering", logo: SponsorVR3,      href: "https://vr3.ca/" },
-      { name: "TiCON",           logo: SponsorTicon,    href: "https://www.ticonindustries.com/" },
-      { name: "DeWalt",          logo: SponsorDewalt,   href: "http://www.dewalt.com/" },
-      { name: "ST Engineering",  logo: SponsorSTEng,    href: "https://mras-usa.com/" },
-      { name: "Plascore",        logo: SponsorPlascore, href: "https://www.plascore.com/", logoSize: "max-h-24" },
+      { name: "EPSON", logo: SponsorEpson, href: "https://epson.com/usa" },
+      { name: "The Gill Corporation", logo: SponsorGill, href: "https://www.thegillcorp.com/" },
+      { name: "IZZE Racing", logo: SponsorIzze, href: "https://www.izzeracing.com/" },
+      { name: "A. James Clark School of Engineering", logo: SponsorClark, href: "https://eng.umd.edu/" },
+      { name: "L3 Harris", logo: SponsorL3, href: "https://www.l3harris.com/" },
+      { name: "New German Performance", logo: SponsorNGP, href: "https://www.ngpracing.com/" },
+      { name: "Scanivalve", logo: SponsorScanivalve, href: "https://scanivalve.com/" },
+      { name: "Terrapin Works", logo: SponsorTerpWorks, href: "https://terrapinworks.umd.edu/" },
+      { name: "Teslong", logo: SponsorTeslong, href: "https://teslong.com/", logoSize: "max-h-36" }
     ],
   },
   {
@@ -313,11 +344,18 @@ const SPONSOR_TIERS: SponsorTierData[] = [
     labelColor: "#cd7f32",
     amount: "$0 - $1,000",
     amountColor: "#C30000",
-    desktopCols: 3,
+    desktopCols: 2,
     sponsors: [
-      { name: "Airtech",  logo: SponsorAirtech,  href: "https://airtech.com/",                                logoSize: "max-h-32" },
-      { name: "Intralox", logo: SponsorIntralox, href: "http://www.intralox.com/",                             logoSize: "max-h-32" },
-      { name: "E&D Auto", logo: SponsorEandD,    href: "https://explorekensington.com/e-d-auto-care-center/" },
+      { name: "1987 Machinery",  logo: Sponsor1987,  href: "https://1987machinery.com/", logoSize: "max-h-32" },
+      { name: "Cardinal Scientific", logo: SponsorCardinal, href: "https://cardinalscientific.com/", logoSize: "max-h-32" },
+      { name: "DeWalt", logo: SponsorDeWalt,    href: "https://www.dewalt.com/en-us" },
+      { name: "FK Bearings", logo: SponsorFK, href: "https://www.fk-bearing.com/" },
+      { name: "Healthy Pet Mobile Vet", logo: SponsorPetVet, href: "https://www.healthypetmobilevet.com/", logoSize: "max-h-32" },
+      { name: "Intalox", logo: SponsorIntralox, href: "https://www.intralox.com/" },
+      { name: "MSBR", logo: SponsorMSBR, href: "https://mdspace.org/", logoSize: "max-h-24" },
+      { name: "SAE International", logo: SponsorSAE, href: "https://www.sae.org/" },
+      { name: "SHD Composites", logo: SponsorSHD, href: "https://shdcomposites.com/us", logoSize: "max-h-24" },
+      { name: "SUNLU", logo: SponsorSunlu, href: "https://www.sunlu.com/" }
     ],
   },
 ];
@@ -328,7 +366,7 @@ function SponsorLogoCell({ sponsor }: { sponsor: Sponsor }) {
       href={sponsor.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center justify-center bg-white p-4 min-h-[80px] md:min-h-[100px] transition-all duration-200 hover:brightness-90 hover:scale-[1.03]"
+      className="flex items-center justify-center bg-black p-4 min-h-[80px] md:min-h-[100px] transition-all duration-200 hover:brightness-90 hover:scale-[1.03]"
     >
       <img
         src={sponsor.logo}
@@ -361,7 +399,7 @@ function SponsorTierSection({ tier }: { tier: SponsorTierData }) {
           display: "grid",
           gridTemplateColumns: `repeat(${tier.desktopCols}, 1fr)`,
           gap: "1px",
-          backgroundColor: "white",
+          backgroundColor: "black",
         }}
       >
         {tier.sponsors.map((sponsor) => (
