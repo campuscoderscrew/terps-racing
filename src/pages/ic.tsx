@@ -1,10 +1,9 @@
+import { useState } from "react";
 import NavBar from "~/components/navbar";
 
 import race_car_image from "../public/images/IC/ic_racecar_image.png"
-import race_schedule_car from "../public/images/IC/race_schedule_car.png"
 
 import Header from "~/components/header";
-import { header2_className, header2_style } from "~/siteInfo";
 import Paragraph from "~/components/paragraph";
 import statsOverlayImage from "../public/images/IC/stats_overlay_image.png"
 
@@ -70,37 +69,288 @@ function WhoWeAre() {
   );
 }
 
-// ── Race Schedule ─────────────────────────────────────────────────────────────
-function RaceSchedule() {
-  const sections = [
-    { title: "Pre-Comp Preparation", caption: "Online | May 4 | 6:00pm - 7:30pm",        bg: "bg-red-600" },
-    { title: "Suspension",           caption: "Michigan Int. Speedway | May 13 - 16",     bg: "bg-yellow-400" },
-    { title: "Powertrain",           caption: "Location | Time | Date",                   bg: "bg-red-600" },
-  ];
+// ── 2026 Season ───────────────────────────────────────────────────────────────
+const SEASON_TABS = ["General", "Chassis Build", "Races", "Results"] as const;
+type SeasonTab = (typeof SEASON_TABS)[number];
 
+const CHEVRON_STEPS = [
+  { date: "08/23/2026", label: "Chassis Design",     color: "#c01818" },
+  { date: "02/07/2027", label: "Rolling Chassis",    color: "#ef3a1a" },
+  { date: "02/28/2027", label: "Dynoable Car",       color: "#f59e0b" },
+  { date: "03/15/2027", label: "Testable Car",       color: "#f2e600" },
+  { date: "04/15/2027", label: "Competition Ready",  color: "#3bd11a" },
+];
+
+const KEY_CHASSIS_DATES = [
+  { date: "June 26",     label: "Suspension Geometry Finalized" },
+  { date: "July 1",      label: "Structural Equivalency Spreadsheet" },
+  { date: "August 23",   label: "Monocoque and rear frame CAD finalized" },
+  { date: "September 1", label: "VR3 order in" },
+  { date: "October 15",  label: "Chassis molds complete" },
+  { date: "November 15", label: "Frame Jigs Complete, SES Submitted" },
+  { date: "February 7",  label: "Rolling Chassis" },
+];
+
+const RACE_EVENTS = [
+  {
+    title: "Michigan SAE",
+    location: "Michigan International Speedway, Brooklyn, Michigan",
+    lines: [
+      "May 12 - Arrival, Registration & Paddocking",
+      "May 13 - Registration, Tech Inspection Begins, Driver Meeting",
+      "May 14 - Cost & Design Judging, Tilt/Noise/Brake Tests",
+      "May 15 - Skid Pad, Acceleration, Autocross, Design Finals",
+      "May 16 - Endurance, Fuel Efficiency, Awards Ceremony",
+      "May 17 - Transporter pick-up",
+    ],
+  },
+  {
+    title: "Pittsburgh Shootout",
+    location: "Summit Point Motorsports Park, Summit Point, West Virginia",
+    lines: ["August 21-22"],
+  },
+  {
+    title: "Freedom 250 Grand Prix of Washington D.C., NTT INDYCAR Series",
+    location: "National Mall, Washington D.C.",
+    lines: ["August 22-23"],
+  },
+];
+
+const SEASON_RESULTS = [
+  { value: "11", label: "International Placement", sub: "Michigan SAE 2026" },
+  { value: "9",  label: "National Placement",      sub: "Michigan SAE 2026" },
+];
+
+function ChevronTimeline() {
   return (
-    <div className="flex flex-col md:flex-row w-full overflow-hidden bg-black">
-      {/* Left: Image */}
-      <div className="flex-1 flex items-center justify-center">
-        <img
-          src={race_schedule_car}
-          alt="Race car"
-          className="w-full object-cover p-[clamp(16px,4vw,40px)]"
-        />
-      </div>
+    <div className="flex flex-col md:flex-row w-full gap-4 md:gap-0">
+      {CHEVRON_STEPS.map((step, index) => (
+        <div key={step.label} className="flex-1 flex flex-col items-center">
+          <div
+            className="font-bold text-white text-center mb-2"
+            style={{ fontSize: "clamp(0.9rem, 1.6vw, 1.25rem)" }}
+          >
+            {step.date}
+          </div>
+          <div
+            className="w-full flex items-center justify-center text-white font-bold"
+            style={{
+              backgroundColor: step.color,
+              height: "clamp(32px, 4vw, 44px)",
+              clipPath:
+                index === CHEVRON_STEPS.length - 1
+                  ? "polygon(0 0, 88% 0, 100% 50%, 88% 100%, 0 100%, 12% 50%)"
+                  : "polygon(0 0, 88% 0, 100% 50%, 88% 100%, 0 100%, 12% 50%)",
+              marginLeft: index === 0 ? 0 : "-6%",
+            }}
+          />
+          <div
+            className="font-bold text-white text-center mt-2"
+            style={{ fontSize: "clamp(0.9rem, 1.6vw, 1.15rem)" }}
+          >
+            {step.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
-      {/* Right: Content */}
-      <div className="flex-1 flex flex-col gap-4 p-[clamp(16px,4vw,40px)] bg-black">
-        <h2 className={header2_className} style={header2_style}>
-          RACE SCHEDULE
-        </h2>
-        {sections.map((section) => (
-          <div key={section.title} className={`${section.bg} rounded-lg p-3`}>
-            <Header text={section.title} />
-            <Paragraph text={section.caption} />
+function PinIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="shrink-0"
+      style={{ width: "0.9em", height: "0.9em" }}
+      fill="#ffd200"
+      aria-hidden="true"
+    >
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" />
+    </svg>
+  );
+}
+
+function GeneralTab() {
+  return (
+    <div className="py-4">
+      <h3
+        className="text-white font-bold mb-6"
+        style={{ fontSize: "clamp(1.2rem, 3vw, 1.8rem)" }}
+      >
+        General Timeline
+      </h3>
+      <ChevronTimeline />
+    </div>
+  );
+}
+
+function ChassisBuildTab() {
+  return (
+    <div className="flex flex-col gap-12 py-4">
+      <div>
+        <h3
+          className="text-white font-bold mb-8"
+          style={{ fontSize: "clamp(1.2rem, 3vw, 1.8rem)" }}
+        >
+          Key Chassis Dates
+        </h3>
+
+        {/* Desktop horizontal timeline */}
+        <div className="hidden md:flex w-full items-stretch">
+          {KEY_CHASSIS_DATES.map((item) => (
+            <div key={item.date} className="flex-1 flex flex-col items-center">
+              <div
+                className="font-bold text-white text-center mb-3"
+                style={{ fontSize: "clamp(0.75rem, 1.2vw, 0.95rem)" }}
+              >
+                {item.date}
+              </div>
+              <div className="relative w-full flex items-center justify-center">
+                <div className="absolute left-0 right-0 h-[6px] bg-yellow-400" />
+                <div className="relative w-4 h-4 rounded-full bg-red-600 border-2 border-red-700" />
+              </div>
+              <div
+                className="text-white text-center mt-3 px-1"
+                style={{ fontSize: "clamp(0.7rem, 1.1vw, 0.85rem)" }}
+              >
+                {item.label}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile vertical timeline */}
+        <div className="flex md:hidden flex-col gap-4">
+          {KEY_CHASSIS_DATES.map((item) => (
+            <div key={item.date} className="flex items-start gap-3">
+              <div className="w-3 h-3 mt-1 rounded-full bg-red-600 shrink-0" />
+              <div>
+                <div className="font-bold text-white">{item.date}</div>
+                <div className="text-white text-sm">{item.label}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RacesTab() {
+  return (
+    <div className="py-4">
+      <h3
+        className="text-white font-bold mb-6"
+        style={{ fontSize: "clamp(1.2rem, 3vw, 1.8rem)" }}
+      >
+        2026 Race Calendar
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {RACE_EVENTS.map((event) => (
+          <div key={event.title} className="bg-neutral-900 rounded-lg p-5 flex flex-col gap-3">
+            <h4
+              className="text-yellow-400 font-bold italic"
+              style={{ fontSize: "clamp(1.05rem, 2vw, 1.3rem)" }}
+            >
+              {event.title}
+            </h4>
+            <div className="flex items-start gap-1 text-white text-sm">
+              <PinIcon />
+              <span>{event.location}</span>
+            </div>
+            <div className="flex flex-col gap-1 text-white text-sm">
+              {event.lines.map((line) => (
+                <span key={line}>{line}</span>
+              ))}
+            </div>
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function ResultsTab() {
+  return (
+    <div className="py-4">
+      <h3
+        className="text-white font-bold mb-6"
+        style={{ fontSize: "clamp(1.2rem, 3vw, 1.8rem)" }}
+      >
+        Michigan SAE — Competition Results
+      </h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {SEASON_RESULTS.map((result) => (
+          <div
+            key={result.label}
+            className="bg-neutral-900 rounded-lg flex flex-col items-center justify-center text-center p-10 gap-2"
+          >
+            <span
+              className="text-yellow-400 font-bold leading-none"
+              style={{ fontSize: "clamp(3rem, 8vw, 5rem)" }}
+            >
+              {result.value}
+            </span>
+            <span
+              className="text-white font-bold"
+              style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)" }}
+            >
+              {result.label}
+            </span>
+            <span className="text-gray-400 text-sm">{result.sub}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Season2026() {
+  const [activeTab, setActiveTab] = useState<SeasonTab>("General");
+
+  return (
+    <div className="bg-black px-[clamp(20px,5vw,80px)] py-10">
+      <h2
+        className="text-white text-center font-bold italic mb-10"
+        style={{
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontSize: "clamp(2rem, 6vw, 3.5rem)",
+        }}
+      >
+        2026 Season
+      </h2>
+
+      {/* Tabs */}
+      <div className="flex flex-wrap justify-center gap-4 md:gap-12 mb-10">
+        {SEASON_TABS.map((tab) => {
+          const isActive = tab === activeTab;
+          return (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className={`rounded-lg px-5 py-2 font-bold italic transition-all duration-200 ${
+                isActive
+                  ? "bg-neutral-700 ring-2 ring-yellow-400"
+                  : "bg-neutral-900 hover:bg-neutral-800"
+              }`}
+              style={{
+                color: "#ffd200",
+                fontFamily: "'Barlow Condensed', sans-serif",
+                fontSize: "clamp(1.1rem, 2.5vw, 1.6rem)",
+              }}
+            >
+              {tab}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Tab content */}
+      {activeTab === "General" && <GeneralTab />}
+      {activeTab === "Chassis Build" && <ChassisBuildTab />}
+      {activeTab === "Races" && <RacesTab />}
+      {activeTab === "Results" && <ResultsTab />}
     </div>
   );
 }
@@ -403,7 +653,7 @@ export default function IC() {
       <NavBar/>
       <TopImage />
       <WhoWeAre />
-      <RaceSchedule />
+      <Season2026 />
       <StatsOverlay image={statsOverlayImage} />
       <SubteamsGrid />
       <SponsorsSection />
