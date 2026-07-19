@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { label: "EV",         route: "/ev",       style: "" },
   { label: "Baja",       route: "/baja",     style: "" },
   { label: "Members",    route: "/members",  style: "members" },
+  { label: "Gallery",    route: "/gallery",  style: "" },
 ];
 
 export default function NavBar() {
