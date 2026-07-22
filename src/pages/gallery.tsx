@@ -14,16 +14,18 @@ const GALLERY_TYPES = [
 
 ]
 
+
+
 //Header
 function Title() {
     return (
-        <div className ="p-24">
+        <div className ="px-24 pt-24 pb-0">
             <h2 style = {{
                 fontFamily: "'Barlow Condensed', sans-serif",
                 fontWeight: 550,
                 fontSize: "clamp(0.9rem, 4vw, 1.4rem)",
                 color: "white",
-                letterSpacing: "-0.02em",
+                letterSpacing: "-0.03em",
             }}>GALLERY</h2>
         </div>
     )
@@ -48,7 +50,6 @@ function GalleryOpt() {
                     </span>
                 </div>
             ))}
-
         </div>
         
     )
