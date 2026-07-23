@@ -6,13 +6,43 @@ import Header from "~/components/header";
 import { header2_className, header2_style } from "~/siteInfo";
 import Paragraph from "~/components/paragraph";
 
+//Photos ---------------------------------------------------
+
+//Gallery Icons
+import teamIcon from "../public/images/gallery/gallery_icons/team_icon.png"
+import highlightsIcon from "../public/images/gallery/gallery_icons/highlights.png"
+import processIcon from "../public/images/gallery/gallery_icons/process.png"
+import trackIcon from "../public/images/gallery/gallery_icons/track.png"
+
+
+//The Team
+import team_391 from "../public/images/gallery/team/team_391.png"
+import team_409 from "../public/images/gallery/team/team_409.png"
+import team_464 from "../public/images/gallery/team/team_464.png"
+import team_465 from "../public/images/gallery/team/team_465.png"
+import team_471 from "../public/images/gallery/team/team_471.png"
+import team_459 from "../public/images/gallery/team/team_459.png"
+import team_592 from "../public/images/gallery/team/team_592.png"
+import team_597 from "../public/images/gallery/team/team_597.png"
+
+//Car + Process
+
+
+
+//Highlights
+
+
+//Track
+
+//------------------------------------------------------------
+
 const holder = ""
 
 const GALLERY_TYPES = [
-    { name: "The Team",           image: holder,   area: holder},
-    { name: "Highlights",         image: holder,   area: holder},
-    { name: "The Car + Process",  image: holder,   area: holder},
-    { name: "The Track",          image: holder,   area: holder},
+    { name: "The Team",           image: teamIcon,        area: holder, size: "auto 170%", position: "35% 75%"},
+    { name: "Highlights",         image: highlightsIcon,  area: holder, size: "cover", position: "center"},
+    { name: "The Car + Process",  image: processIcon,     area: holder, size: "cover", position: "center"},
+    { name: "The Track",          image: trackIcon,       area: holder, size: "cover", position: "center"},
 
 ]
 
@@ -42,7 +72,14 @@ function GalleryOpt() {
             <div className="flex flex-wrap p-24 pt-10 gap-6">
             
             {GALLERY_TYPES.map((type) => (
-                <div key={type.name} className="w-44 h-56 shrink-0 relative bg-neutral-800 rounded-2xl shadow-xl flex items-center justify-center">
+                <div key={type.name} className="w-52 h-64 shrink-0 relative bg-neutral-800 rounded-2xl shadow-xl flex items-center justify-center"
+                    style = {{
+                        backgroundImage: `url(${type.image})`,
+                        backgroundSize: type.size,
+                        backgroundPosition: type.position,
+                    }}>
+                    <div className="absolute inset-0 bg-black/20" />
+                    
                     <span style = {{
                         fontFamily: "'Barlow Condensed', sans-serif",
                         fontWeight: 800,
@@ -50,6 +87,7 @@ function GalleryOpt() {
                         color: "white",
                         textAlign: "center",
                         letterSpacing: "-0.02em",
+                        
                     }}> 
                         {type.name}
                     </span>
