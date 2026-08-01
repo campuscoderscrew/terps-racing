@@ -2,6 +2,8 @@ import NavBar from "~/components/navbar";
 
 import race_car_image from "../public/images/IC/ic_racecar_image.png"
 import race_schedule_car from "../public/images/IC/race_schedule_car.png"
+import { Link } from "react-router-dom";
+
 
 import Header from "~/components/header";
 import { header2_className, header2_style } from "~/siteInfo";
@@ -253,6 +255,129 @@ function SubteamCell({ name, image, area }: { name: string; image: string; area:
     </div>
   );
 }
+// -- GALLERY TEAMS CARDS -------------------
+import team_pic from "../public/images/IC/team_pic.jpg"
+import car_highlights from "../public/images/IC/car_scenic_zoomedin.jpg"
+import process_pic from "../public/images/IC/car_model_simcenter.png"
+import track_pic from "../public/images/IC/track_pic.jpg"
+
+const ASSETS = {
+  team_gallery: team_pic,
+  highlights_gallery:  car_highlights,
+  carprocess_gallery:   process_pic,
+  track_gallery:   track_pic
+};
+const GALLERY = [
+  {
+    id: "team-gallery",
+    name: "The Team",
+    to: "team", /* will need to link to their respective gallery pages once made.*/
+    img: ASSETS.team_gallery,
+    alt: "Terps Racing Team",
+    cardBg: "#ad0000", cardBorder: "#ad0000",
+    nameCls: "text-white", descCls: "text-white", btnBg: "bg-black text-white", imgBg: "#050000",
+  },
+  {
+    id: "highlights-gallery",
+    name: "Highlights",
+    to: "/ev",
+    img: ASSETS.highlights_gallery,
+    alt: "Terps Racing highlights of the electric car",
+    cardBg: "#000000", cardBorder: "#ffd084",
+    nameCls: "text-[#ffd200]", descCls: "text-[#ffd200]", btnBg: "bg-[#ffd200] text-black", imgBg: "transparent",
+  },
+  {
+    id: "carprocess-gallery",
+    name: "The Car/Process",
+    to: "baja",
+    img: ASSETS.carprocess_gallery,
+    alt: "Terps Racing Car and Process Pics",
+    cardBg: "#ffd200", cardBorder: "#d9d9d9",
+    nameCls: "text-white", descCls: "text-white", btnBg: "bg-black text-white", imgBg: "#ffd200",
+  },
+];
+
+function Gallery() {
+  return (
+    <section className="py-[clamp(40px,6vw,80px)] relative overflow-hidden" id="teams" aria-labelledby="teams-title">
+      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
+        <div className="mb-10">
+          <Header text="Gallery" />
+        </div>
+
+        {/* 1 col mobile → 2 col tablet → 3 col desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {GALLERY.map((card) => (
+            <article key={card.id}
+              className="relative rounded-[14px] overflow-hidden h-[450px] shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+              aria-label={`${card.name} gallery`}
+            >
+              {/* Background image */}
+              <img
+                src={card.img}
+                alt={card.alt}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+
+              {/* Dark overlay */}
+              <div className="absolute inset-0 bg-black/40"></div>
+
+              {/* Content */}
+              <div className="relative z-10 flex flex-col items-center justify-center h-full p-6 text-center">
+                <h3
+                  className={`leading-[1.4] mb-4 ${card.nameCls}`}
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontWeight: 500,
+                    fontSize: "clamp(1.4rem, 3vw, 2.4rem)",
+                  }}
+                >
+                  {card.name}
+                </h3>
+
+                <Link
+                  to={card.to}
+                  className={`px-8 py-[10px] rounded-full text-[0.875rem] font-medium tracking-[0.01em] transition-opacity duration-200 hover:opacity-85 ${card.btnBg}`}
+                  style={{ fontFamily: "'Roboto', sans-serif" }}
+                >
+                  View Gallery
+                </Link>
+              </div>
+              {/* // className="rounded-[14px] overflow-hidden flex flex-col shadow-[0_8px_24px_rgba(0,0,0,0.45)] border-[1.5px]"
+              // style={{ background: card.cardBg, borderColor: card.cardBorder }}
+              // aria-label={`${card.name} team`}>
+              // <div className="w-full overflow-hidden relative" style={{ aspectRatio: "16/9", background: card.imgBg }}>
+              //   <img src={card.img} alt={card.alt} className="w-full h-full object-cover" />
+              // </div>
+              // <div className="p-5 pb-6 flex flex-col flex-1">
+              //   <h3 className={`leading-[1.4] mb-[10px] ${card.nameCls}`} style={{
+              //     fontFamily: "'Inter', sans-serif",
+              //     fontWeight: 500,
+              //     fontSize: "clamp(1.4rem, 3vw, 2.4rem)",
+              //   }}>
+              //     {card.name}
+              //   </h3>
+              //   <p className={`leading-[1.5] flex-1 mb-5 ${card.descCls}`} style={{
+              //     fontFamily: "'Inter', sans-serif",
+              //     fontWeight: 600,
+              //     fontSize: "clamp(0.78rem, 1.1vw, 0.88rem)",
+              //   }}>
+                 
+              //   </p>
+              //   <Link to={card.to}
+              //     className={`self-center px-8 py-[10px] rounded-full text-[0.875rem] font-medium tracking-[0.01em] transition-opacity duration-200 hover:opacity-85 ${card.btnBg}`}
+              //     style={{ fontFamily: "'Roboto', sans-serif" }}>
+              //       View Gallery
+              //   </Link>
+              // </div> */}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 
 // ── Sponsors ──────────────────────────────────────────────────────────────────
 interface Sponsor {
@@ -406,6 +531,7 @@ export default function IC() {
       <RaceSchedule />
       <StatsOverlay image={statsOverlayImage} />
       <SubteamsGrid />
+      <Gallery />
       <SponsorsSection />
     </div>
   );
