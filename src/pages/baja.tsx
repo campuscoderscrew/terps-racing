@@ -123,7 +123,7 @@ function HeroSection({ flip = false, imgStyle, children }: HeroSectionProps) {
 // ── What We Do ────────────────────────────────────────────────────────────────
 function WhatWeDo() {
   return (
-    <section>
+    <section className="py-[clamp(24px,5vw,48px)]">
       <HeroSection imgStyle={{
         backgroundImage: "url('https://racing.umd.edu/files/2026/03/anjali-background2.png')",
         backgroundSize: "200%",
@@ -154,7 +154,7 @@ function WhatWeDo() {
 // ── Dynamic Events ────────────────────────────────────────────────────────────
 function DynamicEvents() {
   return (
-    <section>
+    <section className="py-[clamp(24px,5vw,48px)]">
       <HeroSection flip imgStyle={{
         backgroundImage: "url('https://racing.umd.edu/files/2026/04/Untitled-design.png')",
         backgroundSize: "130%",
@@ -183,7 +183,7 @@ function DynamicEvents() {
 // ── Static Events ─────────────────────────────────────────────────────────────
 function StaticEvents() {
   return (
-    <section>
+    <section className="py-[clamp(24px,5vw,48px)]">
       <HeroSection imgStyle={{
         backgroundImage: "url('https://racing.umd.edu/files/2026/04/Untitled-design-4.png')",
         backgroundSize: "250%",
