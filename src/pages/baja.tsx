@@ -10,6 +10,10 @@ import BajaSponsorGMN      from "../public/images/Baja/sponsors/Bronze/GMN-Logo-
 import BajaSponsorASCo     from "../public/images/Baja/sponsors/Bronze/American-Stripping-Company-Logo.png"
 import BajaSponsorEandD    from "../public/images/Baja/sponsors/Bronze/e-and-d-auto-cropped.jpg"
 
+//Background accents
+import BrownFade from "../public/images/baja/brown-fade-in.png"
+import BrownBottomUp from "../public/images/baja/brown-fade-bottom-up.png"
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface AccordionItem { title: string; body: string; }
 interface EventItem { name: string; desc: string; }
@@ -99,24 +103,28 @@ interface HeroSectionProps {
 
 function HeroSection({ flip = false, imgStyle, children }: HeroSectionProps) {
   return (
-    <div className="flex flex-col md:grid min-h-[420px]"
-      style={{ gridTemplateColumns: flip ? "42% 58%" : "58% 42%" }}>
-      {/* Image */}
-      <div
-        className={`relative bg-cover bg-center bg-no-repeat min-h-[240px] md:min-h-[420px] ${flip ? "md:order-last" : ""}`}
-        style={imgStyle}
-      >
-        <div className="absolute inset-0" style={{
-          background: flip
-            ? "linear-gradient(to left, rgba(10,10,10,0) 55%, #0a0a0a 100%)"
-            : "linear-gradient(to right, rgba(10,10,10,0) 40%, #0a0a0a 95%)",
-        }} />
+    <section className="relative">
+      <div className="relative z-10 flex flex-col md:grid min-h-[420px]"
+        style={{ gridTemplateColumns: flip ? "42% 58%" : "58% 42%" }}>
+        
+        {/* Image */}
+        <div
+          className={`relative bg-cover bg-center bg-no-repeat min-h-[240px] md:min-h-[420px] ${flip ? "md:order-last" : ""}`}
+          style={imgStyle}
+        >
+          <div className="absolute inset-0" style={{
+            background: flip
+              ? "linear-gradient(to left, rgba(10,10,10,0) 55%)"
+              : "linear-gradient(to right, rgba(10,10,10,0) 40%)",
+          }} />
+        </div>
+        {/* Content */}
+        <div className="px-[clamp(16px,5vw,48px)] py-[clamp(24px,5vw,56px)] flex flex-col justify-center">
+          {children}
+        </div>
       </div>
-      {/* Content */}
-      <div className="px-[clamp(16px,5vw,48px)] py-[clamp(24px,5vw,56px)] flex flex-col justify-center">
-        {children}
-      </div>
-    </div>
+    </section>
+   
   );
 }
 
@@ -154,7 +162,15 @@ function WhatWeDo() {
 // ── Dynamic Events ────────────────────────────────────────────────────────────
 function DynamicEvents() {
   return (
-    <section className="py-[clamp(24px,5vw,48px)]">
+    <section className="relative py-[clamp(24px,5vw,48px)]">
+      {/*Background Accent*/}
+      <img
+          src={BrownFade}
+          alt="background"
+          className="absolute inset-0 z-0 w-full h-full object-cover "
+          style={{ filter: "brightness(0.7) saturate(1.4)" }}
+        />
+        
       <HeroSection flip imgStyle={{
         backgroundImage: "url('https://racing.umd.edu/files/2026/04/Untitled-design.png')",
         backgroundSize: "130%",
@@ -183,7 +199,14 @@ function DynamicEvents() {
 // ── Static Events ─────────────────────────────────────────────────────────────
 function StaticEvents() {
   return (
-    <section className="py-[clamp(24px,5vw,48px)]">
+    <section className="relative py-[clamp(24px,5vw,48px)]">
+      {/*Background Accent*/}
+      <img
+          src={BrownBottomUp}
+          alt="background"
+          className="absolute inset-0 z-0 w-full h-full object-cover "
+          style={{ filter: "brightness(0.7) saturate(1.4)" }}
+        />
       <HeroSection imgStyle={{
         backgroundImage: "url('https://racing.umd.edu/files/2026/04/Untitled-design-4.png')",
         backgroundSize: "250%",
