@@ -220,7 +220,7 @@ function SubteamsGrid() {
       {/* Mobile grid — simple 2 col */}
       <div className="grid md:hidden grid-cols-2 gap-2 w-full">
         {SUBTEAMS.map(({ name, image }) => (
-          <div key={name} className="relative overflow-hidden rounded-lg cursor-pointer group" style={{ height: "clamp(80px, 28vw, 160px)" }}>
+          <div key={name} className="relative overflow-hidden rounded-lg cursor-default group" style={{ height: "clamp(80px, 28vw, 160px)" }}>
             <img src={image} alt={name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300" />
             <div className="absolute inset-0 flex items-center justify-center">
@@ -246,7 +246,7 @@ function SubteamsGrid() {
 function SubteamCell({ name, image, area }: { name: string; image: string; area: string }) {
   return (
     <div
-      className="relative overflow-hidden rounded-lg cursor-pointer group"
+      className="relative overflow-hidden rounded-lg cursor-default group"
       style={{ gridArea: area }}
     >
       <img
