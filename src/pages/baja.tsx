@@ -13,6 +13,7 @@ import BajaSponsorEandD    from "../public/images/Baja/sponsors/Bronze/e-and-d-a
 //Background accents
 import BrownFade from "../public/images/baja/brown-fade-in.png"
 import BrownBottomUp from "../public/images/baja/brown-fade-bottom-up.png"
+import LightBrown from "../public/images/baja/light-brown-fade.png"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface AccordionItem { title: string; body: string; }
@@ -259,7 +260,14 @@ function Gallery() {
   };
 
   return (
-    <section className="bg-[#0a0a0a] mt-[clamp(30px,5vw,60px)]">
+    <section className="relative bg-[#0a0a0a] mt-[clamp(30px,5vw,60px)]">
+      {/*Background Accent*/}
+      <img
+          src={LightBrown}
+          alt="background"
+          className="absolute inset-0 z-0 w-full h-full object-cover "
+          style={{ filter: "brightness(0.7) saturate(1.4)" }}
+        />
       <div className="relative overflow-hidden">
         <button onClick={() => move(-1)}
           className="absolute left-[14px] top-1/2 -translate-y-1/2 z-[2] bg-black/70 border border-white/20 text-white text-[1.8rem] w-12 h-12 rounded-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#e31933] hover:border-[#e31933]">
@@ -287,7 +295,14 @@ function Gallery() {
 // ── Video ─────────────────────────────────────────────────────────────────────
 function Video() {
   return (
-    <section className="bg-[#0a0a0a] px-[clamp(16px,8vw,8%)] py-[clamp(24px,5vw,48px)]">
+    <section className="relative bg-[#0a0a0a] px-[clamp(16px,8vw,8%)] py-[clamp(24px,5vw,48px)]">
+      {/*Background Accent*/}
+      <img
+          src={LightBrown}
+          alt="background"
+          className="absolute inset-0 z-0 w-full h-full object-cover "
+          style={{ filter: "brightness(0.7) saturate(1.4)" }}
+        />
       <div className="relative pb-[56.25%] h-0">
         <iframe
           className="absolute inset-0 w-full h-full border-none rounded"
