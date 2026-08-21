@@ -389,7 +389,6 @@ interface SponsorTierData {
   label: string;
   labelColor: string;
   amount: string;
-  amountColor: string;
   sponsors: Sponsor[];
   desktopCols: number;
 }
@@ -397,9 +396,8 @@ interface SponsorTierData {
 const SPONSOR_TIERS: SponsorTierData[] = [
   {
     label: "Title",
-    labelColor: "#57E8FF",
+    labelColor: "#e8a010",
     amount: "$10,000+",
-    amountColor: "#C30000",
     desktopCols: 2,
     sponsors: [
       {name: "About:Energy", logo: SponsorAboutEnergy, href: "https://www.aboutenergy.io/"},
@@ -412,7 +410,6 @@ const SPONSOR_TIERS: SponsorTierData[] = [
     label: "Platinum",
     labelColor: "#E5E4E2",
     amount: "$5,000 - $10,000",
-    amountColor: "#C30000",
     desktopCols: 3,
     sponsors: [
       {name: "Cardinal Scientific", logo: SponsorCardinal, href: "https://cardinalscientific.com/"},
@@ -424,7 +421,6 @@ const SPONSOR_TIERS: SponsorTierData[] = [
     label: "Gold",
     labelColor: "#FFD700",
     amount: "$2,500 - $5,000",
-    amountColor: "#C30000",
     desktopCols: 3,
     sponsors: [
       {name: "Gene Haas Foundation", logo: SponsorGeneHaas, href: "Unkown site"},
@@ -439,7 +435,6 @@ const SPONSOR_TIERS: SponsorTierData[] = [
     label: "Silver",
     labelColor: "#c0c0c0",
     amount: "$1,000 - $2,500",
-    amountColor: "#C30000",
     desktopCols: 3,
     sponsors: [
       {name: "Eastern Plating Company", logo: SponsorEastPlating, href: "https://easternplatingcompany.com/"},
@@ -452,8 +447,7 @@ const SPONSOR_TIERS: SponsorTierData[] = [
   {
     label: "Bronze",
     labelColor: "#CD7F32",
-    amount: "500 - $1,000",
-    amountColor: "#C30000",
+    amount: "$500 - $1,000",
     desktopCols: 2,
     sponsors: [
       {name: "Bender", logo: SponsorBender, href: "https://www.benderinc.com/"},
@@ -464,50 +458,92 @@ const SPONSOR_TIERS: SponsorTierData[] = [
   },
 ];
 
-function SponsorLogoCell({ sponsor } : {sponsor : Sponsor}) {
+// Top tiers get a wider minimum so their logos read larger — this preserves the
+// hierarchy the fixed column counts used to encode, while still reflowing down
+// to one column on a phone.
+const tierMinCellWidth = (desktopCols: number) => (desktopCols <= 2 ? "300px" : "240px");
+
+const CELL_IDLE = {
+  background: "rgba(255,255,255,0.92)",
+  borderColor: "rgba(232,160,16,0.22)",
+  boxShadow: "none",
+  transform: "translateY(0)",
+};
+
+const CELL_HOVER = {
+  background: "#ffffff",
+  borderColor: "#e8a010",
+  boxShadow: "0 0 24px rgba(232,160,16,0.28)",
+  transform: "translateY(-2px)",
+};
+
+function SponsorLogoCell({ sponsor }: { sponsor: Sponsor }) {
+  const applyState = (el: HTMLAnchorElement, state: typeof CELL_IDLE) => {
+    el.style.background = state.background;
+    el.style.borderColor = state.borderColor;
+    el.style.boxShadow = state.boxShadow;
+    el.style.transform = state.transform;
+  };
+
   return (
     <a
-    href = {sponsor.href}
-    target = "_blank"
-    rel = "noopener noreferrer"
-    className = "flex items-center justify-center bg-white p-4 min-h-[80px] md:min-h-[100px] transition-all duration-200 hover:brightness-90 hover:scale-[1.03]"
+      href={sponsor.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center justify-center px-5 py-4 min-h-[92px] md:min-h-[112px]"
+      style={{
+        background: CELL_IDLE.background,
+        border: `1px solid ${CELL_IDLE.borderColor}`,
+        transition: "background 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.25s",
+      }}
+      onMouseEnter={(e) => applyState(e.currentTarget, CELL_HOVER)}
+      onMouseLeave={(e) => applyState(e.currentTarget, CELL_IDLE)}
     >
       <img
-      src = {sponsor.logo}
-      alt = {sponsor.name}
-      className = {`${sponsor.logoSize ?? "max-h-16"} w-full object-contain`}
-      loading = "lazy"
+        src={sponsor.logo}
+        alt={sponsor.name}
+        className={`${sponsor.logoSize ?? "max-h-16"} w-full object-contain`}
+        loading="lazy"
       />
     </a>
   );
 }
 
-function SponsorTierSection({ tier } : {tier : SponsorTierData}) {
+function SponsorTierSection({ tier, delay, visible }: { tier: SponsorTierData; delay: number; visible: boolean }) {
   return (
-    <div className = "w-full max-w-4xl mx-auto">
-      <div
-        className = "text-center mb-3"
-        style = {{
-          fontFamily: "'Barlow Condensed', sans-serif",
-          fontWeight: 900,
-          fontStyle: "italic",
-          fontSize: "clamp(1rem, 2.5vw, 1.6rem)",
-        }}
-      >
-        <span style = {{color: tier.labelColor}}> {tier.label}: </span> 
-        <span style = {{color: tier.amountColor}}> {tier.amount}: </span>
+    <div
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(20px)",
+        transition: `opacity 0.8s ease ${delay}s, transform 0.8s ease ${delay}s`,
+      }}
+    >
+      {/* Tier header — label, hairline rule, amount */}
+      <div className="flex items-center gap-4 mb-4">
+        <span
+          className="text-xs font-bold uppercase whitespace-nowrap"
+          style={{ color: tier.labelColor, fontFamily: "'Courier New', monospace", letterSpacing: "0.22em" }}
+        >
+          {tier.label}
+        </span>
+        <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(232,160,16,0.45), transparent)" }} />
+        <span
+          className="text-xs whitespace-nowrap"
+          style={{ color: "rgba(200,200,200,0.6)", fontFamily: "'Courier New', monospace", letterSpacing: "0.1em" }}
+        >
+          {tier.amount}
+        </span>
       </div>
+
       <div
-        className = "border border-white overflow-hidden"
-        style = {{
+        style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${tier.desktopCols}, 1fr)`,
-          gap: "1px",
-          backgroundColor: "white",
+          gridTemplateColumns: `repeat(auto-fit, minmax(${tierMinCellWidth(tier.desktopCols)}, 1fr))`,
+          gap: "12px",
         }}
       >
         {tier.sponsors.map((sponsor) => (
-          <SponsorLogoCell key = {sponsor.name} sponsor = {sponsor} />
+          <SponsorLogoCell key={sponsor.name} sponsor={sponsor} />
         ))}
       </div>
     </div>
@@ -515,26 +551,68 @@ function SponsorTierSection({ tier } : {tier : SponsorTierData}) {
 }
 
 function SponsorsSection() {
-  return(
-    <div className = "bg-black px-[clamp(20px, 5vw, 80px)] py-12">
-      <h2
-        className = "text-white mb-10"
-        style = {{
-          fontFamily: "'Barlow Condensed', sans-serif",
-          fontWeight: 900,
-          fontStyle: "italic",
-          fontSize: "clamp(1.8rem, 5vw, 3rem)",
-          letterSpacing: "-0.02em",
+  const [visible, setVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setVisible(true); }, { threshold: 0.1 });
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="relative w-full bg-black overflow-hidden">
+      {/* Grid overlay — same motif as the hero */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          opacity: 0.12,
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
         }}
-      >
-        Our Sponsors
-      </h2>
-      <div className = "flex flex-col gap-10">
-        {SPONSOR_TIERS.map((tier) => (
-          <SponsorTierSection key = {tier.label} tier = {tier} />
-        ))}
+      />
+
+      {/* Blend down out of the section above */}
+      <div
+        className="absolute inset-x-0 top-0 h-48 z-0"
+        style={{ background: "linear-gradient(180deg, #000 0%, transparent 100%)" }}
+      />
+
+      {/* Top-left label */}
+      <div className="absolute top-8 left-6 sm:left-8 z-20">
+        <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "#e8a010", fontFamily: "'Courier New', monospace", letterSpacing: "0.25em" }}>
+          TREV Partners
+        </span>
       </div>
-    </div>
+
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-10 md:px-16 pt-24 pb-20 md:pb-28">
+        {/* Heading */}
+        <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
+          <h2
+            className="font-black leading-tight mb-6"
+            style={{ color: "#e8a010", fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", letterSpacing: "-0.01em" }}
+          >
+            Our Sponsors
+          </h2>
+        </div>
+
+        {/* Divider */}
+        <div className="mb-10 md:mb-14" style={{ opacity: visible ? 1 : 0, transform: visible ? "scaleX(1)" : "scaleX(0)", transformOrigin: "left", transition: "opacity 0.8s ease 0.25s, transform 0.8s ease 0.25s" }}>
+          <div className="h-px w-32" style={{ background: "linear-gradient(90deg, #e8a010, transparent)" }} />
+        </div>
+
+        <div className="flex flex-col gap-10 md:gap-14">
+          {SPONSOR_TIERS.map((tier, i) => (
+            <SponsorTierSection key={tier.label} tier={tier} delay={0.35 + i * 0.1} visible={visible} />
+          ))}
+        </div>
+      </div>
+
+      {/* Corner accents — bookends the hero's top-left marks */}
+      <div className="absolute bottom-0 right-0 z-20 w-20 h-1 bg-red-600" />
+      <div className="absolute bottom-0 right-0 z-20 w-1 h-20 bg-red-600" />
+    </section>
   );
 }
 
