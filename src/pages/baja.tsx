@@ -14,9 +14,13 @@ import BajaSponsorEandD    from "../public/images/Baja/sponsors/Bronze/e-and-d-a
 import BrownFade from "../public/images/baja/brown-fade-in.png"
 import BrownBottomUp from "../public/images/baja/brown-fade-bottom-up.png"
 import LightBrown from "../public/images/baja/light-brown-fade.png"
+import LightBrownRight from "../public/images/baja/light-brown-right-fade.png"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-interface AccordionItem { title: string; body: string; }
+type AccordionBlock =
+  | { type: "p"; text: string }
+  | { type: "ul"; items: string[] };
+interface AccordionItem { title: string; body: AccordionBlock[]; }
 interface EventItem { name: string; desc: string; }
 interface StaticCard { img: string; alt: string; title: string; desc: string; }
 
@@ -24,11 +28,18 @@ interface StaticCard { img: string; alt: string; title: string; desc: string; }
 const ACCORDION_ITEMS: AccordionItem[] = [
   {
     title: "Design Process",
-    body: "The design process goes through three stages of review before the final design is chosen: the Preliminary Review, the Critical Review, and the Final Review. The team also modifies older cars to test new designs on prior years' vehicles. Following the final review, the team moves into the build phase, continually innovating and redesigning even the smallest components.",
+    body: [
+      { type: "p", text: "The design process goes through three stages of review before the final design is chosen:" },
+      { type: "ul", items: ["Preliminary Review", "Critical Review", "Final Review"] },
+      { type: "p", text: "The team also modifies older cars to test new designs on prior years' vehicles. Following the final review, the team moves into the build phase, continually innovating and redesigning even the smallest components." },
+    ],
   },
   {
     title: "Competition Challenge",
-    body: "The competition requires students to balance design and cost with dynamic performance while following strict safety guidelines and standardized rules. The team balances hard work with a passion for their car and believes that passion makes a significant difference in the competition.",
+    body: [
+      { type: "p", text: "The competition requires students to balance design and cost with dynamic performance while following strict safety guidelines and standardized rules." },
+      { type: "p", text: "The team balances hard work with a passion for their car and believes that passion makes a significant difference in the competition." },
+    ],
   },
 ];
 
@@ -76,7 +87,20 @@ function Accordion({ items }: { items: AccordionItem[] }) {
               className="overflow-hidden transition-all duration-[350ms] ease-in-out text-[clamp(0.82rem,1.4vw,0.9rem)] text-[#aaaaaa]"
               style={{ height: isOpen ? "auto" : 0, paddingBottom: isOpen ? 14 : 0 }}
             >
-              {item.body}
+              {item.body.map((block, bi) => {
+                const spacing = bi < item.body.length - 1 ? "mb-2" : undefined;
+                return block.type === "ul" ? (
+                  <ul key={bi} className={`list-disc pl-5 ${spacing ?? ""}`}>
+                    {block.items.map((li, li_i) => (
+                      <li key={li_i}>{li}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p key={bi} className={spacing}>
+                    {block.text}
+                  </p>
+                );
+              })}
             </div>
           </div>
         );
@@ -132,7 +156,14 @@ function HeroSection({ flip = false, imgStyle, children }: HeroSectionProps) {
 // ── What We Do ────────────────────────────────────────────────────────────────
 function WhatWeDo() {
   return (
-    <section className="py-[clamp(24px,5vw,48px)]">
+    <section className="relative py-[clamp(24px,5vw,48px)]">
+      {/*Background Accent*/}
+      <img
+          src={LightBrownRight}
+          alt="background"
+          className="absolute inset-0 z-0 w-full h-full object-cover "
+          style={{ filter: "brightness(0.7) saturate(1.4)" }}
+        />
       <HeroSection imgStyle={{
         backgroundImage: "url('https://racing.umd.edu/files/2026/03/anjali-background2.png')",
         backgroundSize: "200%",
