@@ -148,7 +148,7 @@ const HIGHLIGHTS_GALLERY = [
 //Header
 function Title() {
     return (
-        <div className ="px-24 pt-24 pb-0">
+        <div className ="px-[clamp(20px,5vw,80px)] pt-24 pb-0">
             <h2 style = {{
                 fontFamily: "'Barlow Condensed', sans-serif",
                 fontWeight: 550,
@@ -277,7 +277,7 @@ function GalleryOpt() {
 
     return (
         <div>
-            <div className="flex flex-wrap p-24 pt-10 gap-6">
+            <div className="flex flex-wrap px-[clamp(20px,5vw,80px)] pb-24 pt-10 gap-6">
             {/*Create Type Sections and Image for them*/}
             {GALLERY_TYPES.map((type) => (
                 <div key={type.name} className="w-52 h-64 shrink-0 relative bg-neutral-800 rounded-2xl shadow-xl flex items-center justify-center"
@@ -313,7 +313,7 @@ function GalleryOpt() {
 
             {/*Show Gallery Sections*/}
             {openGallery && (
-                <div className = "px-24 pb-24 max-w-10xl mx-auto">
+                <div className = "px-[clamp(20px,5vw,80px)] pb-24 max-w-10xl mx-auto">
                     <h2 style={{
                         fontFamily: "'Barlow Condensed', sans-serif",
                         fontWeight: 600,

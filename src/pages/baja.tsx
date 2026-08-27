@@ -134,17 +134,18 @@ function HeroSection({ flip = false, imgStyle, children }: HeroSectionProps) {
         
         {/* Image */}
         <div
-          className={`relative bg-cover bg-center bg-no-repeat min-h-[240px] md:min-h-[420px] ${flip ? "md:order-last" : ""}`}
-          style={imgStyle}
+          className={`relative flex min-h-[240px] md:min-h-[420px] px-[clamp(20px,5vw,80px)] ${flip ? "md:order-last md:pl-0" : "md:pr-0"}`}
         >
-          <div className="absolute inset-0" style={{
-            background: flip
-              ? "linear-gradient(to left, rgba(10,10,10,0) 55%)"
-              : "linear-gradient(to right, rgba(10,10,10,0) 40%)",
-          }} />
+          <div className="relative flex-1 bg-cover bg-center bg-no-repeat" style={imgStyle}>
+            <div className="absolute inset-0" style={{
+              background: flip
+                ? "linear-gradient(to left, rgba(10,10,10,0) 55%)"
+                : "linear-gradient(to right, rgba(10,10,10,0) 40%)",
+            }} />
+          </div>
         </div>
         {/* Content */}
-        <div className="px-[clamp(16px,5vw,48px)] py-[clamp(24px,5vw,56px)] flex flex-col justify-center">
+        <div className="px-[clamp(20px,5vw,80px)] py-[clamp(24px,5vw,56px)] flex flex-col justify-center">
           {children}
         </div>
       </div>
@@ -299,25 +300,27 @@ function Gallery() {
           className="absolute inset-0 z-0 w-full h-full object-cover "
           style={{ filter: "brightness(0.7) saturate(1.4)" }}
         />
-      <div className="relative overflow-hidden">
-        <button onClick={() => move(-1)}
-          className="absolute left-[14px] top-1/2 -translate-y-1/2 z-[2] bg-black/70 border border-white/20 text-white text-[1.8rem] w-12 h-12 rounded-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#e31933] hover:border-[#e31933]">
-          ‹
-        </button>
-        <div className="flex transition-transform duration-[450ms]"
-          style={{ transform: `translateX(-${pos * (100 / perView)}%)` }}>
-          {GALLERY_IMGS.map(({ src, alt }) => (
-            <div key={src} className="flex-none overflow-hidden"
-              style={{ flex: `0 0 ${100 / perView}%`, aspectRatio: "16/9" }}>
-              <img src={src} alt={alt}
-                className="w-full h-full object-cover block transition-transform duration-[400ms] hover:scale-[1.04]" />
-            </div>
-          ))}
+      <div className="relative px-[clamp(20px,5vw,80px)]">
+        <div className="relative overflow-hidden">
+          <button onClick={() => move(-1)}
+            className="absolute left-[14px] top-1/2 -translate-y-1/2 z-[2] bg-black/70 border border-white/20 text-white text-[1.8rem] w-12 h-12 rounded-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#e31933] hover:border-[#e31933]">
+            ‹
+          </button>
+          <div className="flex transition-transform duration-[450ms]"
+            style={{ transform: `translateX(-${pos * (100 / perView)}%)` }}>
+            {GALLERY_IMGS.map(({ src, alt }) => (
+              <div key={src} className="flex-none overflow-hidden"
+                style={{ flex: `0 0 ${100 / perView}%`, aspectRatio: "16/9" }}>
+                <img src={src} alt={alt}
+                  className="w-full h-full object-cover block transition-transform duration-[400ms] hover:scale-[1.04]" />
+              </div>
+            ))}
+          </div>
+          <button onClick={() => move(1)}
+            className="absolute right-[14px] top-1/2 -translate-y-1/2 z-[2] bg-black/70 border border-white/20 text-white text-[1.8rem] w-12 h-12 rounded-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#e31933] hover:border-[#e31933]">
+            ›
+          </button>
         </div>
-        <button onClick={() => move(1)}
-          className="absolute right-[14px] top-1/2 -translate-y-1/2 z-[2] bg-black/70 border border-white/20 text-white text-[1.8rem] w-12 h-12 rounded-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#e31933] hover:border-[#e31933]">
-          ›
-        </button>
       </div>
     </section>
   );
@@ -326,7 +329,7 @@ function Gallery() {
 // ── Video ─────────────────────────────────────────────────────────────────────
 function Video() {
   return (
-    <section className="relative bg-[#0a0a0a] px-[clamp(16px,8vw,8%)] py-[clamp(24px,5vw,48px)]">
+    <section className="relative bg-[#0a0a0a] px-[clamp(20px,5vw,80px)] py-[clamp(24px,5vw,48px)]">
       {/*Background Accent*/}
       <img
           src={LightBrown}
@@ -476,7 +479,8 @@ function BajaSponsorsSection() {
           fontStyle: "italic",
           fontSize: "clamp(1.8rem, 5vw, 3rem)",
           letterSpacing: "-0.02em",
-          color: "#e31933",
+          /*Used to be #e31933*/
+          color: "#e31933", 
         }}
       >
         Our Sponsors

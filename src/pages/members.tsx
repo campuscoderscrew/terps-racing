@@ -17,7 +17,7 @@ function Hero() {
   return (
     <section
       id="about"
-      className="relative w-full flex items-center justify-center p-[3rem_4%]"
+      className="relative w-full flex items-center justify-center py-[3rem] px-[clamp(20px,5vw,80px)]"
       style={{
         minHeight: "calc(100dvh - 3.5rem)",
         background:
@@ -56,7 +56,7 @@ const REQ_CARDS: ReqCard[] = [
 function Requirements() {
   return (
     <section
-      className="px-8 pt-14 pb-12"
+      className="px-[clamp(20px,5vw,80px)] pt-14 pb-12"
       style={{
         background:
           `linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('${rqbgImg}') center 60% / cover no-repeat #111`,
@@ -139,7 +139,7 @@ function Commitment() {
 
   return (
     <section
-      className="relative px-10 py-16"
+      className="relative px-[clamp(20px,5vw,80px)] py-16"
       style={{
         background: "url('../public/newMembers/sparks.jpg') center / cover no-repeat #111",
       }}
@@ -165,7 +165,7 @@ function Commitment() {
             fontSize: "clamp(1.2rem, 2.2vw, 2.5rem)",
           }}
         >
-          What to expect
+          What to Expect
         </h2>
         <ul className="flex flex-col gap-4 list-none">
           {bullets.map((item) => (
@@ -215,7 +215,7 @@ const TEAMS: TeamEntry[] = [
 
 function Teams() {
   return (
-    <section className="bg-black px-10 py-16">
+    <section className="bg-black px-[clamp(20px,5vw,80px)] py-16">
       <p
         className="uppercase tracking-[0.06em] text-[#C30000]"
         style={{
@@ -283,7 +283,7 @@ function Teams() {
 // ── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <section id="join" className="bg-black px-8 pt-16 pb-14 text-center">
+    <section id="join" className="bg-black px-[clamp(20px,5vw,80px)] pt-16 pb-14 text-center">
       <h2
         className="text-white leading-[1.2]"
         style={{
