@@ -3,6 +3,7 @@ const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Barlow+Cond
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import NavBar from "~/components/navbar";
+import { themeVars } from "~/theme";
 
 import heroImg    from "../public/images/newMembers/heroTRNM2400.jpeg";
 import sparksImg  from "../public/images/newMembers/sparks.jpg";
@@ -12,12 +13,12 @@ import collabImg  from "../public/images/newMembers/collab.jpg";
 import rqbgImg    from "../public/images/newMembers/rqbg.jpg";
 import driveImg   from "../public/images/newMembers/drive.jpg";
 
-// Maryland red/gold — this is a house page, so it keeps the school palette
-// rather than borrowing EV's amber. What it borrows from EV is the structure:
-// layered background accents, monospace eyebrow labels, gradient rules and
-// scroll-triggered reveals.
-const RED  = "#C30000";
-const GOLD = "#FFD200";
+// Maryland gold/red, resolved from the page theme (src/theme.ts) rather than
+// hardcoded — this is a house page, so it keeps the school palette rather than
+// borrowing EV's amber. What it borrows from EV is the structure: layered
+// background accents, monospace eyebrow labels, gradient rules, scroll reveals.
+const GOLD = "var(--accent)";
+const RED  = "var(--accent-alt)";
 
 const FONT_DISPLAY = "'Barlow Condensed', sans-serif";
 const FONT_BODY    = "'Roboto Condensed', sans-serif";
@@ -596,7 +597,7 @@ export default function Members() {
   return (
     <>
       <style>{FONTS}</style>
-      <div className="bg-black text-white overflow-x-hidden">
+      <div className="bg-black text-white overflow-x-hidden" style={themeVars("members")}>
         <NavBar />
         <Hero />
         <Requirements />
