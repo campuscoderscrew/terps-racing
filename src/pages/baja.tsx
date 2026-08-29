@@ -293,13 +293,6 @@ function Gallery() {
 
   return (
     <section className="relative bg-[#0a0a0a] mt-[clamp(30px,5vw,60px)]">
-      {/*Background Accent*/}
-      <img
-          src={LightBrown}
-          alt="background"
-          className="absolute inset-0 z-0 w-full h-full object-cover "
-          style={{ filter: "brightness(0.7) saturate(1.4)" }}
-        />
       <div className="relative px-[clamp(20px,5vw,80px)]">
         <div className="relative overflow-hidden">
           <button onClick={() => move(-1)}

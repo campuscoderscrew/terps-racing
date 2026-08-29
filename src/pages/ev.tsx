@@ -516,7 +516,7 @@ function SponsorTierSection({ tier } : {tier : SponsorTierData}) {
 
 function SponsorsSection() {
   return(
-    <div className = "bg-black px-[clamp(20px, 5vw, 80px)] py-12">
+    <div className = "bg-black px-[clamp(20px,5vw,80px)] py-12">
       <h2
         className = "text-white mb-10"
         style = {{

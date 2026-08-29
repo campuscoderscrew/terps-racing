@@ -47,7 +47,7 @@ interface ReqCard {
   desc:  string;
 }
 const REQ_CARDS: ReqCard[] = [
-  { label: "Hands on drive",       img: sparksImg,  alt: "Welding sparks",          desc: "Eager to build, test, and solve real engineering problems." },
+  { label: "Hands on Drive",       img: sparksImg,  alt: "Welding sparks",          desc: "Eager to build, test, and solve real engineering problems." },
   { label: "Team Player",          img: outsideImg, alt: "Team working together",    desc: "We collaborate across disciplines and depend on each other." },
   { label: "Willingness to Learn", img: weldImg,    alt: "Student learning in shop", desc: "We'll teach CAD, machining, and engineering — bring curiosity." },
   { label: "Any Major is Welcome", img: collabImg,  alt: "Students at computers",    desc: "Engineering, computer science, business, design — every skill has a place here." },
@@ -80,7 +80,7 @@ function Requirements() {
           fontSize: "clamp(1.2rem, 2.2vw, 2.5rem)",
         }}
       >
-        What we're looking for
+        What We're Looking For
       </h1>
       <p
         className="text-[#FFD200] mb-12"
@@ -234,7 +234,7 @@ function Teams() {
           fontSize: "clamp(1.2rem, 2.2vw, 2.5rem)",
         }}
       >
-        Which team is right for you?
+        Which Team is Right for You?
       </h2>
 
       {TEAMS.map(({ name, desc, meeting }) => (
