@@ -293,7 +293,7 @@ function Footer() {
         }}
       >
         Ready to Join?<br />
-        Just show up to a meeting and start your engine!
+        Just Show up to a Meeting and Start your Engine!
       </h2>
     </section>
   );
