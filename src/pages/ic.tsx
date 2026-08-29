@@ -164,71 +164,172 @@ function StatsOverlay({ image }: { image: string }) {
 }
 
 // ── Subteams Grid ─────────────────────────────────────────────────────────────
+import { useState } from "react";
+
 const SUBTEAMS = [
-  { name: "Chassis",          image: Chasis,          area: "chassis" },
-  { name: "Powertrain",       image: Powertrain,      area: "powertrain" },
-  { name: "Manufacturing",    image: Manufacturing,   area: "manufacturing" },
-  { name: "Electronics",      image: Electronics,     area: "electronics" },
-  { name: "Testing",          image: Testing,         area: "testing" },
-  { name: "ECS",              image: ECS,             area: "ecs" },
-  { name: "Business",         image: Business,        area: "business" },
-  { name: "Aerodynamics",     image: Aerodynamics,    area: "aerodynamics" },
-  { name: "Vehicle Dynamics", image: VehicleDynamics, area: "dynamics" },
+  {
+    name: "Chassis",
+    image: Chasis,
+    area: "chassis",
+    description:
+      "(chassis info here)",
+  },
+  {
+    name: "Powertrain",
+    image: Powertrain,
+    area: "powertrain",
+    description:
+      "(powertrain info here)",
+  },
+  {
+    name: "Manufacturing",
+    image: Manufacturing,
+    area: "manufacturing",
+    description:
+      "(manufacturing info here)",
+  },
+  {
+    name: "Electronics",
+    image: Electronics,
+    area: "electronics",
+    description:
+      "(electronics info here)",
+  },
+  {
+    name: "Testing",
+    image: Testing,
+    area: "testing",
+    description:
+      "(testing info here)",
+  },
+  {
+    name: "ECS",
+    image: ECS,
+    area: "ecs",
+    description:
+      "(ecs info here)",
+  },
+  {
+    name: "Business",
+    image: Business,
+    area: "business",
+    description:
+      "(business info here)",
+  },
+  {
+    name: "Aerodynamics",
+    image: Aerodynamics,
+    area: "aerodynamics",
+    description:
+      "(aerodynamics info here)",
+  },
+  {
+    name: "Vehicle Dynamics",
+    image: VehicleDynamics,
+    area: "dynamics",
+    description:
+      "(vehicle dynamics info here)",
+  },
 ];
 
 function SubteamsGrid() {
+  const [selectedTeam, setSelectedTeam] = useState<
+    (typeof SUBTEAMS)[number] | null
+  >(null);
+
   return (
-    <div className="bg-black w-full pt-10 px-[clamp(20px,5vw,80px)] pb-10">
-      <Header text="Our Divisions" />
+    <>
+      <div className="bg-black w-full pt-10 px-[clamp(20px,5vw,80px)] pb-10">
+        <Header text="Our Divisions" />
 
-      {/* Desktop grid */}
-      <div
-        className="hidden md:grid gap-2 w-full"
-        style={{
-          gridTemplateAreas: `
-            "chassis    powertrain    powertrain    manufacturing    manufacturing    electronics"
-            "chassis    testing       testing       testing          testing          electronics"
-            "business   testing       testing       testing          testing          ecs"
-            "business   aerodynamics  aerodynamics  dynamics         dynamics         dynamics"
-          `,
-          gridTemplateColumns: "repeat(6, 1fr)",
-          gridTemplateRows: "repeat(4, clamp(70px, 12vw, 160px))",
-        }}
-      >
-        {SUBTEAMS.map(({ name, image, area }) => (
-          <SubteamCell key={name} name={name} image={image} area={area} />
-        ))}
-      </div>
+        {/* Desktop grid */}
+        <div
+          className="hidden md:grid gap-2 w-full"
+          style={{
+            gridTemplateAreas: `
+              "chassis    powertrain    powertrain    manufacturing    manufacturing    electronics"
+              "chassis    testing       testing       testing          testing          electronics"
+              "business   testing       testing       testing          testing          ecs"
+              "business   aerodynamics  aerodynamics  dynamics         dynamics         dynamics"
+            `,
+            gridTemplateColumns: "repeat(6, 1fr)",
+            gridTemplateRows: "repeat(4, clamp(70px, 12vw, 160px))",
+          }}
+        >
+          {SUBTEAMS.map((team) => (
+            <SubteamCell
+              key={team.name}
+              {...team}
+              onClick={() => setSelectedTeam(team)}
+            />
+          ))}
+        </div>
 
-      {/* Mobile grid — simple 2 col */}
-      <div className="grid md:hidden grid-cols-2 gap-2 w-full">
-        {SUBTEAMS.map(({ name, image }) => (
-          <div key={name} className="relative overflow-hidden rounded-lg cursor-pointer group" style={{ height: "clamp(80px, 28vw, 160px)" }}>
-            <img src={image} alt={name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
-            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span style={{
-                fontFamily: "'Barlow Condensed', sans-serif",
-                fontWeight: 900,
-                fontStyle: "italic",
-                fontSize: "clamp(0.9rem, 4vw, 1.4rem)",
-                color: "white",
-                textShadow: "2px 2px 8px rgba(0,0,0,0.9)",
-                letterSpacing: "-0.02em",
-              }}>
-                {name}
-              </span>
+        {/* Mobile grid */}
+        <div className="grid md:hidden grid-cols-2 gap-2 w-full">
+          {SUBTEAMS.map((team) => (
+            <div
+              key={team.name}
+              onClick={() => setSelectedTeam(team)}
+              className="relative overflow-hidden rounded-lg cursor-pointer group"
+              style={{
+                height: "clamp(80px, 28vw, 160px)",
+              }}
+            >
+              <img
+                src={team.image}
+                alt={team.name}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+
+              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300" />
+
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span
+                  style={{
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontWeight: 900,
+                    fontStyle: "italic",
+                    fontSize: "clamp(0.9rem, 4vw, 1.4rem)",
+                    color: "white",
+                    textShadow: "2px 2px 8px rgba(0,0,0,0.9)",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  {team.name}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+
+      {/*popup*/}
+      {selectedTeam && (
+        <DivisionPopup
+          team={selectedTeam}
+          onClose={() => setSelectedTeam(null)}
+        />
+      )}
+    </>
   );
 }
 
-function SubteamCell({ name, image, area }: { name: string; image: string; area: string }) {
+function SubteamCell({
+  name,
+  image,
+  area,
+  onClick,
+}: {
+  name: string;
+  image: string;
+  area: string;
+  onClick: () => void;
+}) {
   return (
     <div
+      onClick={onClick}
       className="relative overflow-hidden rounded-lg cursor-pointer group"
       style={{ gridArea: area }}
     >
@@ -238,23 +339,93 @@ function SubteamCell({ name, image, area }: { name: string; image: string; area:
         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         loading="lazy"
       />
+
       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300" />
+
       <div className="absolute inset-0 flex items-center justify-center">
-        <span style={{
-          fontFamily: "'Barlow Condensed', sans-serif",
-          fontWeight: 900,
-          fontStyle: "italic",
-          fontSize: "clamp(0.9rem, 2.5vw, 2rem)",
-          color: "white",
-          textShadow: "2px 2px 8px rgba(0,0,0,0.9)",
-          letterSpacing: "-0.02em",
-        }}>
+        <span
+          style={{
+            fontFamily: "'Barlow Condensed', sans-serif",
+            fontWeight: 900,
+            fontStyle: "italic",
+            fontSize: "clamp(0.9rem, 2.5vw, 2rem)",
+            color: "white",
+            textShadow: "2px 2px 8px rgba(0,0,0,0.9)",
+            letterSpacing: "-0.02em",
+          }}
+        >
           {name}
         </span>
       </div>
     </div>
   );
 }
+
+function DivisionPopup({
+  team,
+  onClose,
+}: {
+  team: (typeof SUBTEAMS)[number];
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      {/*bg*/}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+
+      {/*popup*/}
+      <div
+        className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-zinc-950 border border-white/10 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/*image*/}
+        <div className="relative h-48 sm:h-64">
+          <img
+            src={team.image}
+            alt={team.name}
+            className="w-full h-full object-cover"
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-black/30 to-transparent" />
+
+          {/*popup exit button*/}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white text-2xl hover:bg-black/80 transition-colors"
+            aria-label="Close popup"
+          >
+            ×
+          </button>
+
+          {/*popup title*/}
+          <div className="absolute bottom-5 left-6">
+            <h2
+              className="text-4xl sm:text-5xl text-white"
+              style={{
+                fontFamily: "'Barlow Condensed', sans-serif",
+                fontWeight: 900,
+                fontStyle: "italic",
+              }}
+            >
+              {team.name}
+            </h2>
+          </div>
+        </div>
+
+        {/*popup content*/}
+        <div className="p-6 sm:p-8">
+          <p className="text-zinc-300 text-base sm:text-lg leading-relaxed">
+            {team.description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // -- GALLERY TEAMS CARDS -------------------
 import team_pic from "../public/images/IC/team_pic.jpg"
 import car_highlights from "../public/images/IC/car_scenic_zoomedin.jpg"
