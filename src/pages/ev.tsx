@@ -5,6 +5,34 @@ import middle_background from "../public/images/EV/ev_middle_background.png"
 import ev_compete_background from "../public/images/EV/bottom_background.png"
 import NavBar from "~/components/navbar";
 
+// ── Sponsor Imports ───────────────────────────────────────────────────────────
+import SponsorAboutEnergy from "../public/images/EV/sponsors/Title/about_energy.png"
+import SponsorAltium from "../public/images/EV/sponsors/Title/altium.png"
+import SponsorFJB from "../public/images/EV/sponsors/Title/fjb.png"
+import SponsorUMDECE from "../public/images/EV/sponsors/Title/umd_ece.png"
+
+import SponsorCardinal from "../public/images/EV/sponsors/Platinum/cardinal_scientific.png"
+import SponsorHerrmann from "../public/images/EV/sponsors/Platinum/herrmann_ultrasonics.png"
+import SponsorTesla from "../public/images/EV/sponsors/Platinum/tesla.png"
+
+import SponsorGeneHaas from "../public/images/EV/sponsors/Gold/gene_haas_foundation.png"
+import SponsorGoEngineer from "../public/images/EV/sponsors/Gold/go_engineer.png"
+import SponsorPreciscion from "../public/images/EV/sponsors/Gold/precision_auto_research.png"
+import SponsorProtocase from "../public/images/EV/sponsors/Gold/terrapin_works.png"
+import SponsorTerrapinWorks from "../public/images/EV/sponsors/Gold/terrapin_works.png"
+import SponsorTexasInst from "../public/images/EV/sponsors/Gold/texas_instruments.png"
+
+import SponsorEastPlating from "../public/images/EV/sponsors/Silver/eastern_plating_company.png"
+import SponsorIzze from "../public/images/EV/sponsors/Silver/izze.png"
+import SponsorMohr from "../public/images/EV/sponsors/Silver/mohr_composites.png"
+import SponsorRapidHarness from "../public/images/EV/sponsors/Silver/rapid_harness.png"
+import SponsorTTControl from "../public/images/EV/sponsors/Silver/tt_control.png"
+
+import SponsorBender from "../public/images/EV/sponsors/Bronze/bender.png"
+import SponsorGoodwinds from "../public/images/EV/sponsors/Bronze/goodwinds_composites.png"
+import SponsorProwireUSA from "../public/images/EV/sponsors/Bronze/prowire_usa.png"
+import SponsorVR3 from "../public/images/EV/sponsors/Bronze/vr3_engineering.png"
+
 function EVParagraph({ text }: { text: string }) {
   return (
     <p
@@ -83,7 +111,7 @@ function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-30 w-full max-w-6xl mx-auto px-6 sm:px-10 md:px-16 py-16 flex flex-col justify-center">
+      <div className="relative z-30 w-full max-w-6xl mx-auto px-[clamp(20px,5vw,80px)] py-16 flex flex-col justify-center">
         {/* Eyebrow */}
         <div style={{ opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(16px)", transition: "opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s" }}>
           <span
@@ -234,7 +262,7 @@ function AboutSection() {
         {/* Spacer — only on md+ */}
         <div className="hidden md:block md:w-2/5 shrink-0" />
 
-        <div className="w-full md:w-3/5 px-6 sm:px-10 md:px-12 pt-24 pb-16 flex flex-col justify-center">
+        <div className="w-full md:w-3/5 px-[clamp(20px,5vw,80px)] pt-24 pb-16 flex flex-col justify-center">
           {/* Heading */}
           <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
             <h2
@@ -295,7 +323,7 @@ function CompeteSection() {
       <div className="absolute inset-0 z-10 md:hidden" style={{ background: "rgba(0,0,0,0.45)" }} />
 
       {/* Content — centered, constrained width */}
-      <div className="relative z-20 w-full max-w-2xl mx-auto px-6 sm:px-10 md:px-16 py-16 md:py-20 flex flex-col">
+      <div className="relative z-20 w-full max-w-2xl mx-auto px-[clamp(20px,5vw,80px)] py-16 md:py-20 flex flex-col">
         {/* Heading */}
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
           <h2
@@ -349,6 +377,245 @@ function CompeteSection() {
   );
 }
 
+// ── Sponsors ──────────────────────────────────────────────────────────────────
+interface Sponsor {
+  name: string;
+  logo: string;
+  href: string;
+  logoSize?: string;
+}
+
+interface SponsorTierData {
+  label: string;
+  labelColor: string;
+  amount: string;
+  sponsors: Sponsor[];
+  desktopCols: number;
+}
+
+const SPONSOR_TIERS: SponsorTierData[] = [
+  {
+    label: "Title",
+    labelColor: "#e8a010",
+    amount: "$10,000+",
+    desktopCols: 2,
+    sponsors: [
+      {name: "About:Energy", logo: SponsorAboutEnergy, href: "https://www.aboutenergy.io/"},
+      {name: "Altium", logo: SponsorAltium, href: "https://www.altium.com/"},
+      {name: "FJB Engineering", logo: SponsorFJB, href: "https://www.altium.com/"},
+      {name: "UMD Dept. of Electrical & Computer Engineering", logo: SponsorUMDECE, href: "https://ece.umd.edu/"},
+    ],
+  },
+  {
+    label: "Platinum",
+    labelColor: "#E5E4E2",
+    amount: "$5,000 - $10,000",
+    desktopCols: 3,
+    sponsors: [
+      {name: "Cardinal Scientific", logo: SponsorCardinal, href: "https://cardinalscientific.com/"},
+      {name: "Herrmann Ultrasonics", logo: SponsorHerrmann, href: "https://www.herrmannultrasonics.com/en-us/products/ultrasonic-components"},
+      {name: "Tesla", logo: SponsorTesla, href: "https://www.tesla.com/"},
+    ],
+  },
+  {
+    label: "Gold",
+    labelColor: "#FFD700",
+    amount: "$2,500 - $5,000",
+    desktopCols: 3,
+    sponsors: [
+      {name: "Gene Haas Foundation", logo: SponsorGeneHaas, href: "Unkown site"},
+      {name: "go engineer", logo: SponsorGoEngineer, href: "https://www.goengineer.com/"},
+      {name: "Precision Auto Research", logo: SponsorPreciscion, href: "https://precisionautoresearch.com/"},
+      {name: "Protocase", logo: SponsorProtocase, href: "https://www.protocase.com/"},
+      {name: "Terrapin Works", logo: SponsorTerrapinWorks, href: "https://terrapinworks.umd.edu/"},
+      {name: "Texas Instruments", logo: SponsorTexasInst, href: "https://www.ti.com/"},
+    ],
+  },
+  {
+    label: "Silver",
+    labelColor: "#c0c0c0",
+    amount: "$1,000 - $2,500",
+    desktopCols: 3,
+    sponsors: [
+      {name: "Eastern Plating Company", logo: SponsorEastPlating, href: "https://easternplatingcompany.com/"},
+      {name: "Izze Racing", logo: SponsorIzze, href: "https://www.famaengineering.com/it/brand-produttori/izze/"},
+      {name: "Mohr Composites", logo: SponsorMohr, href: "https://www.mohrcomposites.com/"},
+      {name: "Rapid Harness", logo: SponsorRapidHarness, href: "https://rapidharness.com/"},
+      {name: "TTControl", logo: SponsorTTControl, href: "https://www.ttcontrol.com/"},
+    ],
+  },
+  {
+    label: "Bronze",
+    labelColor: "#CD7F32",
+    amount: "$500 - $1,000",
+    desktopCols: 2,
+    sponsors: [
+      {name: "Bender", logo: SponsorBender, href: "https://www.benderinc.com/"},
+      {name: "Goodwinds Composites", logo: SponsorGoodwinds, href: "https://goodwinds.com/"},
+      {name: "Prowireusa", logo: SponsorProwireUSA, href: "https://goodwinds.com/"},
+      {name: "VR3", logo: SponsorVR3, href: "https://vr3.ca/"},
+    ],
+  },
+];
+
+// Top tiers get a wider minimum so their logos read larger — this preserves the
+// hierarchy the fixed column counts used to encode, while still reflowing down
+// to one column on a phone.
+const tierMinCellWidth = (desktopCols: number) => (desktopCols <= 2 ? "300px" : "240px");
+
+const CELL_IDLE = {
+  background: "rgba(255,255,255,0.92)",
+  borderColor: "rgba(232,160,16,0.22)",
+  boxShadow: "none",
+  transform: "translateY(0)",
+};
+
+const CELL_HOVER = {
+  background: "#ffffff",
+  borderColor: "#e8a010",
+  boxShadow: "0 0 24px rgba(232,160,16,0.28)",
+  transform: "translateY(-2px)",
+};
+
+function SponsorLogoCell({ sponsor }: { sponsor: Sponsor }) {
+  const applyState = (el: HTMLAnchorElement, state: typeof CELL_IDLE) => {
+    el.style.background = state.background;
+    el.style.borderColor = state.borderColor;
+    el.style.boxShadow = state.boxShadow;
+    el.style.transform = state.transform;
+  };
+
+  return (
+    <a
+      href={sponsor.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center justify-center px-5 py-4 min-h-[92px] md:min-h-[112px]"
+      style={{
+        background: CELL_IDLE.background,
+        border: `1px solid ${CELL_IDLE.borderColor}`,
+        transition: "background 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.25s",
+      }}
+      onMouseEnter={(e) => applyState(e.currentTarget, CELL_HOVER)}
+      onMouseLeave={(e) => applyState(e.currentTarget, CELL_IDLE)}
+    >
+      <img
+        src={sponsor.logo}
+        alt={sponsor.name}
+        className={`${sponsor.logoSize ?? "max-h-16"} w-full object-contain`}
+        loading="lazy"
+      />
+    </a>
+  );
+}
+
+function SponsorTierSection({ tier, delay, visible }: { tier: SponsorTierData; delay: number; visible: boolean }) {
+  return (
+    <div
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(20px)",
+        transition: `opacity 0.8s ease ${delay}s, transform 0.8s ease ${delay}s`,
+      }}
+    >
+      {/* Tier header — label, hairline rule, amount */}
+      <div className="flex items-center gap-4 mb-4">
+        <span
+          className="text-xs font-bold uppercase whitespace-nowrap"
+          style={{ color: tier.labelColor, fontFamily: "'Courier New', monospace", letterSpacing: "0.22em" }}
+        >
+          {tier.label}
+        </span>
+        <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(232,160,16,0.45), transparent)" }} />
+        <span
+          className="text-xs whitespace-nowrap"
+          style={{ color: "rgba(200,200,200,0.6)", fontFamily: "'Courier New', monospace", letterSpacing: "0.1em" }}
+        >
+          {tier.amount}
+        </span>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(auto-fit, minmax(${tierMinCellWidth(tier.desktopCols)}, 1fr))`,
+          gap: "12px",
+        }}
+      >
+        {tier.sponsors.map((sponsor) => (
+          <SponsorLogoCell key={sponsor.name} sponsor={sponsor} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SponsorsSection() {
+  const [visible, setVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setVisible(true); }, { threshold: 0.1 });
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="relative w-full bg-black overflow-hidden">
+      {/* Grid overlay — same motif as the hero */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          opacity: 0.12,
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
+        }}
+      />
+
+      {/* Blend down out of the section above */}
+      <div
+        className="absolute inset-x-0 top-0 h-48 z-0"
+        style={{ background: "linear-gradient(180deg, #000 0%, transparent 100%)" }}
+      />
+
+      {/* Top-left label */}
+      <div className="absolute top-8 left-6 sm:left-8 z-20">
+        <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "#e8a010", fontFamily: "'Courier New', monospace", letterSpacing: "0.25em" }}>
+          TREV Partners
+        </span>
+      </div>
+
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-10 md:px-16 pt-24 pb-20 md:pb-28">
+        {/* Heading */}
+        <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
+          <h2
+            className="font-black leading-tight mb-6"
+            style={{ color: "#e8a010", fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", letterSpacing: "-0.01em" }}
+          >
+            Our Sponsors
+          </h2>
+        </div>
+
+        {/* Divider */}
+        <div className="mb-10 md:mb-14" style={{ opacity: visible ? 1 : 0, transform: visible ? "scaleX(1)" : "scaleX(0)", transformOrigin: "left", transition: "opacity 0.8s ease 0.25s, transform 0.8s ease 0.25s" }}>
+          <div className="h-px w-32" style={{ background: "linear-gradient(90deg, #e8a010, transparent)" }} />
+        </div>
+
+        <div className="flex flex-col gap-10 md:gap-14">
+          {SPONSOR_TIERS.map((tier, i) => (
+            <SponsorTierSection key={tier.label} tier={tier} delay={0.35 + i * 0.1} visible={visible} />
+          ))}
+        </div>
+      </div>
+
+      {/* Corner accents — bookends the hero's top-left marks */}
+      <div className="absolute bottom-0 right-0 z-20 w-20 h-1 bg-red-600" />
+      <div className="absolute bottom-0 right-0 z-20 w-1 h-20 bg-red-600" />
+    </section>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function EV() {
@@ -358,6 +625,7 @@ export default function EV() {
       <HeroSection />
       <AboutSection />
       <CompeteSection />
+      <SponsorsSection />
     </div>
   );
 }
