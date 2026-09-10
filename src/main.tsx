@@ -20,6 +20,7 @@ import Baja from './pages/baja.js';
 import IC from './pages/ic.js';
 import Sponsors from './pages/sponsors.js';
 import EV from './pages/ev.js';
+import Gallery from './pages/gallery.js'
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="IC" element={<IC />} />
         <Route path="sponsors" element={<Sponsors />} />
         <Route path="ev" element={<EV />} />
+        <Route path="gallery" element={<Gallery />} />
       </Routes>
     </>
   );

@@ -5,6 +5,34 @@ import middle_background from "../public/images/EV/ev_middle_background.png"
 import ev_compete_background from "../public/images/EV/bottom_background.png"
 import NavBar from "~/components/navbar";
 
+// ── Sponsor Imports ───────────────────────────────────────────────────────────
+import SponsorAboutEnergy from "../public/images/EV/sponsors/Title/about_energy.png"
+import SponsorAltium from "../public/images/EV/sponsors/Title/altium.png"
+import SponsorFJB from "../public/images/EV/sponsors/Title/fjb.png"
+import SponsorUMDECE from "../public/images/EV/sponsors/Title/umd_ece.png"
+
+import SponsorCardinal from "../public/images/EV/sponsors/Platinum/cardinal_scientific.png"
+import SponsorHerrmann from "../public/images/EV/sponsors/Platinum/herrmann_ultrasonics.png"
+import SponsorTesla from "../public/images/EV/sponsors/Platinum/tesla.png"
+
+import SponsorGeneHaas from "../public/images/EV/sponsors/Gold/gene_haas_foundation.png"
+import SponsorGoEngineer from "../public/images/EV/sponsors/Gold/go_engineer.png"
+import SponsorPreciscion from "../public/images/EV/sponsors/Gold/precision_auto_research.png"
+import SponsorProtocase from "../public/images/EV/sponsors/Gold/terrapin_works.png"
+import SponsorTerrapinWorks from "../public/images/EV/sponsors/Gold/terrapin_works.png"
+import SponsorTexasInst from "../public/images/EV/sponsors/Gold/texas_instruments.png"
+
+import SponsorEastPlating from "../public/images/EV/sponsors/Silver/eastern_plating_company.png"
+import SponsorIzze from "../public/images/EV/sponsors/Silver/izze.png"
+import SponsorMohr from "../public/images/EV/sponsors/Silver/mohr_composites.png"
+import SponsorRapidHarness from "../public/images/EV/sponsors/Silver/rapid_harness.png"
+import SponsorTTControl from "../public/images/EV/sponsors/Silver/tt_control.png"
+
+import SponsorBender from "../public/images/EV/sponsors/Bronze/bender.png"
+import SponsorGoodwinds from "../public/images/EV/sponsors/Bronze/goodwinds_composites.png"
+import SponsorProwireUSA from "../public/images/EV/sponsors/Bronze/prowire_usa.png"
+import SponsorVR3 from "../public/images/EV/sponsors/Bronze/vr3_engineering.png"
+
 function EVParagraph({ text }: { text: string }) {
   return (
     <p
@@ -83,7 +111,7 @@ function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-30 w-full max-w-6xl mx-auto px-6 sm:px-10 md:px-16 py-16 flex flex-col justify-center">
+      <div className="relative z-30 w-full max-w-6xl mx-auto px-[clamp(20px,5vw,80px)] py-16 flex flex-col justify-center">
         {/* Eyebrow */}
         <div style={{ opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(16px)", transition: "opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s" }}>
           <span
@@ -234,7 +262,7 @@ function AboutSection() {
         {/* Spacer — only on md+ */}
         <div className="hidden md:block md:w-2/5 shrink-0" />
 
-        <div className="w-full md:w-3/5 px-6 sm:px-10 md:px-12 pt-24 pb-16 flex flex-col justify-center">
+        <div className="w-full md:w-3/5 px-[clamp(20px,5vw,80px)] pt-24 pb-16 flex flex-col justify-center">
           {/* Heading */}
           <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
             <h2
@@ -295,7 +323,7 @@ function CompeteSection() {
       <div className="absolute inset-0 z-10 md:hidden" style={{ background: "rgba(0,0,0,0.45)" }} />
 
       {/* Content — centered, constrained width */}
-      <div className="relative z-20 w-full max-w-2xl mx-auto px-6 sm:px-10 md:px-16 py-16 md:py-20 flex flex-col">
+      <div className="relative z-20 w-full max-w-2xl mx-auto px-[clamp(20px,5vw,80px)] py-16 md:py-20 flex flex-col">
         {/* Heading */}
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
           <h2
@@ -349,6 +377,167 @@ function CompeteSection() {
   );
 }
 
+// ── Sponsors ──────────────────────────────────────────────────────────────────
+interface Sponsor {
+  name: string;
+  logo: string;
+  href: string;
+  logoSize?: string;
+}
+
+interface SponsorTierData {
+  label: string;
+  labelColor: string;
+  amount: string;
+  amountColor: string;
+  sponsors: Sponsor[];
+  desktopCols: number;
+}
+
+const SPONSOR_TIERS: SponsorTierData[] = [
+  {
+    label: "Title",
+    labelColor: "#57E8FF",
+    amount: "$10,000+",
+    amountColor: "#C30000",
+    desktopCols: 2,
+    sponsors: [
+      {name: "About:Energy", logo: SponsorAboutEnergy, href: "https://www.aboutenergy.io/"},
+      {name: "Altium", logo: SponsorAltium, href: "https://www.altium.com/"},
+      {name: "FJB Engineering", logo: SponsorFJB, href: "https://www.altium.com/"},
+      {name: "UMD Dept. of Electrical & Computer Engineering", logo: SponsorUMDECE, href: "https://ece.umd.edu/"},
+    ],
+  },
+  {
+    label: "Platinum",
+    labelColor: "#E5E4E2",
+    amount: "$5,000 - $10,000",
+    amountColor: "#C30000",
+    desktopCols: 3,
+    sponsors: [
+      {name: "Cardinal Scientific", logo: SponsorCardinal, href: "https://cardinalscientific.com/"},
+      {name: "Herrmann Ultrasonics", logo: SponsorHerrmann, href: "https://www.herrmannultrasonics.com/en-us/products/ultrasonic-components"},
+      {name: "Tesla", logo: SponsorTesla, href: "https://www.tesla.com/"},
+    ],
+  },
+  {
+    label: "Gold",
+    labelColor: "#FFD700",
+    amount: "$2,500 - $5,000",
+    amountColor: "#C30000",
+    desktopCols: 3,
+    sponsors: [
+      {name: "Gene Haas Foundation", logo: SponsorGeneHaas, href: "Unkown site"},
+      {name: "go engineer", logo: SponsorGoEngineer, href: "https://www.goengineer.com/"},
+      {name: "Precision Auto Research", logo: SponsorPreciscion, href: "https://precisionautoresearch.com/"},
+      {name: "Protocase", logo: SponsorProtocase, href: "https://www.protocase.com/"},
+      {name: "Terrapin Works", logo: SponsorTerrapinWorks, href: "https://terrapinworks.umd.edu/"},
+      {name: "Texas Instruments", logo: SponsorTexasInst, href: "https://www.ti.com/"},
+    ],
+  },
+  {
+    label: "Silver",
+    labelColor: "#c0c0c0",
+    amount: "$1,000 - $2,500",
+    amountColor: "#C30000",
+    desktopCols: 3,
+    sponsors: [
+      {name: "Eastern Plating Company", logo: SponsorEastPlating, href: "https://easternplatingcompany.com/"},
+      {name: "Izze Racing", logo: SponsorIzze, href: "https://www.famaengineering.com/it/brand-produttori/izze/"},
+      {name: "Mohr Composites", logo: SponsorMohr, href: "https://www.mohrcomposites.com/"},
+      {name: "Rapid Harness", logo: SponsorRapidHarness, href: "https://rapidharness.com/"},
+      {name: "TTControl", logo: SponsorTTControl, href: "https://www.ttcontrol.com/"},
+    ],
+  },
+  {
+    label: "Bronze",
+    labelColor: "#CD7F32",
+    amount: "500 - $1,000",
+    amountColor: "#C30000",
+    desktopCols: 2,
+    sponsors: [
+      {name: "Bender", logo: SponsorBender, href: "https://www.benderinc.com/"},
+      {name: "Goodwinds Composites", logo: SponsorGoodwinds, href: "https://goodwinds.com/"},
+      {name: "Prowireusa", logo: SponsorProwireUSA, href: "https://goodwinds.com/"},
+      {name: "VR3", logo: SponsorVR3, href: "https://vr3.ca/"},
+    ],
+  },
+];
+
+function SponsorLogoCell({ sponsor } : {sponsor : Sponsor}) {
+  return (
+    <a
+    href = {sponsor.href}
+    target = "_blank"
+    rel = "noopener noreferrer"
+    className = "flex items-center justify-center bg-white p-4 min-h-[80px] md:min-h-[100px] transition-all duration-200 hover:brightness-90 hover:scale-[1.03]"
+    >
+      <img
+      src = {sponsor.logo}
+      alt = {sponsor.name}
+      className = {`${sponsor.logoSize ?? "max-h-16"} w-full object-contain`}
+      loading = "lazy"
+      />
+    </a>
+  );
+}
+
+function SponsorTierSection({ tier } : {tier : SponsorTierData}) {
+  return (
+    <div className = "w-full max-w-4xl mx-auto">
+      <div
+        className = "text-center mb-3"
+        style = {{
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontWeight: 900,
+          fontStyle: "italic",
+          fontSize: "clamp(1rem, 2.5vw, 1.6rem)",
+        }}
+      >
+        <span style = {{color: tier.labelColor}}> {tier.label}: </span> 
+        <span style = {{color: tier.amountColor}}> {tier.amount}: </span>
+      </div>
+      <div
+        className = "border border-white overflow-hidden"
+        style = {{
+          display: "grid",
+          gridTemplateColumns: `repeat(${tier.desktopCols}, 1fr)`,
+          gap: "1px",
+          backgroundColor: "white",
+        }}
+      >
+        {tier.sponsors.map((sponsor) => (
+          <SponsorLogoCell key = {sponsor.name} sponsor = {sponsor} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SponsorsSection() {
+  return(
+    <div className = "bg-black px-[clamp(20px,5vw,80px)] py-12">
+      <h2
+        className = "text-white mb-10"
+        style = {{
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontWeight: 900,
+          fontStyle: "italic",
+          fontSize: "clamp(1.8rem, 5vw, 3rem)",
+          letterSpacing: "-0.02em",
+        }}
+      >
+        Our Sponsors
+      </h2>
+      <div className = "flex flex-col gap-10">
+        {SPONSOR_TIERS.map((tier) => (
+          <SponsorTierSection key = {tier.label} tier = {tier} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function EV() {
@@ -358,6 +547,7 @@ export default function EV() {
       <HeroSection />
       <AboutSection />
       <CompeteSection />
+      <SponsorsSection />
     </div>
   );
 }
