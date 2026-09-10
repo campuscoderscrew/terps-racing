@@ -172,41 +172,168 @@ function AboutSection() {
 
 // ── Process ───────────────────────────────────────────────────────────────────
 const PROCESS_STEPS = [
-  { word: "Design", img: ASSETS.processDesign, alt: "Design phase – engineers reviewing CAD models" },
-  { word: "Build",  img: ASSETS.processBuild,  alt: "Build phase – students fabricating car parts" },
-  { word: "Test",   img: ASSETS.processTest,   alt: "Test phase – car undergoing performance testing" },
-  { word: "Race",   img: ASSETS.processRace,   alt: "Race phase – Terps Racing competing at SAE event" },
+  {
+    word: "Design",
+    img: ASSETS.processDesign,
+    alt: "Design phase – engineers reviewing CAD models",
+    description:
+      "(design phase info here)",
+  },
+  {
+    word: "Build",
+    img: ASSETS.processBuild,
+    alt: "Build phase – students fabricating car parts",
+    description:
+      "(build phase info here)",
+  },
+  {
+    word: "Test",
+    img: ASSETS.processTest,
+    alt: "Test phase – car undergoing performance testing",
+    description:
+      "(test phase info here)",
+  },
+  {
+    word: "Race",
+    img: ASSETS.processRace,
+    alt: "Race phase – Terps Racing competing at SAE event",
+    description:
+      "(race phase info here)",
+  },
 ];
 
 function Process() {
+  const [selectedStep, setSelectedStep] = useState<
+    (typeof PROCESS_STEPS)[number] | null
+  >(null);
+
   return (
-    <section className="relative py-[clamp(40px,6vw,80px)] overflow-hidden" id="process" aria-labelledby="process-title">
-      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
-        <Header id="process-title" text="The Process" />
-        <div className="flex flex-col gap-3">
-          {PROCESS_STEPS.map(({ word, img, alt }) => (
-            <div key={word} className="relative overflow-hidden rounded-[clamp(20px,4vw,50px)]"
-              style={{ height: "clamp(80px,12vw,150px)" }}>
-              <img src={img} alt={alt} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 flex items-center justify-center px-[clamp(20px,5vw,60px)]">
-                <span className="uppercase leading-none tracking-[-0.02em]" style={{
-                  fontFamily: "'Barlow Condensed', sans-serif",
-                  fontWeight: 700,
-                  fontSize: "clamp(1.8rem, 6vw, 4.5rem)",
-                  color: "transparent",
-                  WebkitTextStroke: "2px white",
-                  textShadow: "3px 3px 0 black",
-                }}>
-                  {word}
-                </span>
+    <>
+      <section
+        className="relative py-[clamp(40px,6vw,80px)] overflow-hidden"
+        id="process"
+        aria-labelledby="process-title"
+      >
+        <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,5vw,80px)]">
+          <Header id="process-title" text="The Process" />
+
+          <div className="flex flex-col gap-3">
+            {PROCESS_STEPS.map((step) => (
+              <div
+                key={step.word}
+                onClick={() => setSelectedStep(step)}
+                className="relative overflow-hidden rounded-[clamp(20px,4vw,50px)] cursor-pointer group"
+                style={{
+                  height: "clamp(80px,12vw,150px)",
+                }}
+              >
+                <img
+                  src={step.img}
+                  alt={step.alt}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+
+                {/* Dark overlay */}
+                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-300" />
+
+                {/* Text */}
+                <div className="absolute inset-0 flex items-center justify-center px-[clamp(20px,5vw,60px)]">
+                  <span
+                    className="uppercase leading-none tracking-[-0.02em]"
+                    style={{
+                      fontFamily: "'Barlow Condensed', sans-serif",
+                      fontWeight: 700,
+                      fontSize: "clamp(1.8rem, 6vw, 4.5rem)",
+                      color: "transparent",
+                      WebkitTextStroke: "2px white",
+                      textShadow: "3px 3px 0 black",
+                    }}
+                  >
+                    {step.word}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/*popup*/}
+      {selectedStep && (
+        <ProcessPopup
+          step={selectedStep}
+          onClose={() => setSelectedStep(null)}
+        />
+      )}
+    </>
   );
 }
+function ProcessPopup({
+  step,
+  onClose,
+}: {
+  step: (typeof PROCESS_STEPS)[number];
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      {/* Background overlay */}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+
+      {/*popup*/}
+      <div
+        className="relative w-full max-w-3xl overflow-hidden rounded-2xl bg-zinc-950 border border-white/10 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/*image*/}
+        <div className="relative h-[220px] sm:h-[320px]">
+          <img
+            src={step.img}
+            alt={step.alt}
+            className="w-full h-full object-cover"
+          />
+
+          {/*gradient*/}
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-black/20 to-transparent" />
+
+          {/*popup exit button*/}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/60 text-white text-2xl flex items-center justify-center hover:bg-black/80 transition-colors"
+            aria-label="Close popup"
+          >
+            ×
+          </button>
+
+          {/*process title*/}
+          <div className="absolute bottom-5 left-6 sm:left-8">
+            <h2
+              className="text-5xl sm:text-6xl uppercase text-white"
+              style={{
+                fontFamily: "'Barlow Condensed', sans-serif",
+                fontWeight: 900,
+                fontStyle: "italic",
+              }}
+            >
+              {step.word}
+            </h2>
+          </div>
+        </div>
+
+        {/*process info*/}
+        <div className="p-6 sm:p-8">
+          <p className="text-zinc-300 text-base sm:text-lg leading-relaxed">
+            {step.description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 // ── Teams ─────────────────────────────────────────────────────────────────────
 const TEAMS = [
