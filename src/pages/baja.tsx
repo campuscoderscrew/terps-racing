@@ -10,8 +10,17 @@ import BajaSponsorGMN      from "../public/images/Baja/sponsors/Bronze/GMN-Logo-
 import BajaSponsorASCo     from "../public/images/Baja/sponsors/Bronze/American-Stripping-Company-Logo.png"
 import BajaSponsorEandD    from "../public/images/Baja/sponsors/Bronze/e-and-d-auto-cropped.jpg"
 
+//Background accents
+import BrownFade from "../public/images/baja/brown-fade-in.png"
+import BrownBottomUp from "../public/images/baja/brown-fade-bottom-up.png"
+import LightBrown from "../public/images/baja/light-brown-fade.png"
+import LightBrownRight from "../public/images/baja/light-brown-right-fade.png"
+
 // ── Types ─────────────────────────────────────────────────────────────────────
-interface AccordionItem { title: string; body: string; }
+type AccordionBlock =
+  | { type: "p"; text: string }
+  | { type: "ul"; items: string[] };
+interface AccordionItem { title: string; body: AccordionBlock[]; }
 interface EventItem { name: string; desc: string; }
 interface StaticCard { img: string; alt: string; title: string; desc: string; }
 
@@ -19,11 +28,18 @@ interface StaticCard { img: string; alt: string; title: string; desc: string; }
 const ACCORDION_ITEMS: AccordionItem[] = [
   {
     title: "Design Process",
-    body: "The design process goes through three stages of review before the final design is chosen: the Preliminary Review, the Critical Review, and the Final Review. The team also modifies older cars to test new designs on prior years' vehicles. Following the final review, the team moves into the build phase, continually innovating and redesigning even the smallest components.",
+    body: [
+      { type: "p", text: "The design process goes through three stages of review before the final design is chosen:" },
+      { type: "ul", items: ["Preliminary Review", "Critical Review", "Final Review"] },
+      { type: "p", text: "The team also modifies older cars to test new designs on prior years' vehicles. Following the final review, the team moves into the build phase, continually innovating and redesigning even the smallest components." },
+    ],
   },
   {
     title: "Competition Challenge",
-    body: "The competition requires students to balance design and cost with dynamic performance while following strict safety guidelines and standardized rules. The team balances hard work with a passion for their car and believes that passion makes a significant difference in the competition.",
+    body: [
+      { type: "p", text: "The competition requires students to balance design and cost with dynamic performance while following strict safety guidelines and standardized rules." },
+      { type: "p", text: "The team balances hard work with a passion for their car and believes that passion makes a significant difference in the competition." },
+    ],
   },
 ];
 
@@ -71,7 +87,20 @@ function Accordion({ items }: { items: AccordionItem[] }) {
               className="overflow-hidden transition-all duration-[350ms] ease-in-out text-[clamp(0.82rem,1.4vw,0.9rem)] text-[#aaaaaa]"
               style={{ height: isOpen ? "auto" : 0, paddingBottom: isOpen ? 14 : 0 }}
             >
-              {item.body}
+              {item.body.map((block, bi) => {
+                const spacing = bi < item.body.length - 1 ? "mb-2" : undefined;
+                return block.type === "ul" ? (
+                  <ul key={bi} className={`list-disc pl-5 ${spacing ?? ""}`}>
+                    {block.items.map((li, li_i) => (
+                      <li key={li_i}>{li}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p key={bi} className={spacing}>
+                    {block.text}
+                  </p>
+                );
+              })}
             </div>
           </div>
         );
@@ -99,31 +128,43 @@ interface HeroSectionProps {
 
 function HeroSection({ flip = false, imgStyle, children }: HeroSectionProps) {
   return (
-    <div className="flex flex-col md:grid min-h-[420px]"
-      style={{ gridTemplateColumns: flip ? "42% 58%" : "58% 42%" }}>
-      {/* Image */}
-      <div
-        className={`relative bg-cover bg-center bg-no-repeat min-h-[240px] md:min-h-[420px] ${flip ? "md:order-last" : ""}`}
-        style={imgStyle}
-      >
-        <div className="absolute inset-0" style={{
-          background: flip
-            ? "linear-gradient(to left, rgba(10,10,10,0) 55%, #0a0a0a 100%)"
-            : "linear-gradient(to right, rgba(10,10,10,0) 40%, #0a0a0a 95%)",
-        }} />
+    <section className="relative">
+      <div className="relative z-10 flex flex-col md:grid min-h-[420px]"
+        style={{ gridTemplateColumns: flip ? "42% 58%" : "58% 42%" }}>
+        
+        {/* Image */}
+        <div
+          className={`relative flex min-h-[240px] md:min-h-[420px] px-[clamp(20px,5vw,80px)] ${flip ? "md:order-last md:pl-0" : "md:pr-0"}`}
+        >
+          <div className="relative flex-1 bg-cover bg-center bg-no-repeat" style={imgStyle}>
+            <div className="absolute inset-0" style={{
+              background: flip
+                ? "linear-gradient(to left, rgba(10,10,10,0) 55%)"
+                : "linear-gradient(to right, rgba(10,10,10,0) 40%)",
+            }} />
+          </div>
+        </div>
+        {/* Content */}
+        <div className="px-[clamp(20px,5vw,80px)] py-[clamp(24px,5vw,56px)] flex flex-col justify-center">
+          {children}
+        </div>
       </div>
-      {/* Content */}
-      <div className="px-[clamp(16px,5vw,48px)] py-[clamp(24px,5vw,56px)] flex flex-col justify-center">
-        {children}
-      </div>
-    </div>
+    </section>
+   
   );
 }
 
 // ── What We Do ────────────────────────────────────────────────────────────────
 function WhatWeDo() {
   return (
-    <section>
+    <section className="relative py-[clamp(24px,5vw,48px)]">
+      {/*Background Accent*/}
+      <img
+          src={LightBrownRight}
+          alt="background"
+          className="absolute inset-0 z-0 w-full h-full object-cover "
+          style={{ filter: "brightness(0.7) saturate(1.4)" }}
+        />
       <HeroSection imgStyle={{
         backgroundImage: "url('https://racing.umd.edu/files/2026/03/anjali-background2.png')",
         backgroundSize: "200%",
@@ -154,7 +195,15 @@ function WhatWeDo() {
 // ── Dynamic Events ────────────────────────────────────────────────────────────
 function DynamicEvents() {
   return (
-    <section>
+    <section className="relative py-[clamp(24px,5vw,48px)]">
+      {/*Background Accent*/}
+      <img
+          src={BrownFade}
+          alt="background"
+          className="absolute inset-0 z-0 w-full h-full object-cover "
+          style={{ filter: "brightness(0.7) saturate(1.4)" }}
+        />
+        
       <HeroSection flip imgStyle={{
         backgroundImage: "url('https://racing.umd.edu/files/2026/04/Untitled-design.png')",
         backgroundSize: "130%",
@@ -183,7 +232,14 @@ function DynamicEvents() {
 // ── Static Events ─────────────────────────────────────────────────────────────
 function StaticEvents() {
   return (
-    <section>
+    <section className="relative py-[clamp(24px,5vw,48px)]">
+      {/*Background Accent*/}
+      <img
+          src={BrownBottomUp}
+          alt="background"
+          className="absolute inset-0 z-0 w-full h-full object-cover "
+          style={{ filter: "brightness(0.7) saturate(1.4)" }}
+        />
       <HeroSection imgStyle={{
         backgroundImage: "url('https://racing.umd.edu/files/2026/04/Untitled-design-4.png')",
         backgroundSize: "250%",
@@ -236,26 +292,28 @@ function Gallery() {
   };
 
   return (
-    <section className="bg-[#0a0a0a] mt-[clamp(30px,5vw,60px)]">
-      <div className="relative overflow-hidden">
-        <button onClick={() => move(-1)}
-          className="absolute left-[14px] top-1/2 -translate-y-1/2 z-[2] bg-black/70 border border-white/20 text-white text-[1.8rem] w-12 h-12 rounded-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#e31933] hover:border-[#e31933]">
-          ‹
-        </button>
-        <div className="flex transition-transform duration-[450ms]"
-          style={{ transform: `translateX(-${pos * (100 / perView)}%)` }}>
-          {GALLERY_IMGS.map(({ src, alt }) => (
-            <div key={src} className="flex-none overflow-hidden"
-              style={{ flex: `0 0 ${100 / perView}%`, aspectRatio: "16/9" }}>
-              <img src={src} alt={alt}
-                className="w-full h-full object-cover block transition-transform duration-[400ms] hover:scale-[1.04]" />
-            </div>
-          ))}
+    <section className="relative bg-[#0a0a0a] mt-[clamp(30px,5vw,60px)]">
+      <div className="relative px-[clamp(20px,5vw,80px)]">
+        <div className="relative overflow-hidden">
+          <button onClick={() => move(-1)}
+            className="absolute left-[14px] top-1/2 -translate-y-1/2 z-[2] bg-black/70 border border-white/20 text-white text-[1.8rem] w-12 h-12 rounded-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#e31933] hover:border-[#e31933]">
+            ‹
+          </button>
+          <div className="flex transition-transform duration-[450ms]"
+            style={{ transform: `translateX(-${pos * (100 / perView)}%)` }}>
+            {GALLERY_IMGS.map(({ src, alt }) => (
+              <div key={src} className="flex-none overflow-hidden"
+                style={{ flex: `0 0 ${100 / perView}%`, aspectRatio: "16/9" }}>
+                <img src={src} alt={alt}
+                  className="w-full h-full object-cover block transition-transform duration-[400ms] hover:scale-[1.04]" />
+              </div>
+            ))}
+          </div>
+          <button onClick={() => move(1)}
+            className="absolute right-[14px] top-1/2 -translate-y-1/2 z-[2] bg-black/70 border border-white/20 text-white text-[1.8rem] w-12 h-12 rounded-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#e31933] hover:border-[#e31933]">
+            ›
+          </button>
         </div>
-        <button onClick={() => move(1)}
-          className="absolute right-[14px] top-1/2 -translate-y-1/2 z-[2] bg-black/70 border border-white/20 text-white text-[1.8rem] w-12 h-12 rounded-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#e31933] hover:border-[#e31933]">
-          ›
-        </button>
       </div>
     </section>
   );
@@ -264,7 +322,14 @@ function Gallery() {
 // ── Video ─────────────────────────────────────────────────────────────────────
 function Video() {
   return (
-    <section className="bg-[#0a0a0a] px-[clamp(16px,8vw,8%)] py-[clamp(24px,5vw,48px)]">
+    <section className="relative bg-[#0a0a0a] px-[clamp(20px,5vw,80px)] py-[clamp(24px,5vw,48px)]">
+      {/*Background Accent*/}
+      <img
+          src={LightBrown}
+          alt="background"
+          className="absolute inset-0 z-0 w-full h-full object-cover "
+          style={{ filter: "brightness(0.7) saturate(1.4)" }}
+        />
       <div className="relative pb-[56.25%] h-0">
         <iframe
           className="absolute inset-0 w-full h-full border-none rounded"
@@ -407,7 +472,8 @@ function BajaSponsorsSection() {
           fontStyle: "italic",
           fontSize: "clamp(1.8rem, 5vw, 3rem)",
           letterSpacing: "-0.02em",
-          color: "#e31933",
+          /*Used to be #e31933*/
+          color: "#e31933", 
         }}
       >
         Our Sponsors
