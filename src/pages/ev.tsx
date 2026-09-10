@@ -4,6 +4,7 @@ import ev_hero_background from "../public/images/EV/ev_hero_background.png"
 import middle_background from "../public/images/EV/ev_middle_background.png"
 import ev_compete_background from "../public/images/EV/bottom_background.png"
 import NavBar from "~/components/navbar";
+import { themeVars } from "~/theme";
 
 // ── Sponsor Imports ───────────────────────────────────────────────────────────
 import SponsorAboutEnergy from "../public/images/EV/sponsors/Title/about_energy.png"
@@ -116,7 +117,7 @@ function HeroSection() {
         <div style={{ opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(16px)", transition: "opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s" }}>
           <span
             className="text-xs font-bold uppercase mb-6 block"
-            style={{ color: "#e8180e", fontFamily: "'Courier New', monospace", letterSpacing: "0.28em" }}
+            style={{ color: "var(--accent-alt)", fontFamily: "'Courier New', monospace", letterSpacing: "0.28em" }}
           >
             University of Maryland
           </span>
@@ -139,7 +140,7 @@ function HeroSection() {
             <span style={{ WebkitTextStroke: "2px rgba(255,255,255,0.9)", color: "transparent", textShadow: "none" }}>
               Racing
             </span>{" "}
-            <span style={{ color: "#e8180e" }}>EV</span>
+            <span style={{ color: "var(--accent-alt)" }}>EV</span>
           </h1>
         </div>
 
@@ -168,35 +169,35 @@ function HeroSection() {
 // ─── About ───────────────────────────────────────────────────────────────────
 
 const IconElectrical = () => (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-    <path d="M23 4L8 22h13l-4 14 15-18H19L23 4z" fill="#e8a010" stroke="#e8a010" strokeWidth="0.5" strokeLinejoin="round" />
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ color: "var(--accent)" }}>
+    <path d="M23 4L8 22h13l-4 14 15-18H19L23 4z" fill="currentColor" stroke="currentColor" strokeWidth="0.5" strokeLinejoin="round" />
   </svg>
 );
 const IconAero = () => (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-    <path d="M4 14 Q14 10 26 16 Q34 20 38 14" stroke="#e8a010" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-    <path d="M4 20 Q14 16 26 22 Q34 26 38 20" stroke="#e8a010" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-    <path d="M4 26 Q14 22 26 28 Q34 32 38 26" stroke="#e8a010" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-    <polygon points="34,11 40,14 34,17" fill="#e8a010" />
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ color: "var(--accent)" }}>
+    <path d="M4 14 Q14 10 26 16 Q34 20 38 14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    <path d="M4 20 Q14 16 26 22 Q34 26 38 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    <path d="M4 26 Q14 22 26 28 Q34 32 38 26" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    <polygon points="34,11 40,14 34,17" fill="currentColor" />
   </svg>
 );
 const IconMechanical = () => (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-    <circle cx="15" cy="15" r="6" stroke="#e8a010" strokeWidth="2.5" fill="none" />
-    <line x1="19" y1="19" x2="36" y2="36" stroke="#e8a010" strokeWidth="4" strokeLinecap="round" />
-    <line x1="9" y1="15" x2="2" y2="15" stroke="#e8a010" strokeWidth="2" strokeLinecap="round" />
-    <line x1="15" y1="9" x2="15" y2="2" stroke="#e8a010" strokeWidth="2" strokeLinecap="round" />
-    <line x1="21" y1="9" x2="23" y2="4" stroke="#e8a010" strokeWidth="2" strokeLinecap="round" />
-    <line x1="9" y1="21" x2="4" y2="23" stroke="#e8a010" strokeWidth="2" strokeLinecap="round" />
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ color: "var(--accent)" }}>
+    <circle cx="15" cy="15" r="6" stroke="currentColor" strokeWidth="2.5" fill="none" />
+    <line x1="19" y1="19" x2="36" y2="36" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+    <line x1="9" y1="15" x2="2" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="15" y1="9" x2="15" y2="2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="21" y1="9" x2="23" y2="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="9" y1="21" x2="4" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 const IconBusiness = () => (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-    <rect x="3" y="18" width="8" height="18" rx="1" fill="none" stroke="#e8a010" strokeWidth="2" />
-    <rect x="16" y="10" width="8" height="26" rx="1" fill="none" stroke="#e8a010" strokeWidth="2" />
-    <rect x="29" y="4" width="8" height="32" rx="1" fill="none" stroke="#e8a010" strokeWidth="2" />
-    <polyline points="5,16 18,8 31,2" stroke="#e8a010" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    <polyline points="27,2 31,2 31,6" stroke="#e8a010" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ color: "var(--accent)" }}>
+    <rect x="3" y="18" width="8" height="18" rx="1" fill="none" stroke="currentColor" strokeWidth="2" />
+    <rect x="16" y="10" width="8" height="26" rx="1" fill="none" stroke="currentColor" strokeWidth="2" />
+    <rect x="29" y="4" width="8" height="32" rx="1" fill="none" stroke="currentColor" strokeWidth="2" />
+    <polyline points="5,16 18,8 31,2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <polyline points="27,2 31,2 31,6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -211,7 +212,7 @@ interface FeatureCardProps {
 const FeatureCard = ({ icon, title, description, delay, visible }: FeatureCardProps) => (
   <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(24px)", transition: `opacity 0.8s ease ${delay}s, transform 0.8s ease ${delay}s` }}>
     <div className="mb-4">{icon}</div>
-    <h3 className="text-base font-bold mb-3" style={{ color: "#e8a010", fontFamily: "'Courier New', monospace", letterSpacing: "0.05em" }}>
+    <h3 className="text-base font-bold mb-3" style={{ color: "var(--accent)", fontFamily: "'Courier New', monospace", letterSpacing: "0.05em" }}>
       {title}
     </h3>
     <p className="text-sm leading-relaxed" style={{ color: "rgba(200,200,200,0.78)", fontFamily: "'Georgia', serif", lineHeight: 1.75, fontSize: "0.82rem" }}>
@@ -249,7 +250,7 @@ function AboutSection() {
 
       {/* Top-left label */}
       <div className="absolute top-8 left-6 sm:left-8 z-20">
-        <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "#e8a010", fontFamily: "'Courier New', monospace", letterSpacing: "0.25em" }}>
+        <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "var(--accent)", fontFamily: "'Courier New', monospace", letterSpacing: "0.25em" }}>
           About TREV
         </span>
       </div>
@@ -267,7 +268,7 @@ function AboutSection() {
           <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
             <h2
               className="font-black leading-tight mb-6"
-              style={{ color: "#e8a010", fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "clamp(1.6rem, 4vw, 3rem)", lineHeight: 1.15, letterSpacing: "-0.01em" }}
+              style={{ color: "var(--accent)", fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "clamp(1.6rem, 4vw, 3rem)", lineHeight: 1.15, letterSpacing: "-0.01em" }}
             >
               What sets the Terps Racing<br />EV team apart from the rest?
             </h2>
@@ -280,7 +281,7 @@ function AboutSection() {
 
           {/* Divider */}
           <div className="mb-8 md:mb-10" style={{ opacity: visible ? 1 : 0, transform: visible ? "scaleX(1)" : "scaleX(0)", transformOrigin: "left", transition: "opacity 0.8s ease 0.35s, transform 0.8s ease 0.35s" }}>
-            <div className="h-px w-32" style={{ background: "linear-gradient(90deg, #e8a010, transparent)" }} />
+            <div className="h-px w-32" style={{ background: "linear-gradient(90deg, var(--accent), transparent)" }} />
           </div>
 
           {/* Feature grid — 1 col on mobile, 2 on sm+ */}
@@ -328,7 +329,7 @@ function CompeteSection() {
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
           <h2
             className="font-black leading-tight mb-4"
-            style={{ color: "#e8a010", fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", letterSpacing: "-0.01em" }}
+            style={{ color: "var(--accent)", fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", letterSpacing: "-0.01em" }}
           >
             Where does TREV compete?
           </h2>
@@ -364,9 +365,9 @@ function CompeteSection() {
               key={link.label}
               href={link.href}
               className="px-4 md:px-5 py-2 text-xs font-bold uppercase"
-              style={{ color: "#e8a010", border: "1.5px solid #e8a010", fontFamily: "'Courier New', monospace", letterSpacing: "0.12em", textDecoration: "none", transition: "background 0.2s, color 0.2s" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#e8a010"; (e.currentTarget as HTMLAnchorElement).style.color = "#000"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; (e.currentTarget as HTMLAnchorElement).style.color = "#e8a010"; }}
+              style={{ color: "var(--accent)", border: "1.5px solid var(--accent)", fontFamily: "'Courier New', monospace", letterSpacing: "0.12em", textDecoration: "none", transition: "background 0.2s, color 0.2s" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "var(--accent)"; (e.currentTarget as HTMLAnchorElement).style.color = "#000"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; (e.currentTarget as HTMLAnchorElement).style.color = "var(--accent)"; }}
             >
               {link.label}
             </a>
@@ -396,7 +397,7 @@ interface SponsorTierData {
 const SPONSOR_TIERS: SponsorTierData[] = [
   {
     label: "Title",
-    labelColor: "#e8a010",
+    labelColor: "var(--accent)",
     amount: "$10,000+",
     desktopCols: 2,
     sponsors: [
@@ -472,7 +473,7 @@ const CELL_IDLE = {
 
 const CELL_HOVER = {
   background: "#ffffff",
-  borderColor: "#e8a010",
+  borderColor: "var(--accent)",
   boxShadow: "0 0 24px rgba(232,160,16,0.28)",
   transform: "translateY(-2px)",
 };
@@ -581,7 +582,7 @@ function SponsorsSection() {
 
       {/* Top-left label */}
       <div className="absolute top-8 left-6 sm:left-8 z-20">
-        <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "#e8a010", fontFamily: "'Courier New', monospace", letterSpacing: "0.25em" }}>
+        <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "var(--accent)", fontFamily: "'Courier New', monospace", letterSpacing: "0.25em" }}>
           TREV Partners
         </span>
       </div>
@@ -591,7 +592,7 @@ function SponsorsSection() {
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
           <h2
             className="font-black leading-tight mb-6"
-            style={{ color: "#e8a010", fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", letterSpacing: "-0.01em" }}
+            style={{ color: "var(--accent)", fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", letterSpacing: "-0.01em" }}
           >
             Our Sponsors
           </h2>
@@ -599,7 +600,7 @@ function SponsorsSection() {
 
         {/* Divider */}
         <div className="mb-10 md:mb-14" style={{ opacity: visible ? 1 : 0, transform: visible ? "scaleX(1)" : "scaleX(0)", transformOrigin: "left", transition: "opacity 0.8s ease 0.25s, transform 0.8s ease 0.25s" }}>
-          <div className="h-px w-32" style={{ background: "linear-gradient(90deg, #e8a010, transparent)" }} />
+          <div className="h-px w-32" style={{ background: "linear-gradient(90deg, var(--accent), transparent)" }} />
         </div>
 
         <div className="flex flex-col gap-10 md:gap-14">
@@ -620,7 +621,7 @@ function SponsorsSection() {
 
 export default function EV() {
   return (
-    <div className="bg-black">
+    <div className="bg-black" style={themeVars("ev")}>
       <NavBar />
       <HeroSection />
       <AboutSection />
