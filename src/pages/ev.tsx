@@ -111,7 +111,7 @@ function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-30 w-full max-w-6xl mx-auto px-6 sm:px-10 md:px-16 py-16 flex flex-col justify-center">
+      <div className="relative z-30 w-full max-w-6xl mx-auto px-[clamp(20px,5vw,80px)] py-16 flex flex-col justify-center">
         {/* Eyebrow */}
         <div style={{ opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(16px)", transition: "opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s" }}>
           <span
@@ -262,7 +262,7 @@ function AboutSection() {
         {/* Spacer — only on md+ */}
         <div className="hidden md:block md:w-2/5 shrink-0" />
 
-        <div className="w-full md:w-3/5 px-6 sm:px-10 md:px-12 pt-24 pb-16 flex flex-col justify-center">
+        <div className="w-full md:w-3/5 px-[clamp(20px,5vw,80px)] pt-24 pb-16 flex flex-col justify-center">
           {/* Heading */}
           <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
             <h2
@@ -323,7 +323,7 @@ function CompeteSection() {
       <div className="absolute inset-0 z-10 md:hidden" style={{ background: "rgba(0,0,0,0.45)" }} />
 
       {/* Content — centered, constrained width */}
-      <div className="relative z-20 w-full max-w-2xl mx-auto px-6 sm:px-10 md:px-16 py-16 md:py-20 flex flex-col">
+      <div className="relative z-20 w-full max-w-2xl mx-auto px-[clamp(20px,5vw,80px)] py-16 md:py-20 flex flex-col">
         {/* Heading */}
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s" }}>
           <h2
@@ -516,7 +516,7 @@ function SponsorTierSection({ tier } : {tier : SponsorTierData}) {
 
 function SponsorsSection() {
   return(
-    <div className = "bg-black px-[clamp(20px, 5vw, 80px)] py-12">
+    <div className = "bg-black px-[clamp(20px,5vw,80px)] py-12">
       <h2
         className = "text-white mb-10"
         style = {{

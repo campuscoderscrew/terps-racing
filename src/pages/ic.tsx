@@ -104,12 +104,12 @@ function RaceSchedule() {
         <img
           src={race_schedule_car}
           alt="Race car"
-          className="w-full object-cover p-[clamp(16px,4vw,40px)]"
+          className="w-full object-cover px-[clamp(20px,5vw,80px)] py-[clamp(16px,4vw,40px)]"
         />
       </div>
 
       {/* Right: Content */}
-      <div className="flex-1 flex flex-col gap-4 p-[clamp(16px,4vw,40px)] bg-black">
+      <div className="flex-1 flex flex-col gap-4 px-[clamp(20px,5vw,80px)] py-[clamp(16px,4vw,40px)] bg-black">
         <h2 className={header2_className} style={header2_style}>
           RACE SCHEDULE
         </h2>
@@ -141,7 +141,7 @@ function StatsOverlay({ image }: { image: string }) {
         className="w-full h-full object-cover"
       />
       <div className="absolute inset-0 bg-black/30" />
-      <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 p-[clamp(12px,4vw,48px)]">
+      <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 px-[clamp(20px,5vw,80px)] py-[clamp(12px,4vw,48px)]">
         {stats.map(({ topLeft, heading, sub }, index) => (
           <div
             key={sub}
