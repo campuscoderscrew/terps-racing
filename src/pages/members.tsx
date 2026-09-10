@@ -174,8 +174,12 @@ function Hero() {
   return (
     <section
       id="about"
-      className="relative w-full overflow-hidden flex items-center"
-      style={{ minHeight: "calc(100dvh - 3.5rem)" }}
+      className="relative w-full flex items-center justify-center py-[3rem] px-[clamp(20px,5vw,80px)]"
+      style={{
+        minHeight: "calc(100dvh - 3.5rem)",
+        background:
+          `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('${heroImg}') center 80% / cover no-repeat`,
+      }}
     >
       <img
         src={heroImg}
@@ -244,7 +248,7 @@ interface ReqCard {
 }
 
 const REQ_CARDS: ReqCard[] = [
-  { label: "Hands on drive",       img: sparksImg,  alt: "Welding sparks",           desc: "Eager to build, test, and solve real engineering problems." },
+  { label: "Hands on Drive",       img: sparksImg,  alt: "Welding sparks",          desc: "Eager to build, test, and solve real engineering problems." },
   { label: "Team Player",          img: outsideImg, alt: "Team working together",    desc: "We collaborate across disciplines and depend on each other." },
   { label: "Willingness to Learn", img: weldImg,    alt: "Student learning in shop", desc: "We'll teach CAD, machining, and engineering — bring curiosity." },
   { label: "Any Major is Welcome", img: collabImg,  alt: "Students at computers",    desc: "Engineering, computer science, business, design — every skill has a place here." },
@@ -480,9 +484,27 @@ function Teams() {
   const { ref, inView } = useInView();
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-black px-6 sm:px-10 md:px-14 py-16 md:py-20">
-      <GridOverlay opacity={0.1} />
-      <Glow color="rgba(255,210,0,0.14)" className="-right-32 top-1/3" size={480} />
+    <section className="bg-black px-[clamp(20px,5vw,80px)] py-16">
+      <p
+        className="uppercase tracking-[0.06em] text-[#C30000]"
+        style={{
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontWeight: 700,
+          fontSize: "clamp(1rem, 1.5vw, 2rem)",
+        }}
+      >
+        Teams
+      </p>
+      <h2
+        className="text-white mt-1 mb-12"
+        style={{
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontWeight: 700,
+          fontSize: "clamp(1.2rem, 2.2vw, 2.5rem)",
+        }}
+      >
+        Which Team is Right for You?
+      </h2>
 
       <div className="relative z-10">
         <Reveal show={inView} delay={0.1}>
