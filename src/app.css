@@ -1,30 +1,1242 @@
-@import url("https://fonts.googleapis.com/css2?family=Neuton&display=swap");
+/* ============================================================================
+   Terps Racing — global stylesheet & design system
+   Imported once from src/main.tsx. Tailwind v4 is loaded through
+   @tailwindcss/vite (see vite.config.ts) — no CDN script required.
+   ========================================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700;1,900&family=Roboto+Condensed:wght@300;400;600;700&family=Roboto+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&family=Goldman:wght@400;700&family=Neuton&display=swap");
 
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
+/* ---------------------------------------------------------------------------
+   Theme tokens (Tailwind v4 @theme => also emits utilities, e.g. text-tr-gold)
+   ------------------------------------------------------------------------ */
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-notable: "Notable", sans-serif;
-  --font-neuton: "Neuton";
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Inter", sans-serif;
+  --font-body: "Roboto Condensed", "Inter", sans-serif;
+  --font-mono: "Roboto Mono", ui-monospace, monospace;
+  --font-notable: "Notable", "Barlow Condensed", sans-serif;
+  --font-neuton: "Neuton", Georgia, serif;
+
+  --color-tr-red: #e21833;
+  --color-tr-red-deep: #9e0f22;
+  --color-tr-gold: #ffd200;
+  --color-tr-gold-soft: #ffe14a;
+  --color-tr-ink: #08080a;
+  --color-tr-surface: #101013;
+  --color-tr-surface-2: #17171d;
+  --color-tr-line: #26262e;
+}
+
+:root {
+  --tr-red: #e21833;
+  --tr-red-deep: #9e0f22;
+  --tr-gold: #ffd200;
+  --tr-gold-soft: #ffe14a;
+  --tr-ink: #08080a;
+  --tr-surface: #101013;
+  --tr-surface-2: #17171d;
+  --tr-line: rgba(255, 255, 255, 0.09);
+  --tr-line-strong: rgba(255, 255, 255, 0.16);
+
+  --tr-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --tr-shadow-md: 0 10px 30px -12px rgba(0, 0, 0, 0.75);
+  --tr-shadow-lg: 0 28px 60px -24px rgba(0, 0, 0, 0.85);
+  --tr-glow-red: 0 0 48px -12px rgba(226, 24, 51, 0.55);
+  --tr-glow-gold: 0 0 48px -12px rgba(255, 210, 0, 0.45);
+
+  --tr-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --tr-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --tr-nav-h: 72px;
+  --tr-gutter: clamp(20px, 5vw, 80px);
+  --tr-section-y: clamp(56px, 8vw, 128px);
+
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------------ */
+*,
+*::before,
+*::after {
+  border-color: var(--tr-line);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--tr-nav-h) + 16px);
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
-
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+  background: var(--tr-ink);
+  color: #fff;
 }
 
+body {
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--tr-gold);
+  color: #000;
+}
+
+:focus-visible {
+  outline: 2px solid var(--tr-gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Slim, on-brand scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2c2c34 transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2c2c34;
+  border-radius: 999px;
+  border: 2px solid var(--tr-ink);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3d3d47;
+}
+
+/* Legacy helpers kept for existing markup */
 .font-notable {
   font-family: var(--font-notable);
 }
-
 .font-neuton {
   font-family: var(--font-neuton);
+}
+
+/* ---------------------------------------------------------------------------
+   Layout primitives
+   ------------------------------------------------------------------------ */
+.tr-shell {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--tr-gutter);
+}
+
+.tr-section {
+  position: relative;
+  padding-block: var(--tr-section-y);
+}
+
+/* Subtle grid/noise texture for dark sections */
+.tr-grid-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 100%);
+}
+
+/* Soft coloured bloom, positioned by the consumer */
+.tr-bloom {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(90px);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ---------------------------------------------------------------------------
+   Type
+   ------------------------------------------------------------------------ */
+.tr-eyebrow {
+  font-family: var(--font-mono);
+  font-size: clamp(0.66rem, 1.1vw, 0.75rem);
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--tr-gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+}
+.tr-eyebrow::before {
+  content: "";
+  width: clamp(18px, 4vw, 38px);
+  height: 1px;
+  background: linear-gradient(90deg, var(--tr-gold), transparent);
+}
+
+.tr-display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+
+.tr-h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.9rem, 5vw, 3.4rem);
+}
+
+/* Gold gradient text */
+.tr-text-gold {
+  background: linear-gradient(100deg, #fff 0%, var(--tr-gold-soft) 45%, var(--tr-gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Outlined display text */
+.tr-text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.92);
+  paint-order: stroke fill;
+}
+
+/* Accent rule under a heading */
+.tr-rule {
+  display: block;
+  height: 3px;
+  width: 64px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--tr-red), var(--tr-gold));
+  transform-origin: left center;
+}
+
+/* ---------------------------------------------------------------------------
+   Surfaces
+   ------------------------------------------------------------------------ */
+.tr-card {
+  position: relative;
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--tr-surface-2), var(--tr-surface));
+  border: 1px solid var(--tr-line);
+  box-shadow: var(--tr-shadow-md);
+  overflow: hidden;
+  transition: transform 0.45s var(--tr-ease), box-shadow 0.45s var(--tr-ease),
+    border-color 0.45s var(--tr-ease);
+}
+.tr-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--tr-line-strong);
+  box-shadow: var(--tr-shadow-lg);
+}
+
+/* Gradient hairline that lights up on hover */
+.tr-card-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--tr-gold), transparent 40%, transparent 60%, var(--tr-red));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.45s var(--tr-ease);
+  pointer-events: none;
+}
+.tr-card-glow:hover::after {
+  opacity: 1;
+}
+
+.tr-glass {
+  background: rgba(10, 10, 12, 0.62);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border-bottom: 1px solid var(--tr-line);
+}
+
+/* Image that gently zooms while its group is hovered */
+.tr-zoom img,
+img.tr-zoom {
+  transition: transform 0.75s var(--tr-ease), filter 0.75s var(--tr-ease);
+  will-change: transform;
+}
+.group:hover .tr-zoom img,
+.group:hover img.tr-zoom {
+  transform: scale(1.06);
+}
+
+/* ---------------------------------------------------------------------------
+   Buttons
+   ------------------------------------------------------------------------ */
+.tr-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  padding: 0.72em 1.9em;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: clamp(0.78rem, 1.2vw, 0.9rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid transparent;
+  transition: transform 0.3s var(--tr-ease), box-shadow 0.3s var(--tr-ease),
+    color 0.3s var(--tr-ease), border-color 0.3s var(--tr-ease);
+}
+.tr-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateY(101%);
+  transition: transform 0.42s var(--tr-ease);
+}
+.tr-btn:hover {
+  transform: translateY(-2px);
+}
+.tr-btn:hover::before {
+  transform: translateY(0);
+}
+.tr-btn:active {
+  transform: translateY(0);
+}
+
+.tr-btn-gold {
+  background: var(--tr-gold);
+  color: #14140f;
+}
+.tr-btn-gold::before {
+  background: var(--tr-gold-soft);
+}
+.tr-btn-gold:hover {
+  box-shadow: var(--tr-glow-gold);
+}
+
+.tr-btn-red {
+  background: var(--tr-red);
+  color: #fff;
+}
+.tr-btn-red::before {
+  background: #ff2a46;
+}
+.tr-btn-red:hover {
+  box-shadow: var(--tr-glow-red);
+}
+
+.tr-btn-ghost {
+  background: transparent;
+  color: #fff;
+  border-color: var(--tr-line-strong);
+}
+.tr-btn-ghost::before {
+  background: rgba(255, 255, 255, 0.1);
+}
+.tr-btn-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.tr-btn-dark {
+  background: #000;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+.tr-btn-dark::before {
+  background: #1c1c22;
+}
+
+/* Animated underline for text links */
+.tr-link {
+  position: relative;
+  display: inline-block;
+}
+.tr-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.38s var(--tr-ease);
+}
+.tr-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* ---------------------------------------------------------------------------
+   Motion — scroll reveals (driven by the Reveal component / useReveal hook)
+   ------------------------------------------------------------------------ */
+[data-reveal] {
+  opacity: 0;
+  transition: opacity 0.72s var(--tr-ease), transform 0.72s var(--tr-ease),
+    filter 0.72s var(--tr-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+[data-reveal="up"] {
+  transform: translateY(28px);
+}
+[data-reveal="down"] {
+  transform: translateY(-28px);
+}
+[data-reveal="left"] {
+  transform: translateX(-32px);
+}
+[data-reveal="right"] {
+  transform: translateX(32px);
+}
+[data-reveal="scale"] {
+  transform: scale(0.94);
+}
+[data-reveal="blur"] {
+  filter: blur(10px);
+  transform: translateY(18px);
+}
+[data-reveal="rule"] {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+[data-reveal="rule"].is-revealed {
+  transform: scaleX(1);
+}
+
+/* ---------------------------------------------------------------------------
+   Keyframes
+   ------------------------------------------------------------------------ */
+@keyframes tr-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes tr-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes tr-pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes tr-scroll-hint {
+  0% {
+    transform: translateY(-40%);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(140%);
+    opacity: 0;
+  }
+}
+
+@keyframes tr-shimmer {
+  from {
+    background-position: -220% 0;
+  }
+  to {
+    background-position: 220% 0;
+  }
+}
+
+@keyframes tr-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.tr-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: tr-marquee var(--marquee-duration, 42s) linear infinite;
+}
+.tr-marquee:hover .tr-marquee-track {
+  animation-play-state: paused;
+}
+
+.tr-float {
+  animation: tr-float 6s ease-in-out infinite;
+}
+
+.tr-shimmer {
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.06) 20%,
+    rgba(255, 255, 255, 0.22) 45%,
+    rgba(255, 255, 255, 0.06) 70%
+  );
+  background-size: 220% 100%;
+  animation: tr-shimmer 3.4s linear infinite;
+}
+
+/* Fades a section edge into the page background */
+.tr-fade-bottom::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: clamp(80px, 14vh, 200px);
+  background: linear-gradient(180deg, transparent, var(--tr-ink));
+  pointer-events: none;
+}
+.tr-fade-top::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: clamp(80px, 14vh, 200px);
+  background: linear-gradient(0deg, transparent, var(--tr-ink));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion
+   ------------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* ============================================================================
+   Cinematic layer — scroll-driven motion, spotlights, film texture
+   ========================================================================= */
+
+/* Film grain over a dark section. Sits above the art, below the copy. */
+.tr-grain::after {
+  content: "";
+  position: absolute;
+  inset: -6%;
+  will-change: transform;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes tr-grain-shift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2%, 1%); }
+  50% { transform: translate(1%, -2%); }
+  75% { transform: translate(-1%, -1%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Letterbox bars — cinematic framing for a hero. */
+.tr-letterbox::before,
+.tr-letterbox::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: clamp(18px, 3.5vh, 46px);
+  background: var(--tr-ink);
+  z-index: 20;
+  pointer-events: none;
+}
+.tr-letterbox::before { top: 0; }
+.tr-letterbox::after { bottom: 0; }
+
+/* Sweeping light bar that crosses a heading once it reveals. */
+.tr-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.tr-sweep.is-revealed::after,
+.is-revealed .tr-sweep::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.55) 48%,
+    transparent 72%
+  );
+  transform: translateX(-120%);
+  animation: tr-sweep-across 1.5s var(--tr-ease) 0.25s 1 forwards;
+  pointer-events: none;
+}
+
+@keyframes tr-sweep-across {
+  to { transform: translateX(120%); }
+}
+
+/* Per-word title reveal. The consumer sets --i on each word. */
+.tr-words {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 0.28em;
+}
+.tr-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.tr-word > span {
+  display: inline-block;
+  transform: translateY(105%);
+  transition: transform 0.95s var(--tr-ease);
+  transition-delay: calc(var(--i, 0) * 90ms + var(--reveal-delay, 0ms));
+}
+.is-revealed .tr-word > span,
+.tr-words.is-revealed .tr-word > span {
+  transform: translateY(0);
+}
+
+/* Cursor-tracked spotlight. The consumer sets --mx/--my from pointer events. */
+.tr-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.45s var(--tr-ease);
+  pointer-events: none;
+  background: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 210, 0, 0.16),
+    transparent 62%
+  );
+  z-index: 1;
+}
+.tr-spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Ken Burns drift for a background plate. */
+.tr-kenburns {
+  animation: tr-kenburns 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes tr-kenburns {
+  from { transform: scale(1.06) translate3d(0, 0, 0); }
+  to { transform: scale(1.16) translate3d(-1.5%, -1.5%, 0); }
+}
+
+/* Vertical scroll-cue rail. */
+.tr-rail {
+  position: relative;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+.tr-rail::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 40%;
+  background: linear-gradient(180deg, transparent, var(--tr-gold), transparent);
+  animation: tr-rail-run 2.6s var(--tr-ease) infinite;
+}
+@keyframes tr-rail-run {
+  from { transform: translateY(-120%); }
+  to { transform: translateY(320%); }
+}
+
+/* Diagonal racing-stripe band. */
+.tr-stripes {
+  background-image: repeating-linear-gradient(
+    115deg,
+    var(--stripe-color, rgba(255, 255, 255, 0.06)) 0 12px,
+    transparent 12px 34px
+  );
+}
+
+/* Big ghosted number/word behind a section. */
+.tr-ghost {
+  position: absolute;
+  max-width: 100%;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.07);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-grain::after,
+  .tr-kenburns,
+  .tr-rail::after,
+  .tr-sweep.is-revealed::after,
+  .is-revealed .tr-sweep::after {
+    animation: none;
+  }
+  .tr-word > span {
+    transform: none !important;
+  }
+}
+
+/* ============================================================================
+   Backdrops — layered, animated scene backgrounds
+   Every layer is pure CSS so nothing extra is downloaded.
+   ========================================================================= */
+
+.tr-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  contain: paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 100% 100%;
+}
+
+.tr-backdrop > * {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── Aurora mesh: slow drifting colour clouds ─────────────────────────────── */
+.tr-bd-mesh {
+  background:
+    radial-gradient(42% 46% at 18% 22%, rgba(226, 24, 51, 0.34), transparent 62%),
+    radial-gradient(38% 42% at 82% 18%, rgba(255, 210, 0, 0.22), transparent 62%),
+    radial-gradient(46% 50% at 72% 82%, rgba(158, 15, 34, 0.32), transparent 64%),
+    radial-gradient(34% 38% at 28% 78%, rgba(255, 210, 0, 0.14), transparent 62%);
+  inset: -16%;
+  contain: paint;
+}
+
+/* ── Perspective floor grid receding to a horizon ─────────────────────────── */
+.tr-bd-floor {
+  top: 42%;
+  overflow: hidden;
+  opacity: 0.4;
+  contain: paint;
+  mask-image: linear-gradient(180deg, transparent, #000 22%, #000 62%, transparent 92%);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 62%, transparent 92%);
+}
+
+.tr-bd-floor::after {
+  content: "";
+  position: absolute;
+  inset: -70px 0 0 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.22) 1px, transparent 1px);
+  background-size: 70px 70px;
+  transform-origin: center top;
+  transform: perspective(340px) rotateX(66deg);
+  backface-visibility: hidden;
+}
+
+/* ── Flat tech grid ───────────────────────────────────────────────────────── */
+.tr-bd-grid {
+  inset: calc(var(--grid-size, 76px) * -1);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.13) 1px, transparent 1px);
+  background-size: var(--grid-size, 76px) var(--grid-size, 76px);
+  opacity: var(--grid-opacity, 0.18);
+  contain: paint;
+}
+
+/* Finer grid to sit under the coarse one */
+.tr-bd-grid-fine {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 19px 19px;
+  opacity: 0.5;
+}
+
+/* ── CRT scanlines ────────────────────────────────────────────────────────── */
+.tr-bd-scan {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0 3px,
+    rgba(0, 0, 0, 0.16) 3px 4px
+  );
+  opacity: var(--scan-opacity, 0.7);
+}
+
+/* A single bright line sweeping down, like a scanner pass */
+.tr-bd-sweepline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28%;
+  will-change: transform;
+  backface-visibility: hidden;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255, 210, 0, 0.09),
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  animation: tr-scanpass 7s var(--tr-ease) infinite;
+}
+
+@keyframes tr-scanpass {
+  0% { transform: translateY(-120%); }
+  55%, 100% { transform: translateY(420%); }
+}
+
+/* ── Diagonal speed streaks ───────────────────────────────────────────────── */
+.tr-bd-speed {
+  inset: -120px;
+  background-image: repeating-linear-gradient(
+    108deg,
+    transparent 0 44px,
+    rgba(255, 255, 255, 0.055) 44px 46px,
+    transparent 46px 92px
+  );
+  animation: tr-speed-run 2.6s linear infinite;
+  opacity: 0.85;
+  will-change: transform;
+}
+
+@keyframes tr-speed-run {
+  to { transform: translate3d(96.74px, 0, 0); }
+}
+
+/* ── Carbon fibre weave ───────────────────────────────────────────────────── */
+.tr-bd-carbon {
+  background-color: #0b0b0e;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 4px);
+  background-size: 8px 8px;
+  opacity: 0.9;
+}
+
+/* ── Topographic contours (off-road / terrain) ────────────────────────────── */
+.tr-bd-topo {
+  background-image:
+    repeating-radial-gradient(
+      ellipse 62% 38% at 28% 42%,
+      rgba(232, 160, 16, 0.09) 0 2px,
+      transparent 2px 34px
+    ),
+    repeating-radial-gradient(
+      ellipse 52% 44% at 78% 68%,
+      rgba(226, 24, 51, 0.07) 0 2px,
+      transparent 2px 40px
+    );
+  inset: -10%;
+  contain: paint;
+}
+
+/* ── Telemetry trace: a pulse line running across the section ─────────────── */
+.tr-bd-trace {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='200' viewBox='0 0 1200 200'%3E%3Cpath d='M0 100 L120 100 L140 62 L168 138 L196 100 L340 100 L360 78 L378 122 L400 100 L560 100 L586 40 L612 160 L636 100 L820 100 L842 70 L864 130 L888 100 L1200 100' fill='none' stroke='%23ffd200' stroke-width='1.5' stroke-opacity='0.5'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: 0 center;
+  background-size: 1200px 200px;
+  opacity: 0.28;
+  right: auto;
+  width: 200%;
+  animation: tr-trace-run 24s linear infinite;
+  will-change: transform;
+}
+
+@keyframes tr-trace-run {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* ── Vignette + edge fades ────────────────────────────────────────────────── */
+.tr-bd-vignette {
+  background:
+    radial-gradient(ellipse 78% 66% at 50% 46%, transparent 34%, rgba(8, 8, 10, 0.86) 100%);
+}
+
+.tr-bd-fade-y {
+  background: linear-gradient(
+    180deg,
+    var(--tr-ink) 0%,
+    transparent 16%,
+    transparent 84%,
+    var(--tr-ink) 100%
+  );
+}
+
+/* ── Corner brackets (EV-page motif, generalised) ─────────────────────────── */
+.tr-corners > span {
+  position: absolute;
+  width: clamp(28px, 5vw, 64px);
+  height: clamp(28px, 5vw, 64px);
+  border-color: var(--corner-color, var(--tr-red));
+  border-style: solid;
+  border-width: 0;
+  opacity: 0.9;
+}
+.tr-corners > span:nth-child(1) { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; }
+.tr-corners > span:nth-child(2) { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; }
+.tr-corners > span:nth-child(3) { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; }
+.tr-corners > span:nth-child(4) { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; }
+
+/* ── Drifting particles / embers ──────────────────────────────────────────── */
+.tr-bd-embers span {
+  position: absolute;
+  bottom: -10px;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    var(--ember-color, var(--tr-gold)) 0%,
+    var(--ember-color, var(--tr-gold)) 34%,
+    transparent 72%
+  );
+  opacity: 0;
+  animation: tr-ember-rise var(--dur, 12s) linear var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes tr-ember-rise {
+  0% { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; }
+  12% { opacity: 0.9; }
+  80% { opacity: 0.55; }
+  100% { transform: translateY(-92vh) translateX(var(--drift, 30px)) scale(1.1); opacity: 0; }
+}
+
+/* ── Section seam: a glowing hairline between sections ────────────────────── */
+.tr-seam {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(226, 24, 51, 0.55),
+    rgba(255, 210, 0, 0.75),
+    rgba(226, 24, 51, 0.55),
+    transparent
+  );
+}
+.tr-seam::after {
+  content: "";
+  position: absolute;
+  inset: -1px 0;
+  background: inherit;
+  filter: blur(6px);
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-bd-floor,
+  .tr-bd-speed,
+  .tr-bd-trace,
+  .tr-bd-sweepline::after,
+  .tr-bd-embers span {
+    animation: none;
+  }
+  .tr-bd-embers span { opacity: 0.4; }
+}
+
+/* ============================================================================
+   Race layer — high-drama effects.
+   Everything here is either ONE-SHOT (runs once, then costs nothing) or driven
+   by scroll/hover. No infinite loops on large surfaces; see the perf notes.
+   ========================================================================= */
+
+/* ── Start lights ─────────────────────────────────────────────────────────── */
+.tr-lights {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  background: #06060a;
+  animation: tr-lights-out 600ms var(--tr-ease) 2100ms forwards;
+}
+
+.tr-lights-rig {
+  display: flex;
+  gap: clamp(10px, 2.6vw, 26px);
+  padding: clamp(12px, 2.4vw, 24px);
+  border-radius: 999px;
+  background: #0c0c11;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 30px 90px -30px #000;
+}
+
+.tr-lights-rig span {
+  width: clamp(26px, 6.4vw, 62px);
+  height: clamp(26px, 6.4vw, 62px);
+  border-radius: 999px;
+  background: #1a0709;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  /* each light snaps on, then all of them cut out together */
+  animation: tr-light-on 220ms steps(1) both, tr-light-off 120ms steps(1) 1850ms both;
+  animation-delay: calc(var(--i) * 300ms), 1850ms;
+}
+
+@keyframes tr-light-on {
+  to {
+    background: #ff1f38;
+    box-shadow: 0 0 26px 6px rgba(255, 31, 56, 0.55), inset 0 0 12px rgba(255, 190, 200, 0.6);
+  }
+}
+@keyframes tr-light-off {
+  to { background: #1a0709; box-shadow: none; }
+}
+
+.tr-lights-go {
+  position: absolute;
+  bottom: clamp(48px, 12vh, 130px);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: clamp(1.6rem, 7vw, 4.5rem);
+  color: #16d94a;
+  opacity: 0;
+  text-shadow: 0 0 40px rgba(22, 217, 74, 0.6);
+  animation: tr-go 700ms var(--tr-ease) 1850ms both;
+}
+
+@keyframes tr-go {
+  0% { opacity: 0; transform: scale(0.82); }
+  30% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+@keyframes tr-lights-out {
+  to { opacity: 0; visibility: hidden; }
+}
+
+.tr-lights-skip {
+  position: absolute;
+  bottom: clamp(16px, 4vh, 34px);
+  right: clamp(16px, 4vw, 34px);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.tr-lights-skip:hover { color: #fff; }
+
+/* ── Tachometer scroll rail ───────────────────────────────────────────────── */
+.tr-tach {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  overflow: hidden;
+}
+.tr-tach-fill {
+  height: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, #16d94a 0%, var(--tr-gold) 55%, #ff8a00 78%, var(--tr-red) 100%);
+  transition: transform 90ms linear;
+}
+/* redline glow once you're deep into the page */
+.tr-tach-redline {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 70%, rgba(255, 31, 56, 0.85) 100%);
+  opacity: 0;
+  transition: opacity 260ms var(--tr-ease);
+}
+.tr-tach[data-redline="true"] .tr-tach-redline { opacity: 1; }
+
+/* ── Slipstream streaks (spawned during fast scroll, removed after) ───────── */
+.tr-slip {
+  position: fixed;
+  z-index: 1;
+  height: 2px;
+  border-radius: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--slip-color, rgba(255, 210, 0, 0.85)), transparent);
+  animation: tr-slip-run var(--slip-dur, 520ms) linear forwards;
+  will-change: transform, opacity;
+}
+@keyframes tr-slip-run {
+  from { transform: translate3d(0, 0, 0) scaleX(0.3); opacity: 0; }
+  20% { opacity: 1; }
+  to { transform: translate3d(var(--slip-dx, -120vw), 0, 0) scaleX(1); opacity: 0; }
+}
+
+/* ── Speed lean: the page tilts into the corner while you scroll fast ─────── */
+.tr-lean {
+  will-change: transform;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Checkered flag wipe on section entry ─────────────────────────────────── */
+.tr-checker {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background-image:
+    conic-gradient(#fff 0 25%, transparent 0 50%, #fff 0 75%, transparent 0);
+  background-size: 26px 26px;
+  opacity: 0;
+}
+.is-revealed > .tr-checker {
+  animation: tr-checker-wipe 900ms var(--tr-ease) forwards;
+}
+@keyframes tr-checker-wipe {
+  0% { opacity: 0.16; clip-path: inset(0 100% 0 0); }
+  35% { opacity: 0.16; }
+  100% { opacity: 0; clip-path: inset(0 0 0 0); }
+}
+
+/* ── Headlight sweep across a card on hover ───────────────────────────────── */
+.tr-headlight { position: relative; overflow: hidden; }
+.tr-headlight::before {
+  content: "";
+  position: absolute;
+  top: -60%;
+  bottom: -60%;
+  width: 45%;
+  left: -60%;
+  pointer-events: none;
+  z-index: 3;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.16) 45%,
+    rgba(255, 255, 255, 0.32) 50%,
+    rgba(255, 255, 255, 0.16) 55%,
+    transparent
+  );
+  transform: skewX(-18deg) translate3d(0, 0, 0);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.tr-headlight:hover::before {
+  opacity: 1;
+  animation: tr-headlight-run 780ms var(--tr-ease) forwards;
+}
+@keyframes tr-headlight-run {
+  to { transform: skewX(-18deg) translate3d(340%, 0, 0); opacity: 0; }
+}
+
+/* ── Mega display type ────────────────────────────────────────────────────── */
+.tr-mega {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  line-height: 0.82;
+  letter-spacing: -0.035em;
+}
+
+/* "Stamped" headline: an offset second impression, like screen-printed livery.
+   Uses text-shadow rather than a z-index:-1 pseudo-element, which would sit
+   behind the section background and vanish. */
+.tr-stamp {
+  display: inline-block;
+  text-shadow:
+    0.045em 0.045em 0 var(--stamp-color, rgba(226, 24, 51, 0.9)),
+    0.09em 0.09em 0 var(--stamp-color-2, rgba(255, 210, 0, 0.35));
+}
+.tr-stamp-dark {
+  --stamp-color: rgba(0, 0, 0, 0.85);
+  --stamp-color-2: rgba(226, 24, 51, 0.5);
+}
+
+/* ── Gauge sweep (SVG stroke, one-shot) ───────────────────────────────────── */
+.tr-gauge-arc {
+  stroke-dasharray: var(--arc-len, 200);
+  stroke-dashoffset: var(--arc-len, 200);
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.is-revealed .tr-gauge-arc,
+.tr-gauge-arc.is-swept {
+  stroke-dashoffset: var(--arc-to, 40);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-lights { display: none; }
+  .tr-slip { display: none; }
+  .tr-lean { transform: none !important; }
+  .is-revealed > .tr-checker { animation: none; opacity: 0; }
+  .tr-headlight:hover::before { animation: none; opacity: 0; }
 }
