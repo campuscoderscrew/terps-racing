@@ -11,8 +11,37 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <title>Terps Racing | University of Maryland</title>
-    <script type="module" crossorigin src="/terps-racing/assets/index-Rf6xIxXN.js"></script>
-    <link rel="stylesheet" crossorigin href="/terps-racing/assets/index-BWgyLWnf.css">
+    <!-- Apply the stored theme and motion level before first paint, so a
+         returning visitor never sees a flash of the dark palette or a frame of
+         motion they turned off. Mirrors src/components/theme.tsx + motion.tsx. -->
+    <script>
+      (function () {
+        var r = document.documentElement;
+        try {
+          var t = localStorage.getItem("tr-theme") === "light" ? "light" : "dark";
+          r.setAttribute("data-theme", t);
+          r.style.colorScheme = t;
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute("content", t === "light" ? "#f6f6f8" : "#08080a");
+        } catch (e) {
+          r.setAttribute("data-theme", "dark");
+        }
+        try {
+          var v = localStorage.getItem("tr-motion");
+          if (v !== "cinematic" && v !== "standard" && v !== "reduced") {
+            v = window.matchMedia &&
+                window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "reduced"
+              : "cinematic";
+          }
+          r.setAttribute("data-motion", v);
+        } catch (e) {
+          r.setAttribute("data-motion", "cinematic");
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/terps-racing/assets/index-BKtBAS-W.js"></script>
+    <link rel="stylesheet" crossorigin href="/terps-racing/assets/index-a736I6sX.css">
   </head>
   <body>
     <div id="root"></div>
