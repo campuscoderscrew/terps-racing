@@ -32,8 +32,8 @@ function arcPath(cx: number, cy: number, r: number, from: number, to: number) {
 export default function Gauge({
   value,
   size = 168,
-  color = "var(--tr-gold)",
-  trackColor = "rgba(255,255,255,0.09)",
+  color = "var(--tr-gold-line)",
+  trackColor = "rgb(var(--tr-fg) / 0.09)",
   children,
   label,
 }: GaugeProps) {
@@ -117,7 +117,7 @@ export default function Gauge({
             y1={t.y1}
             x2={t.x2}
             y2={t.y2}
-            stroke={t.hot ? "var(--tr-red)" : "rgba(255,255,255,0.28)"}
+            stroke={t.hot ? "var(--tr-red)" : "rgb(var(--tr-fg) / 0.28)"}
             strokeWidth={t.hot ? 2.5 : 1.5}
             strokeLinecap="round"
           />
@@ -128,7 +128,7 @@ export default function Gauge({
         {children}
         {label && (
           <span
-            className="mt-1 max-w-[11ch] text-white/50"
+            className="mt-1 max-w-[11ch] text-white/60"
             style={{
               fontFamily: "var(--font-mono)",
               fontSize: "0.58rem",

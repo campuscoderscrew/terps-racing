@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Reveal, { useReveal } from "./reveal";
+import { motionAtLeast } from "./motion";
 
 /* ── Words ───────────────────────────────────────────────────────────────── */
 
@@ -245,7 +246,9 @@ export function Scene({
     >
       {ghost && (
         <span
-          className="tr-ghost"
+          // The ghosted word drifts laterally across its trip through the
+          // viewport — a camera pan behind the heading, free on the compositor.
+          className="tr-ghost tr-cam-pan-l"
           aria-hidden="true"
           style={{
             fontSize: "clamp(3rem, 10vw, 8.5rem)",
@@ -282,4 +285,104 @@ export function Scene({
       </div>
     </div>
   );
+}
+
+/* ── Chars ───────────────────────────────────────────────────────────────── */
+
+interface CharsProps {
+  text: string;
+  className?: string;
+  style?: React.CSSProperties;
+  delay?: number;
+  as?: "h1" | "h2" | "h3" | "span" | "div";
+  id?: string;
+}
+
+/**
+ * `Words`' louder sibling: every glyph rolls up out of its own clipped slot on
+ * a hinge, left to right. Reserve it for hero headlines — a paragraph rendered
+ * this way is one span per character and reads as a stunt.
+ *
+ * Characters are grouped per word so a narrow viewport wraps between words
+ * rather than mid-word, and `--i` counts across the whole string so the
+ * cascade runs continuously instead of restarting at each word.
+ */
+export function Chars({
+  text,
+  className = "",
+  style,
+  delay = 0,
+  as: Tag = "span",
+  id,
+}: CharsProps) {
+  const { ref, revealed } = useReveal<HTMLDivElement>();
+  let index = 0;
+
+  return (
+    <Tag
+      id={id}
+      ref={ref as React.Ref<never>}
+      className={`tr-chars ${revealed ? "is-revealed" : ""} ${className}`.trim()}
+      style={{ ["--reveal-delay" as string]: `${delay}ms`, ...style }}
+      // One span per glyph would otherwise read and copy as loose letters.
+      aria-label={text}
+    >
+      {text.split(" ").map((word, w) => (
+        <span key={`${word}-${w}`} className="tr-char-word" aria-hidden="true">
+          {Array.from(word).map((char, c) => (
+            <span
+              key={`${char}-${c}`}
+              className="tr-char"
+              style={{ ["--i" as string]: index++ }}
+            >
+              <span>{char}</span>
+            </span>
+          ))}
+        </span>
+      ))}
+    </Tag>
+  );
+}
+
+/* ── Magnetic ────────────────────────────────────────────────────────────── */
+
+/**
+ * Leans an element toward the cursor while it is over it.
+ *
+ * Writes `--mag-x` / `--mag-y` straight to the node — the same reason
+ * `useParallax` does: routing a pointer position through React state re-renders
+ * the whole surrounding section on every mouse move. The element needs
+ * `.tr-magnetic`, which is what turns those variables into a transform and,
+ * more importantly, what eases it back to centre on leave.
+ *
+ * Only active at motion level `cinematic`; below that the element sits still.
+ */
+export function useMagnetic<T extends HTMLElement = HTMLElement>(
+  /** Maximum travel in pixels. */
+  strength = 10,
+) {
+  const ref = useRef<T>(null);
+
+  const onMouseMove = useCallback(
+    (e: React.MouseEvent<T>) => {
+      const el = ref.current;
+      if (!el || !motionAtLeast("cinematic")) return;
+      const r = el.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+      const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+      const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+      el.style.setProperty("--mag-x", `${(clamp(dx) * strength).toFixed(2)}px`);
+      el.style.setProperty("--mag-y", `${(clamp(dy) * strength).toFixed(2)}px`);
+    },
+    [strength],
+  );
+
+  const onMouseLeave = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.setProperty("--mag-x", "0px");
+    el.style.setProperty("--mag-y", "0px");
+  }, []);
+
+  return { ref, onMouseMove, onMouseLeave };
 }

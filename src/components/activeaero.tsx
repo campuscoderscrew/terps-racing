@@ -122,7 +122,7 @@ export default function ActiveAero({ image }: { image: string }) {
   return (
     <section
       ref={ref}
-      className="tr-grain relative overflow-hidden"
+      className="tr-on-dark tr-grain relative overflow-hidden"
       aria-labelledby="aero-title"
     >
       {/* Backdrop */}

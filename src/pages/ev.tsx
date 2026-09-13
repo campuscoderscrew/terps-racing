@@ -38,7 +38,7 @@ function EVParagraph({ text }: { text: string }) {
     <p
       className="mb-8 md:mb-12 max-w-xl"
       style={{
-        color: "rgba(200,200,200,0.8)",
+        color: "rgb(var(--tr-fg) / 0.8)",
         fontFamily: "var(--font-body)",
         lineHeight: 1.8,
         fontSize: "0.875rem",
@@ -60,7 +60,7 @@ function HeroSection() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-screen bg-tr-ink overflow-hidden flex items-center mt-10">
+    <section className="tr-on-dark relative w-full min-h-screen bg-tr-ink overflow-hidden flex items-center mt-10">
       {/* Background */}
       <img
         src={ev_hero_background}
@@ -75,7 +75,7 @@ function HeroSection() {
         className="absolute inset-0 z-10 opacity-20"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)",
+            "linear-gradient(rgb(var(--tr-fg) / 0.15) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--tr-fg) / 0.15) 1px, transparent 1px)",
           backgroundSize: "80px 80px",
         }}
       />
@@ -134,7 +134,7 @@ function HeroSection() {
           <span
             className="text-xs font-bold uppercase mb-6 block"
             style={{
-              color: "var(--tr-red)",
+              color: "var(--tr-red-ink)",
               fontFamily: "var(--font-mono)",
               letterSpacing: "0.28em",
             }}
@@ -167,14 +167,14 @@ function HeroSection() {
             <br />
             <span
               style={{
-                WebkitTextStroke: "2px rgba(255,255,255,0.9)",
+                WebkitTextStroke: "2px rgb(var(--tr-fg) / 0.9)",
                 color: "transparent",
                 textShadow: "none",
               }}
             >
               Racing
             </span>{" "}
-            <span style={{ color: "var(--tr-red)" }}>EV</span>
+            <span style={{ color: "var(--tr-red-ink)" }}>EV</span>
           </h1>
         </div>
 
@@ -209,7 +209,7 @@ function HeroSection() {
           <p
             className="text-sm leading-relaxed"
             style={{
-              color: "rgba(210,210,210,0.82)",
+              color: "rgb(var(--tr-fg) / 0.82)",
               fontFamily: "var(--font-body)",
               lineHeight: 1.75,
               fontSize: "0.85rem",
@@ -402,7 +402,7 @@ const FeatureCard = ({
     <h3
       className="text-base font-bold mb-3"
       style={{
-        color: "var(--tr-gold)",
+        color: "var(--tr-gold-ink)",
         fontFamily: "var(--font-mono)",
         letterSpacing: "0.05em",
       }}
@@ -412,7 +412,7 @@ const FeatureCard = ({
     <p
       className="text-sm leading-relaxed"
       style={{
-        color: "rgba(200,200,200,0.78)",
+        color: "rgb(var(--tr-fg) / 0.78)",
         fontFamily: "var(--font-body)",
         lineHeight: 1.75,
         fontSize: "0.82rem",
@@ -468,7 +468,7 @@ function AboutSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full min-h-screen bg-tr-ink overflow-hidden flex items-stretch"
+      className="tr-on-dark relative w-full min-h-screen bg-tr-ink overflow-hidden flex items-stretch"
     >
       {/* Background */}
       <div className="absolute inset-0 z-0">
@@ -500,7 +500,7 @@ function AboutSection() {
         <span
           className="text-xs font-bold tracking-widest uppercase"
           style={{
-            color: "var(--tr-gold)",
+            color: "var(--tr-gold-ink)",
             fontFamily: "var(--font-mono)",
             letterSpacing: "0.25em",
           }}
@@ -529,7 +529,7 @@ function AboutSection() {
             <h2
               className="font-black leading-tight mb-6"
               style={{
-                color: "var(--tr-gold)",
+                color: "var(--tr-gold-ink)",
                 fontFamily: "var(--font-display)",
                 fontSize: "clamp(1.6rem, 4vw, 3rem)",
                 lineHeight: 1.15,
@@ -618,7 +618,7 @@ function CompeteSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full min-h-screen bg-tr-ink overflow-hidden flex items-center"
+      className="tr-on-dark relative w-full min-h-screen bg-tr-ink overflow-hidden flex items-center"
     >
       {/* Background */}
       <img
@@ -647,7 +647,7 @@ function CompeteSection() {
           <h2
             className="font-black leading-tight mb-4"
             style={{
-              color: "var(--tr-gold)",
+              color: "var(--tr-gold-ink)",
               fontFamily: "var(--font-display)",
               fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)",
               letterSpacing: "-0.01em",
@@ -679,7 +679,7 @@ function CompeteSection() {
         >
           <p
             style={{
-              color: "#fff",
+              color: "var(--tr-text)",
               fontFamily: "var(--font-body)",
               fontSize: "clamp(3rem, 8vw, 6rem)",
               fontWeight: 900,
@@ -691,7 +691,7 @@ function CompeteSection() {
           </p>
           <p
             style={{
-              color: "#fff",
+              color: "var(--tr-text)",
               fontFamily: "var(--font-body)",
               fontSize: "clamp(1rem, 2vw, 1.5rem)",
               fontWeight: 700,
@@ -732,7 +732,7 @@ function CompeteSection() {
               }
               className="tr-btn tr-btn-ghost !px-5 !py-2 !text-[0.72rem] uppercase"
               style={{
-                color: "var(--tr-gold)",
+                color: "var(--tr-gold-ink)",
                 borderColor: "rgba(255,210,0,0.45)",
                 letterSpacing: "0.12em",
               }}
@@ -765,7 +765,7 @@ interface SponsorTierData {
 const SPONSOR_TIERS: SponsorTierData[] = [
   {
     label: "Title",
-    labelColor: "var(--tr-gold)",
+    labelColor: "var(--tr-gold-ink)",
     amount: "$10,000+",
     desktopCols: 2,
     sponsors: [
@@ -789,7 +789,7 @@ const SPONSOR_TIERS: SponsorTierData[] = [
   },
   {
     label: "Platinum",
-    labelColor: "#E5E4E2",
+    labelColor: "var(--tr-metal-platinum)",
     amount: "$5,000 - $10,000",
     desktopCols: 3,
     sponsors: [
@@ -808,7 +808,7 @@ const SPONSOR_TIERS: SponsorTierData[] = [
   },
   {
     label: "Gold",
-    labelColor: "#FFD700",
+    labelColor: "var(--tr-gold-ink)",
     amount: "$2,500 - $5,000",
     desktopCols: 3,
     sponsors: [
@@ -846,7 +846,7 @@ const SPONSOR_TIERS: SponsorTierData[] = [
   },
   {
     label: "Silver",
-    labelColor: "#c0c0c0",
+    labelColor: "var(--tr-metal-silver)",
     amount: "$1,000 - $2,500",
     desktopCols: 3,
     sponsors: [
@@ -879,7 +879,7 @@ const SPONSOR_TIERS: SponsorTierData[] = [
   },
   {
     label: "Bronze",
-    labelColor: "#CD7F32",
+    labelColor: "var(--tr-metal-bronze)",
     amount: "$500 - $1,000",
     desktopCols: 2,
     sponsors: [
@@ -910,7 +910,7 @@ const tierMinCellWidth = (desktopCols: number) =>
   desktopCols <= 2 ? "300px" : "240px";
 
 const CELL_IDLE = {
-  background: "rgba(255,255,255,0.9)",
+  background: "rgb(var(--tr-fg) / 0.9)",
   borderColor: "rgba(255,210,0,0.18)",
   boxShadow: "none",
   transform: "translateY(0) scale(1)",
@@ -995,7 +995,7 @@ function SponsorTierSection({
         <span
           className="text-xs whitespace-nowrap"
           style={{
-            color: "rgba(200,200,200,0.6)",
+            color: "rgb(var(--tr-fg) / 0.6)",
             fontFamily: "var(--font-mono)",
             letterSpacing: "0.1em",
           }}
@@ -1047,7 +1047,7 @@ function SponsorsSection() {
         style={{
           opacity: 0.12,
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)",
+            "linear-gradient(rgb(var(--tr-fg) / 0.15) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--tr-fg) / 0.15) 1px, transparent 1px)",
           backgroundSize: "80px 80px",
         }}
       />
@@ -1056,7 +1056,8 @@ function SponsorsSection() {
       <div
         className="absolute inset-x-0 top-0 h-48 z-0"
         style={{
-          background: "linear-gradient(180deg, #000 0%, transparent 100%)",
+          background:
+            "linear-gradient(180deg, var(--tr-ink) 0%, transparent 100%)",
         }}
       />
 
@@ -1065,7 +1066,7 @@ function SponsorsSection() {
         <span
           className="text-xs font-bold tracking-widest uppercase"
           style={{
-            color: "var(--tr-gold)",
+            color: "var(--tr-gold-ink)",
             fontFamily: "var(--font-mono)",
             letterSpacing: "0.25em",
           }}
@@ -1086,7 +1087,7 @@ function SponsorsSection() {
           <h2
             className="font-black leading-tight mb-6"
             style={{
-              color: "var(--tr-gold)",
+              color: "var(--tr-gold-ink)",
               fontFamily: "var(--font-display)",
               fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)",
               letterSpacing: "-0.01em",

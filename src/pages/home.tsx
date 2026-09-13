@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 
 import NavBar from "../components/navbar";
+import FuelBanner from "~/components/fuelbanner";
 import Paragraph from "~/components/paragraph";
 import Reveal from "~/components/reveal";
 import {
@@ -14,7 +15,7 @@ import {
 import Backdrop, { Seam } from "~/components/backdrop";
 import StartLights from "~/components/startlights";
 import Gauge from "~/components/gauge";
-import { useSlipstream, useSpeedLean } from "~/components/velocity";
+import { useSlipstream } from "~/components/velocity";
 import CountUp from "~/components/countup";
 import { header2_style } from "~/siteInfo";
 
@@ -35,7 +36,6 @@ import race_image from "../public/images/homePage/race.webp";
 import ic_image from "../public/images/homePage/IC.webp";
 import ev_image from "../public/images/homePage/EV.webp";
 import baja_image from "../public/images/homePage/baja.webp";
-import footerImage from "../public/images/homePage/Footer.webp";
 
 const CAROUSEL = [
   caraousel_1,
@@ -149,7 +149,7 @@ function Hero() {
   return (
     <section
       ref={heroRef}
-      className="tr-grain relative overflow-hidden"
+      className="tr-on-dark tr-grain tr-cam-bars relative overflow-hidden"
       style={{ minHeight: "100svh" }}
       aria-label="Terps Racing"
     >
@@ -159,7 +159,12 @@ function Hero() {
           src={hero_bg}
           ref={targetRef as React.RefObject<HTMLImageElement>}
           alt="Terps Racing car on track during a testing session"
-          className="h-full w-full object-cover object-center"
+          // `tr-cam-push` is the scroll-driven replacement for the parallax
+          // above: same push-in, run by the compositor instead of a scroll
+          // handler. Where the browser supports it, it wins (a CSS animation
+          // beats the inline transform `useParallax` writes); where it does
+          // not, the hook is still there doing the job.
+          className="tr-cam-push h-full w-full object-cover object-center"
           loading="eager"
         />
         <div
@@ -184,6 +189,9 @@ function Hero() {
         variant="aurora"
         embers={8}
         scanPass
+        beams
+        keylight
+        keyPos={["34%", "22%"]}
         vignette={false}
         intensity={0.85}
       />
@@ -211,7 +219,9 @@ function Hero() {
 
       {/* Copy */}
       <div className="relative z-10 flex min-h-[100svh] flex-col justify-end pb-[clamp(72px,12vh,140px)] pt-[var(--tr-nav-h)]">
-        <div className="tr-shell">
+        {/* Dissolves as the hero leaves, so the shot changes rather than the
+            copy simply sliding off the top of the screen. */}
+        <div className="tr-shell tr-cam-fade">
           <div style={enter(120)}>
             <span className="tr-eyebrow">
               University of Maryland · Est. 1982
@@ -277,28 +287,28 @@ const STATS = [
     suffix: "+",
     label: "Active members",
     dial: 0.8,
-    color: "var(--tr-gold)",
+    color: "var(--tr-gold-line)",
   },
   {
     value: 60,
     suffix: "+",
     label: "Races entered",
     dial: 0.66,
-    color: "var(--tr-red)",
+    color: "var(--tr-red-ink)",
   },
   {
     value: 3,
     suffix: "",
     label: "Cars a year",
     dial: 0.3,
-    color: "var(--tr-gold)",
+    color: "var(--tr-gold-line)",
   },
   {
     value: 1982,
     suffix: "",
     label: "Founded",
     dial: 0.95,
-    color: "var(--tr-red)",
+    color: "var(--tr-red-ink)",
     raw: true,
   },
 ];
@@ -365,7 +375,7 @@ function AboutSection() {
       id="about"
       aria-labelledby="about-title"
     >
-      <Backdrop variant="aurora" fade intensity={0.5} />
+      <Backdrop variant="aurora" beams fade intensity={0.62} />
       <div className="tr-shell relative z-10">
         <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
           <div>
@@ -375,7 +385,7 @@ function AboutSection() {
               title="From Blueprint to Podium"
               ghost="About"
             />
-            <Paragraph text="Founded in 1982, Terps Racing is the University of Maryland's premier collegiate motorsports program \u2014 over 120 driven engineers who design, build and race three high-performance vehicles each season: Formula IC, Formula Electric and Baja SAE." />
+            <Paragraph text="Founded in 1982, Terps Racing is the University of Maryland's premier collegiate motorsports program — over 120 driven engineers who design, build and race three high-performance vehicles each season: Formula IC, Formula Electric and Baja SAE." />
             <Paragraph
               delay={100}
               text="We fuse academic theory with hands-on grit, giving students real-world experience in CAD, FEA, CFD, fabrication and dynamic testing. Every vehicle is designed and manufactured entirely by students, then proven in national SAE competitions across acceleration, skidpad, autocross and endurance."
@@ -438,7 +448,10 @@ function AboutSection() {
           </Reveal>
         </div>
 
-        <Reveal variant="scale" delay={100} className="mt-14 block">
+        {/* The photo strip arrives behind a raked curtain that slides off it,
+            rather than fading up — it is the one full-width image in the
+            section and it can carry the bigger entrance. */}
+        <Reveal variant="wipe" delay={100} className="mt-14 block">
           <ImageTicker slides={CAROUSEL} />
         </Reveal>
       </div>
@@ -467,14 +480,14 @@ const PROCESS_STEPS = [
     img: ASSETS.processTest,
     alt: "Test phase — car undergoing performance testing",
     description:
-      "Run test days to push the car to its limits, gather telemetry and tune performance. Real data from real laps drives every iteration \u2014 tufting, pressure taps, flow-visualisation and coast-down testing validate what the simulations predicted.",
+      "Run test days to push the car to its limits, gather telemetry and tune performance. Real data from real laps drives every iteration — tufting, pressure taps, flow-visualisation and coast-down testing validate what the simulations predicted.",
   },
   {
     word: "Race",
     img: ASSETS.processRace,
     alt: "Race phase — Terps Racing competing at an SAE event",
     description:
-      "Race head-to-head at national SAE events across static and dynamic disciplines \u2014 design, cost and business presentations alongside acceleration, skidpad, autocross and endurance.",
+      "Race head-to-head at national SAE events across static and dynamic disciplines — design, cost and business presentations alongside acceleration, skidpad, autocross and endurance.",
   },
 ];
 
@@ -506,7 +519,7 @@ function Process() {
                   type="button"
                   onClick={() => setSelectedStep(step)}
                   aria-label={`Read about the ${step.word} phase`}
-                  className="tr-headlight group relative block w-full cursor-pointer rounded-[clamp(16px,3vw,32px)] border border-white/[0.07] transition-[border-color,transform] duration-500 hover:border-white/25"
+                  className="tr-on-dark tr-headlight group relative block w-full cursor-pointer rounded-[clamp(16px,3vw,32px)] border border-white/[0.07] transition-[border-color,transform] duration-500 hover:border-white/25"
                   style={{ height: "clamp(100px,14vw,182px)" }}
                 >
                   <span className="tr-checker" aria-hidden="true" />
@@ -533,7 +546,7 @@ function Process() {
                     className="tr-display absolute inset-0 flex items-center justify-center text-transparent transition-all duration-500"
                     style={{
                       fontSize: "clamp(1.9rem, 6.5vw, 4.6rem)",
-                      WebkitTextStroke: "2px rgba(255,255,255,0.95)",
+                      WebkitTextStroke: "2px rgb(var(--tr-fg) / 0.95)",
                     }}
                   >
                     {step.word}
@@ -601,7 +614,7 @@ function ProcessPopup({
       aria-label={`${step.word} phase`}
     >
       <div
-        className="absolute inset-0 bg-tr-ink/85 backdrop-blur-md"
+        className="tr-on-dark absolute inset-0 bg-tr-ink/85 backdrop-blur-md"
         style={{ animation: "tr-fade-up 0.3s ease forwards" }}
       />
 
@@ -682,7 +695,7 @@ const TEAMS = [
     img: ASSETS.teamBaja,
     alt: "Terps Racing Baja off-road vehicle navigating rough terrain",
     desc: "An engineering project team that designs, builds and races an off-road vehicle in the SAE Collegiate Baja Design Series.",
-    accent: "#e8a010",
+    accent: "var(--tr-amber)",
     tag: "Off-road",
   },
 ];
@@ -719,7 +732,7 @@ function TeamCard({
   const { ref, onMouseMove } = useSpotlight<HTMLAnchorElement>();
 
   return (
-    <Reveal variant="up" delay={index * 130}>
+    <Reveal variant="tilt" delay={index * 130}>
       <Link
         ref={ref}
         onMouseMove={onMouseMove}
@@ -728,7 +741,7 @@ function TeamCard({
         aria-label={`${team.name} team`}
       >
         <div
-          className="relative w-full overflow-hidden"
+          className="tr-gleam relative w-full overflow-hidden"
           style={{ aspectRatio: "16/10" }}
         >
           <img
@@ -795,7 +808,7 @@ function History() {
       id="history"
       aria-labelledby="history-title"
     >
-      <Backdrop variant="darkroom" fade intensity={0.85} />
+      <Backdrop variant="flag" fade intensity={0.8} />
       <div className="tr-shell relative z-10 max-w-[900px]">
         <Scene
           id="history-title"
@@ -843,8 +856,8 @@ function SponsorBand() {
               lineHeight: 1.75,
             }}
           >
-            Maryland gives us lab and shop space. Everything else \u2014 parts,
-            manufacturing and travel to competition \u2014 is funded by sponsors
+            Maryland gives us lab and shop space. Everything else — parts,
+            manufacturing and travel to competition — is funded by sponsors
             and donors. Partners get their logo on the cars, r\u00e9sum\u00e9
             book access and a front-row seat to what these students build.
           </p>
@@ -925,28 +938,11 @@ function CtaRow() {
 function Footer() {
   return (
     <footer
-      className="relative overflow-hidden bg-tr-ink"
+      className="tr-on-dark relative overflow-hidden bg-tr-ink"
       id="contact"
       role="contentinfo"
     >
-      <div
-        className="relative w-full overflow-hidden"
-        style={{ minHeight: 120 }}
-      >
-        <img
-          src={footerImage}
-          alt="Terps Racing cars lined up at competition"
-          className="w-full object-cover"
-          loading="lazy"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, var(--tr-ink) 0%, rgba(8,8,10,0.55) 40%, rgba(8,8,10,0.9) 100%)",
-          }}
-        />
-      </div>
+      <FuelBanner />
 
       <div className="tr-shell flex flex-col items-center gap-5 border-t border-white/[0.07] py-9 text-center sm:flex-row sm:justify-between sm:text-left">
         <img src={logo} alt="Terps Racing" className="h-10 w-auto opacity-80" />
@@ -973,7 +969,7 @@ function Footer() {
           </ul>
         </nav>
         <p
-          className="text-[0.75rem] text-white/35"
+          className="text-[0.75rem] text-white/55"
           style={{ fontFamily: "var(--font-mono)" }}
         >
           © {new Date().getFullYear()} Terps Racing
@@ -985,14 +981,13 @@ function Footer() {
 
 /* ── Page ────────────────────────────────────────────────────────────────── */
 export default function Home() {
-  const leanRef = useSpeedLean<HTMLDivElement>(1);
   useSlipstream(true);
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-tr-ink text-white">
       <StartLights />
       <NavBar />
-      <main ref={leanRef} className="tr-lean">
+      <main>
         <Hero />
         <StatsBar />
         <AboutSection />

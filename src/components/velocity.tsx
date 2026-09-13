@@ -50,6 +50,16 @@ function reducedMotion() {
 /**
  * Leans an element into the corner as scroll speed rises — a slight skew and
  * squash, capped so text stays readable.
+ *
+ * ⚠️ NOT for a page wrapper. It was on `<main>` on five routes and it was the
+ * most expensive thing on the site: home measured **19 fps scrolling with it,
+ * 49 without**. A transform on an element re-rasterises that element's whole
+ * subtree, and the subtree here was the entire page — every frame, for a skew
+ * that maxes out at 1.6°, which essentially nobody can see. Nothing renders it
+ * cheap; the only fix is not to do it to something that large.
+ *
+ * Still fine on something small and self-contained — a card, a stat block, a
+ * single band. Measure scrolling fps, not idle fps, if you use it.
  */
 export function useSpeedLean<T extends HTMLElement = HTMLDivElement>(
   strength = 1

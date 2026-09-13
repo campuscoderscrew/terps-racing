@@ -11,6 +11,7 @@ export default function NotFound() {
           variant="floor"
           embers={6}
           corners
+          beams
           cornerColor="var(--tr-red)"
         />
 

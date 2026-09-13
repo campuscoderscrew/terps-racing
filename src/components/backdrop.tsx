@@ -1,13 +1,17 @@
 import { useMemo } from "react";
 
 export type BackdropVariant =
-  | "aurora" // drifting colour mesh — cinematic, used on the home page
+  | "aurora" // lit colour clouds — cinematic, used on the home page
   | "hud" // telemetry grid + scanlines — the Formula IC / engineering look
-  | "floor" // perspective grid receding to a horizon
+  | "floor" // perspective grid receding to a lit horizon
   | "speed" // diagonal streaks
-  | "carbon" // carbon fibre weave
+  | "carbon" // carbon fibre weave under a raking light
   | "terrain" // topographic contours — Baja
-  | "darkroom"; // near-black with a soft centre glow — gallery
+  | "darkroom" // near-black with a soft key light — gallery
+  | "circuit" // a track map with a lap running round it
+  | "flag" // raked checkered field
+  | "heat" // exhaust shimmer rising off the floor
+  | "strata"; // livery bands raked across the frame
 
 interface BackdropProps {
   variant?: BackdropVariant;
@@ -23,15 +27,50 @@ interface BackdropProps {
   fade?: boolean;
   /** A single bright line sweeping down the section. */
   scanPass?: boolean;
+  /** Volumetric light shafts raking across the section. */
+  beams?: boolean;
+  /** A hotspot for the content to sit in. `[x, y]` overrides its position. */
+  keylight?: boolean;
+  keyPos?: [string, string];
   className?: string;
   /** 0–1, scales the whole backdrop's presence. */
   intensity?: number;
 }
 
 /**
+ * The track map. Drawn twice: a wide dim casing, a hairline on top, and a short
+ * bright dash that laps it. `pathLength={1000}` normalises the dash arithmetic,
+ * so `stroke-dasharray: 46 954` and a -1000 offset close the loop exactly
+ * without anyone needing to know the path's real length.
+ */
+const CIRCUIT =
+  "M148 392C92 392 64 336 96 292L236 118C268 78 330 72 372 104L512 212" +
+  "C552 242 596 240 634 206L748 104C792 66 862 78 888 128L1012 344" +
+  "C1046 404 1018 468 956 486L448 546C372 566 300 540 274 484Z";
+
+function Circuit() {
+  return (
+    <div className="tr-bd-circuit">
+      <svg viewBox="0 0 1200 620" preserveAspectRatio="xMidYMid slice">
+        <path className="tr-track-wide" d={CIRCUIT} />
+        <path className="tr-track" d={CIRCUIT} />
+        <path className="tr-lap" d={CIRCUIT} pathLength={1000} />
+      </svg>
+    </div>
+  );
+}
+
+/**
  * Layered decorative background for a section. Every layer is CSS-only, sits
  * behind the content (`z-0`) and is inert to pointer events, so a section only
  * needs `position: relative` and content at `z-10`.
+ *
+ * The layers are separated by how they are lit rather than by how they move:
+ * a cool counter-light in the shadows, beams that fall off with distance, a key
+ * light for the content to sit in. An earlier version drifted each layer at its
+ * own rate on scroll, which read beautifully and cost 22 fps of scrolling per
+ * section — see the note above the aurora mesh in app.css before trying it
+ * again.
  */
 export default function Backdrop({
   variant = "aurora",
@@ -42,6 +81,9 @@ export default function Backdrop({
   vignette = true,
   fade = false,
   scanPass = false,
+  beams = false,
+  keylight = false,
+  keyPos,
   className = "",
   intensity = 1,
 }: BackdropProps) {
@@ -67,9 +109,12 @@ export default function Backdrop({
       {variant === "aurora" && (
         <>
           <div className="tr-bd-mesh" />
+          {/* A second, cooler cloud set offset from the bed — the overlap is
+              what gives the wash somewhere to be dark. */}
+          <div className="tr-bd-mesh-2" />
           <div
             className="tr-bd-grid"
-            style={{ ["--grid-opacity" as string]: 0.1 }}
+            style={{ ["--grid-opacity" as string]: 0.12 }}
           />
         </>
       )}
@@ -80,9 +125,10 @@ export default function Backdrop({
             className="tr-bd-grid"
             style={{
               ["--grid-size" as string]: "88px",
-              ["--grid-opacity" as string]: 0.2,
+              ["--grid-opacity" as string]: 0.24
             }}
           />
+          <div className="tr-bd-sheen" />
           <div className="tr-bd-trace" />
           <div
             className="tr-bd-scan"
@@ -93,7 +139,7 @@ export default function Backdrop({
 
       {variant === "floor" && (
         <>
-          <div className="tr-bd-mesh" style={{ opacity: 0.75 }} />
+          <div className="tr-bd-mesh" />
           <div className="tr-bd-floor" />
         </>
       )}
@@ -101,6 +147,7 @@ export default function Backdrop({
       {variant === "speed" && (
         <>
           <div className="tr-bd-carbon" />
+          <div className="tr-bd-sheen" />
           <div className="tr-bd-speed" />
         </>
       )}
@@ -108,9 +155,10 @@ export default function Backdrop({
       {variant === "carbon" && (
         <>
           <div className="tr-bd-carbon" />
+          <div className="tr-bd-sheen" />
           <div
             className="tr-bd-grid"
-            style={{ ["--grid-opacity" as string]: 0.08 }}
+            style={{ ["--grid-opacity" as string]: 0.1 }}
           />
         </>
       )}
@@ -118,23 +166,91 @@ export default function Backdrop({
       {variant === "terrain" && (
         <>
           <div className="tr-bd-topo" />
-          <div className="tr-bd-grid-fine" style={{ opacity: 0.3 }} />
+          <div
+            className="tr-bd-grid-fine"
+            style={{ opacity: 0.3 }}
+          />
         </>
       )}
 
       {variant === "darkroom" && (
         <>
+          {/* The gallery's light: one lamp, high and slightly off centre, so the
+              photographs below it read as hung rather than tiled. */}
           <div
+            className="tr-bd-keylight"
             style={{
-              background:
-                "radial-gradient(58% 48% at 50% 34%, rgba(255,255,255,0.07), transparent 68%)",
+              ["--key-x" as string]: "46%",
+              ["--key-y" as string]: "26%"
             }}
           />
-          <div className="tr-bd-grid-fine" style={{ opacity: 0.35 }} />
+          <div
+            className="tr-bd-grid-fine"
+            style={{ opacity: 0.35 }}
+          />
         </>
       )}
 
+      {variant === "circuit" && (
+        <>
+          <div className="tr-bd-carbon" />
+          <Circuit />
+          <div
+            className="tr-bd-grid"
+            style={{ ["--grid-opacity" as string]: 0.1 }}
+          />
+        </>
+      )}
+
+      {variant === "flag" && (
+        <>
+          <div className="tr-bd-carbon" />
+          <div className="tr-bd-flag" />
+          <div className="tr-bd-sheen" />
+        </>
+      )}
+
+      {variant === "heat" && (
+        <>
+          <div className="tr-bd-carbon" />
+          <div className="tr-bd-heat" />
+          <div
+            className="tr-bd-grid-fine"
+            style={{ opacity: 0.28 }}
+          />
+        </>
+      )}
+
+      {variant === "strata" && (
+        <>
+          <div className="tr-bd-strata" />
+          <div
+            className="tr-bd-grid"
+            style={{ ["--grid-opacity" as string]: 0.12 }}
+          />
+        </>
+      )}
+
+      {beams && <div className="tr-bd-beams" />}
+
+      {keylight && (
+        <div
+          className="tr-bd-keylight"
+          style={{
+            ...(keyPos
+              ? {
+                  ["--key-x" as string]: keyPos[0],
+                  ["--key-y" as string]: keyPos[1],
+                }
+              : null)
+          }}
+        />
+      )}
+
       {scanPass && <div className="tr-bd-sweepline" />}
+      {/* Vignette and edge fades are pinned to the section's own edges — give
+          either of them parallax and you get a visible seam where the fade
+          stops covering the join. */}
       {vignette && <div className="tr-bd-vignette" />}
       {fade && <div className="tr-bd-fade-y" />}
 

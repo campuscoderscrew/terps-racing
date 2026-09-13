@@ -4,7 +4,7 @@ import NavBar from "~/components/navbar";
 import Reveal from "~/components/reveal";
 import ActiveAero from "~/components/activeaero";
 import Backdrop, { Seam } from "~/components/backdrop";
-import { useSlipstream, useSpeedLean } from "~/components/velocity";
+import { useSlipstream } from "~/components/velocity";
 
 import race_car_image from "../public/images/IC/ic_racecar_image.webp";
 import race_schedule_car from "../public/images/IC/race_schedule_car.webp";
@@ -60,11 +60,12 @@ import VehicleDynamics from "../public/images/IC/subteams/Vehicle_Dynamics.webp"
 // ── Top Image ─────────────────────────────────────────────────────────────────
 function TopImage() {
   return (
-    <div className="relative">
+    // overflow-hidden is what lets the plate below push in past its frame.
+    <div className="tr-on-dark tr-cam-bars relative overflow-hidden">
       <img
         src={race_car_image}
         alt="Cool race car"
-        className="mt-[72px] w-full object-cover"
+        className="tr-cam-push mt-[72px] w-full object-cover"
       />
       <div
         className="pointer-events-none absolute inset-0"
@@ -392,7 +393,7 @@ function ResultsTab() {
                         textTransform: "uppercase",
                         fontWeight: 400,
                         color:
-                          i === 3 ? "var(--tr-gold)" : "rgba(255,255,255,0.5)",
+                          i === 3 ? "var(--tr-gold-ink)" : "rgb(var(--tr-fg) / 0.5)",
                       }}
                     >
                       {h}
@@ -434,10 +435,10 @@ function ResultsTab() {
                             fontSize: "1.05rem",
                             color:
                               i === 2
-                                ? "var(--tr-gold)"
+                                ? "var(--tr-gold-ink)"
                                 : i === 1
-                                ? "#fff"
-                                : "rgba(255,255,255,0.45)",
+                                ? "var(--tr-text)"
+                                : "rgb(var(--tr-fg) / 0.45)",
                           }}
                         >
                           {cell}
@@ -466,54 +467,58 @@ function Season2026() {
   const [activeTab, setActiveTab] = useState<SeasonTab>("General");
 
   return (
-    <div className="tr-shell tr-section relative z-10 !py-[clamp(40px,6vw,88px)]">
-      <h2
-        className="text-white text-center font-bold italic mb-10"
-        style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "clamp(2rem, 6vw, 3.5rem)",
-        }}
-      >
-        2026 Season
-      </h2>
+    <section className="relative overflow-hidden">
+      <Backdrop variant="circuit" fade intensity={0.75} />
 
-      {/* Tabs */}
-      <div className="flex flex-wrap justify-center gap-4 md:gap-12 mb-10">
-        {SEASON_TABS.map((tab) => {
-          const isActive = tab === activeTab;
-          return (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => setActiveTab(tab)}
-              aria-pressed={isActive}
-              className={`relative rounded-full border px-6 py-2 font-bold italic transition-all duration-400 ease-[var(--tr-ease)] ${
-                isActive
-                  ? "border-tr-gold bg-tr-gold/10 text-tr-gold shadow-[0_0_28px_-8px_rgba(255,210,0,0.6)]"
-                  : "border-white/10 bg-tr-surface text-white/55 hover:border-white/25 hover:text-white"
-              }`}
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(1.05rem, 2.3vw, 1.5rem)",
-              }}
-            >
-              {tab}
-            </button>
-          );
-        })}
-      </div>
+        <div className="tr-shell tr-section relative z-10 !py-[clamp(40px,6vw,88px)]">
+        <h2
+          className="text-white text-center font-bold italic mb-10"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(2rem, 6vw, 3.5rem)",
+          }}
+        >
+          2026 Season
+        </h2>
 
-      {/* Tab content — keyed so it re-mounts and fades on every switch */}
-      <div
-        key={activeTab}
-        style={{ animation: "tr-fade-up 0.5s var(--tr-ease) both" }}
-      >
-        {activeTab === "General" && <GeneralTab />}
-        {activeTab === "Chassis Build" && <ChassisBuildTab />}
-        {activeTab === "Races" && <RacesTab />}
-        {activeTab === "Results" && <ResultsTab />}
-      </div>
-    </div>
+        {/* Tabs */}
+        <div className="flex flex-wrap justify-center gap-4 md:gap-12 mb-10">
+          {SEASON_TABS.map((tab) => {
+            const isActive = tab === activeTab;
+            return (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveTab(tab)}
+                aria-pressed={isActive}
+                className={`relative rounded-full border px-6 py-2 font-bold italic transition-all duration-400 ease-[var(--tr-ease)] ${
+                  isActive
+                    ? "border-tr-gold bg-tr-gold/10 text-tr-gold shadow-[0_0_28px_-8px_rgba(255,210,0,0.6)]"
+                    : "border-white/10 bg-tr-surface text-white/55 hover:border-white/25 hover:text-white"
+                }`}
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(1.05rem, 2.3vw, 1.5rem)",
+                }}
+              >
+                {tab}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tab content — keyed so it re-mounts and fades on every switch */}
+        <div
+          key={activeTab}
+          style={{ animation: "tr-fade-up 0.5s var(--tr-ease) both" }}
+        >
+          {activeTab === "General" && <GeneralTab />}
+          {activeTab === "Chassis Build" && <ChassisBuildTab />}
+          {activeTab === "Races" && <RacesTab />}
+          {activeTab === "Results" && <ResultsTab />}
+        </div>
+        </div>
+    </section>
   );
 }
 
@@ -528,7 +533,7 @@ const stats = [
 function StatsOverlay({ image }: { image: string }) {
   return (
     <div
-      className="relative w-full overflow-hidden"
+      className="tr-on-dark relative w-full overflow-hidden"
       style={{ aspectRatio: "16/9" }}
     >
       <img
@@ -693,7 +698,7 @@ function SubteamsGrid() {
             <div
               key={team.name}
               onClick={() => setSelectedTeam(team)}
-              className="relative overflow-hidden rounded-lg cursor-pointer group"
+              className="tr-on-dark relative overflow-hidden rounded-lg cursor-pointer group"
               style={{
                 height: "clamp(80px, 28vw, 160px)",
               }}
@@ -755,7 +760,7 @@ function SubteamCell({
       role="button"
       tabIndex={0}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onClick()}
-      className="tr-headlight relative rounded-xl border border-white/[0.06] cursor-pointer group"
+      className="tr-on-dark tr-headlight relative rounded-xl border border-white/[0.06] cursor-pointer group"
       style={{ gridArea: area }}
     >
       <img
@@ -822,7 +827,7 @@ function DivisionPopup({
       aria-label={team.name}
     >
       {/*bg*/}
-      <div className="absolute inset-0 bg-tr-ink/80 backdrop-blur-sm" />
+      <div className="tr-on-dark absolute inset-0 bg-tr-ink/80 backdrop-blur-sm" />
 
       {/*popup*/}
       <div
@@ -915,7 +920,7 @@ const GALLERY = [
     to: "/gallery",
     img: ASSETS.carprocess_gallery,
     alt: "The Terps Racing car through its build process",
-    accent: "#e8a010",
+    accent: "var(--tr-amber)",
   },
 ];
 
@@ -940,7 +945,7 @@ function Gallery() {
               <Link
                 to={card.to}
                 aria-label={`${card.name} gallery`}
-                className="group relative block h-[clamp(320px,42vw,450px)] overflow-hidden rounded-2xl border border-white/[0.07] shadow-[var(--tr-shadow-md)]"
+                className="tr-on-dark group relative block h-[clamp(320px,42vw,450px)] overflow-hidden rounded-2xl border border-white/[0.07] shadow-[var(--tr-shadow-md)]"
               >
                 <img
                   src={card.img}
@@ -1004,9 +1009,9 @@ interface SponsorTierData {
 const SPONSOR_TIERS: SponsorTierData[] = [
   {
     label: "Platinum",
-    labelColor: "#e5e4e2",
+    labelColor: "var(--tr-metal-platinum)",
     amount: "$10,000 +",
-    amountColor: "#C30000",
+    amountColor: "var(--tr-red-ink)",
     desktopCols: 2,
     sponsors: [
       {
@@ -1024,9 +1029,9 @@ const SPONSOR_TIERS: SponsorTierData[] = [
   },
   {
     label: "Gold",
-    labelColor: "#ffd200",
+    labelColor: "var(--tr-gold-ink)",
     amount: "$5,000 - $10,000",
-    amountColor: "#C30000",
+    amountColor: "var(--tr-red-ink)",
     desktopCols: 2,
     sponsors: [
       {
@@ -1082,9 +1087,9 @@ const SPONSOR_TIERS: SponsorTierData[] = [
   },
   {
     label: "Silver",
-    labelColor: "#c0c0c0",
+    labelColor: "var(--tr-metal-silver)",
     amount: "$1,000 - $5,000",
-    amountColor: "#C30000",
+    amountColor: "var(--tr-red-ink)",
     desktopCols: 3,
     sponsors: [
       { name: "EPSON", logo: SponsorEpson, href: "https://epson.com/usa" },
@@ -1129,9 +1134,9 @@ const SPONSOR_TIERS: SponsorTierData[] = [
   },
   {
     label: "Bronze",
-    labelColor: "#cd7f32",
+    labelColor: "var(--tr-metal-bronze)",
     amount: "$0 - $1,000",
-    amountColor: "#C30000",
+    amountColor: "var(--tr-red-ink)",
     desktopCols: 2,
     sponsors: [
       {
@@ -1244,7 +1249,7 @@ function SponsorTierSection({
         <div
           className="h-px flex-1"
           style={{
-            background: `linear-gradient(90deg, ${tier.labelColor}55, transparent)`,
+            background: `linear-gradient(90deg, color-mix(in srgb, ${tier.labelColor} 33%, transparent), transparent)`,
           }}
         />
         <span
@@ -1302,7 +1307,6 @@ function SponsorsSection() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function IC() {
-  const leanRef = useSpeedLean<HTMLDivElement>(0.9);
   useSlipstream(true, "rgba(226,24,51,0.85)");
 
   return (
@@ -1316,7 +1320,7 @@ export default function IC() {
       />
       {/* Lean wraps content only — a transformed ancestor would become the
           containing block for the fixed navbar and backdrop above. */}
-      <div ref={leanRef} className="tr-lean">
+      <div>
         <TopImage />
         <WhoWeAre />
         <Season2026 />

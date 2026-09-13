@@ -196,7 +196,7 @@ function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+      className="tr-on-dark fixed inset-0 z-[200] flex items-center justify-center p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -358,7 +358,7 @@ function GalleryOpt() {
                   type="button"
                   onClick={() => setOpenGallery(type.name)}
                   aria-pressed={active}
-                  className={`group relative flex h-[clamp(180px,26vw,260px)] w-full items-end justify-center overflow-hidden rounded-2xl border transition-all duration-500 ease-[var(--tr-ease)] ${
+                  className={`tr-on-dark group relative flex h-[clamp(180px,26vw,260px)] w-full items-end justify-center overflow-hidden rounded-2xl border transition-all duration-500 ease-[var(--tr-ease)] ${
                     active
                       ? "border-tr-gold shadow-[0_0_44px_-14px_rgba(255,210,0,0.7)]"
                       : "border-white/[0.07] hover:border-white/30 hover:-translate-y-1"
@@ -392,7 +392,7 @@ function GalleryOpt() {
                         fontFamily: "var(--font-mono)",
                         color: active
                           ? "var(--tr-gold)"
-                          : "rgba(255,255,255,0.5)",
+                          : "rgb(var(--tr-fg) / 0.5)",
                       }}
                     >
                       {active ? "Viewing" : "View gallery"}
@@ -468,7 +468,7 @@ function GalleryOpt() {
 export default function Gallery() {
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-tr-ink">
-      <NavBar />
+      <NavBar overMedia={false} />
       <Backdrop variant="darkroom" className="!fixed" intensity={0.9} />
       <main className="tr-section relative z-10 !pt-[calc(var(--tr-nav-h)+clamp(32px,6vw,72px))]">
         <div className="tr-shell">

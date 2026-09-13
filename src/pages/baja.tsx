@@ -5,7 +5,7 @@ import NavBar from "~/components/navbar";
 import Reveal from "~/components/reveal";
 import CountUp from "~/components/countup";
 import Backdrop, { Seam } from "~/components/backdrop";
-import { useSlipstream, useSpeedLean } from "~/components/velocity";
+import { useSlipstream } from "~/components/velocity";
 import { Words, useParallax, useSpotlight } from "~/components/cinematic";
 
 import bajaHero from "../public/images/homePage/baja.webp";
@@ -224,8 +224,8 @@ function Accordion({ items }: { items: AccordionItem[] }) {
 }
 
 // ── Shared bits ───────────────────────────────────────────────────────────────
-const BAJA_RED = "#e31933";
-const BAJA_AMBER = "#e8a010";
+const BAJA_RED = "var(--tr-red-ink)";
+const BAJA_AMBER = "var(--tr-amber)";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -256,7 +256,7 @@ function Hero() {
   return (
     <section
       ref={ref}
-      className="tr-grain relative flex items-end overflow-hidden"
+      className="tr-on-dark tr-grain tr-cam-bars relative flex items-end overflow-hidden"
       style={{ minHeight: "92svh" }}
       aria-label="Terps Racing Baja"
     >
@@ -265,7 +265,7 @@ function Hero() {
           src={bajaHero}
           ref={targetRef as React.RefObject<HTMLImageElement>}
           alt="The Terps Racing Baja vehicle on rough terrain"
-          className="h-full w-full object-cover"
+          className="tr-cam-push h-full w-full object-cover"
         />
         <div
           className="absolute inset-0"
@@ -287,6 +287,7 @@ function Hero() {
         variant="terrain"
         embers={10}
         emberColor={BAJA_AMBER}
+        beams
         vignette={false}
         intensity={0.9}
       />
@@ -503,7 +504,7 @@ function DynamicEvents() {
   return (
     <section
       ref={ref}
-      className="tr-grain relative overflow-hidden"
+      className="tr-on-dark tr-grain relative overflow-hidden"
       aria-labelledby="dynamic-title"
     >
       <div className="absolute inset-0">
@@ -511,7 +512,8 @@ function DynamicEvents() {
           src="https://racing.umd.edu/files/2026/04/Untitled-design.png"
           ref={targetRef as React.RefObject<HTMLImageElement>}
           alt=""
-          className="h-full w-full object-cover"
+          // Mid-page plate: drifts across its own trip through the viewport.
+          className="tr-cam-drift h-full w-full object-cover"
           loading="lazy"
         />
         <div
@@ -519,7 +521,7 @@ function DynamicEvents() {
           style={{ background: "rgba(8,8,10,0.86)" }}
         />
       </div>
-      <Backdrop variant="terrain" vignette={false} intensity={0.5} />
+      <Backdrop variant="heat" vignette={false} intensity={0.6} />
 
       <div className="tr-shell relative z-10 py-[clamp(52px,8vw,120px)]">
         <div className="mb-12 max-w-[60ch]">
@@ -791,7 +793,7 @@ function Gallery() {
               className="h-1.5 rounded-full transition-all duration-400 ease-[var(--tr-ease)]"
               style={{
                 width: i === pos ? 28 : 8,
-                background: i === pos ? BAJA_RED : "rgba(255,255,255,0.22)",
+                background: i === pos ? BAJA_RED : "rgb(var(--tr-fg) / 0.22)",
               }}
             />
           ))}
@@ -881,9 +883,9 @@ interface BajaSponsorTierData {
 const BAJA_SPONSOR_TIERS: BajaSponsorTierData[] = [
   {
     label: "Platinum",
-    labelColor: "#e5e4e2",
+    labelColor: "var(--tr-metal-platinum)",
     amount: "$10,000 +",
-    amountColor: "#e31933",
+    amountColor: "var(--tr-red-ink)",
     desktopCols: 1,
     boxMaxWidth: "max-w-md",
     sponsors: [
@@ -896,9 +898,9 @@ const BAJA_SPONSOR_TIERS: BajaSponsorTierData[] = [
   },
   {
     label: "Gold",
-    labelColor: "#ffd200",
+    labelColor: "var(--tr-gold-ink)",
     amount: "$5,000 - $10,000",
-    amountColor: "#e31933",
+    amountColor: "var(--tr-red-ink)",
     desktopCols: 1,
     boxMaxWidth: "max-w-md",
     sponsors: [
@@ -911,9 +913,9 @@ const BAJA_SPONSOR_TIERS: BajaSponsorTierData[] = [
   },
   {
     label: "Silver",
-    labelColor: "#c0c0c0",
+    labelColor: "var(--tr-metal-silver)",
     amount: "$1,000 - $5,000",
-    amountColor: "#e31933",
+    amountColor: "var(--tr-red-ink)",
     desktopCols: 1,
     boxMaxWidth: "max-w-md",
     sponsors: [
@@ -926,9 +928,9 @@ const BAJA_SPONSOR_TIERS: BajaSponsorTierData[] = [
   },
   {
     label: "Bronze",
-    labelColor: "#cd7f32",
+    labelColor: "var(--tr-metal-bronze)",
     amount: "$0 - $1,000",
-    amountColor: "#e31933",
+    amountColor: "var(--tr-red-ink)",
     desktopCols: 3,
     sponsors: [
       {
@@ -1007,7 +1009,7 @@ function BajaSponsorTierSection({
         <div
           className="h-px flex-1"
           style={{
-            background: `linear-gradient(90deg, ${tier.labelColor}55, transparent)`,
+            background: `linear-gradient(90deg, color-mix(in srgb, ${tier.labelColor} 33%, transparent), transparent)`,
           }}
         />
         <span
@@ -1084,7 +1086,6 @@ function BajaSponsorsSection() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function Baja() {
-  const leanRef = useSpeedLean<HTMLDivElement>(1);
   useSlipstream(true, "rgba(232,160,16,0.85)");
 
   return (
@@ -1093,7 +1094,7 @@ export default function Baja() {
       style={{ fontFamily: "var(--font-body)" }}
     >
       <NavBar />
-      <main ref={leanRef} className="tr-lean">
+      <main>
         <Hero />
         <StatsBand />
         <WhatWeDo />

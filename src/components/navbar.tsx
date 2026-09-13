@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import ThemeToggle from "./themetoggle";
+import MotionToggle from "./motiontoggle";
 import logo from "../public/images/homePage/TR_logo.webp";
 
 const NAV_ITEMS = [
@@ -12,7 +14,17 @@ const NAV_ITEMS = [
   { label: "Join Us", route: "/members", style: "cta" },
 ];
 
-export default function NavBar() {
+export default function NavBar({
+  /**
+   * Whether the page opens on a dark hero (a photograph or a dark plate).
+   * Before the bar solidifies it is transparent, so its links take their colour
+   * from whatever is behind them: `true` pins them white-on-dark, `false` lets
+   * them follow the theme. Most pages open on a hero photo, hence the default.
+   */
+  overMedia = true,
+}: {
+  overMedia?: boolean;
+} = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -53,7 +65,7 @@ export default function NavBar() {
     return [
       "relative inline-flex items-center px-3.5 py-2 rounded-full text-[0.88rem] font-medium leading-none",
       "transition-colors duration-300",
-      active ? "text-tr-gold" : "text-white/75 hover:text-white",
+      active ? "tr-nav-active" : "text-white/75 hover:text-white",
     ].join(" ");
   };
 
@@ -68,8 +80,11 @@ export default function NavBar() {
       {style !== "cta" && (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute left-3.5 right-3.5 -bottom-0.5 h-[2px] rounded-full bg-tr-gold origin-left transition-transform duration-300"
-          style={{ transform: isActive(route) ? "scaleX(1)" : "scaleX(0)" }}
+          className="pointer-events-none absolute left-3.5 right-3.5 -bottom-0.5 h-[2px] rounded-full origin-left transition-transform duration-300"
+          style={{
+            background: "var(--tr-accent)",
+            transform: isActive(route) ? "scaleX(1)" : "scaleX(0)",
+          }}
         />
       )}
     </Link>
@@ -79,8 +94,8 @@ export default function NavBar() {
     <header
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
         scrolled || menuOpen
-          ? "tr-glass shadow-[0_8px_32px_-16px_rgba(0,0,0,0.9)]"
-          : "bg-transparent"
+          ? "tr-glass shadow-[0_8px_32px_-16px_var(--tr-nav-shadow)]"
+          : `bg-transparent ${overMedia ? "tr-on-dark" : ""}`
       }`}
       role="banner"
     >
@@ -123,31 +138,39 @@ export default function NavBar() {
             {NAV_ITEMS.map(({ label, route, style }) => (
               <li key={label}>{renderLink(label, route, style)}</li>
             ))}
+            <li className="ml-2 flex items-center gap-1.5">
+              <MotionToggle />
+              <ThemeToggle />
+            </li>
           </ul>
         </nav>
 
-        <button
-          className="md:hidden relative flex flex-col justify-center items-center w-11 h-11 gap-[6px] rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
-          onClick={() => setMenuOpen((o) => !o)}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-        >
-          <span
-            className={`block w-[20px] h-[2px] rounded-full bg-white transition-all duration-300 ${
-              menuOpen ? "rotate-45 translate-y-[8px]" : ""
-            }`}
-          />
-          <span
-            className={`block w-[20px] h-[2px] rounded-full bg-white transition-all duration-300 ${
-              menuOpen ? "opacity-0 scale-x-0" : ""
-            }`}
-          />
-          <span
-            className={`block w-[20px] h-[2px] rounded-full bg-white transition-all duration-300 ${
-              menuOpen ? "-rotate-45 -translate-y-[8px]" : ""
-            }`}
-          />
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <MotionToggle />
+          <ThemeToggle />
+          <button
+            className="relative flex flex-col justify-center items-center w-11 h-11 gap-[6px] rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+          >
+            <span
+              className={`block w-[20px] h-[2px] rounded-full bg-white transition-all duration-300 ${
+                menuOpen ? "rotate-45 translate-y-[8px]" : ""
+              }`}
+            />
+            <span
+              className={`block w-[20px] h-[2px] rounded-full bg-white transition-all duration-300 ${
+                menuOpen ? "opacity-0 scale-x-0" : ""
+              }`}
+            />
+            <span
+              className={`block w-[20px] h-[2px] rounded-full bg-white transition-all duration-300 ${
+                menuOpen ? "-rotate-45 -translate-y-[8px]" : ""
+              }`}
+            />
+          </button>
+        </div>
       </div>
 
       {/* Mobile drawer */}
@@ -155,7 +178,7 @@ export default function NavBar() {
         className={`md:hidden overflow-hidden border-t border-white/[0.07] transition-[max-height,opacity] duration-500 ${
           menuOpen ? "max-h-[70vh] opacity-100" : "max-h-0 opacity-0"
         }`}
-        style={{ background: "rgba(8,8,10,0.96)" }}
+        style={{ background: "var(--tr-drawer-bg)" }}
       >
         <nav aria-label="Mobile">
           <ul className="tr-shell flex flex-col py-5 gap-1">
@@ -177,7 +200,7 @@ export default function NavBar() {
                     to={route}
                     className={`block px-2 py-3 text-[1.05rem] border-b border-white/[0.06] transition-colors ${
                       isActive(route)
-                        ? "text-tr-gold"
+                        ? "tr-nav-active"
                         : "text-white/80 hover:text-white"
                     }`}
                     style={{ fontFamily: "var(--font-mono)" }}

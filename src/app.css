@@ -23,22 +23,94 @@
   --color-tr-red-deep: #9e0f22;
   --color-tr-gold: #ffd200;
   --color-tr-gold-soft: #ffe14a;
-  --color-tr-ink: #08080a;
-  --color-tr-surface: #101013;
-  --color-tr-surface-2: #17171d;
-  --color-tr-line: #26262e;
+  /* Surface tokens point at the themed palette, so the ~40 `bg-tr-ink`,
+     `bg-tr-surface` and `border-tr-line` utilities in the pages follow the
+     active theme without any markup change. Brand red/gold above do not. */
+  --color-tr-ink: var(--tr-ink);
+  --color-tr-surface: var(--tr-surface);
+  --color-tr-surface-2: var(--tr-surface-2);
+  --color-tr-line: var(--tr-line);
 }
 
+/* ---------------------------------------------------------------------------
+   THEMING — how light/dark works here
+   ---------------------------------------------------------------------------
+   Three groups of variables do all the work:
+
+   1. Brand    — red and gold. Identical in both themes; a team's colours do
+                 not change because someone prefers a light background.
+   2. Palette  — `--tr-ink` / `--tr-surface` / `--tr-text` and friends. These
+                 flip wholesale in the `[data-theme="light"]` block below.
+   3. Channels — `--tr-fg` is the *foreground* colour as bare RGB components,
+                 so every hairline, grid line, scrim and gleam in this file is
+                 written `rgb(var(--tr-fg) / 0.09)` instead of a literal white.
+                 One variable inverts hundreds of rules.
+
+   `--color-white` is Tailwind's own token. Redefining it is what lets ~200
+   existing `text-white`, `border-white/10`, `bg-white/5` utilities across the
+   pages invert without touching the markup: Tailwind v4 compiles those to
+   `color-mix(in oklab, var(--color-white) 10%, transparent)`, so they follow
+   whatever `--color-white` resolves to at the element.
+
+   Anything painted over photography must NOT invert — white text on a dark
+   race photo is correct in both themes. Those regions carry `.tr-on-dark`,
+   which reinstates the dark palette for that subtree. See the bottom of this
+   block.
+   ------------------------------------------------------------------------ */
+
 :root {
+  /* ── Brand (theme-independent) ─────────────────────────────────────────── */
   --tr-red: #e21833;
   --tr-red-deep: #9e0f22;
   --tr-gold: #ffd200;
   --tr-gold-soft: #ffe14a;
+
+  /* ── Dark palette (the default) ────────────────────────────────────────── */
+  --tr-fg: 255 255 255;
   --tr-ink: #08080a;
+  --tr-ink-rgb: 8 8 10;
   --tr-surface: #101013;
   --tr-surface-2: #17171d;
-  --tr-line: rgba(255, 255, 255, 0.09);
-  --tr-line-strong: rgba(255, 255, 255, 0.16);
+  --tr-text: #ffffff;
+  --tr-line: rgb(var(--tr-fg) / 0.09);
+  --tr-line-strong: rgb(var(--tr-fg) / 0.16);
+
+  /* Accent used for eyebrows, focus rings and scroll cues. Gold reads well on
+     near-black; on white it fails contrast badly, so light mode swaps it. */
+  --tr-accent: var(--tr-gold);
+  /* Gold used as *text* rather than as a fill. On near-black it is the brand
+     gold; on white that is ~1.6:1, so light mode substitutes a bronze that
+     still reads as gold and clears 4.5:1. */
+  --tr-gold-ink: var(--tr-gold);
+  /* Gold as a stroke or rule rather than as text — needs less contrast than
+     --tr-gold-ink, so it can stay closer to the real brand gold. */
+  --tr-gold-line: var(--tr-gold);
+  /* Sponsor "platinum" tier. A near-white metal on black; on white it has to
+     become a graphite or it disappears. */
+  --tr-platinum: #e8e8ef;
+  /* Baja's amber — the off-road counterpart to the formula gold. */
+  --tr-amber: #e8a010;
+  /* Brand red used as text. #e21833 is 4.2:1 on near-black and 4.33:1 on the
+     light ground — both a shade under 4.5 — so each theme nudges it the small
+     amount needed and no further, to stay recognisably the brand red. */
+  --tr-red-ink: #ee2b44;
+  /* Sponsor-tier metals, repeated across the IC, EV and Baja packets. */
+  --tr-metal-platinum: #e5e4e2;
+  --tr-metal-silver: #c0c0c0;
+  --tr-metal-bronze: #cd7f32;
+  --tr-goldtext-a: #ffffff;
+  --tr-goldtext-b: var(--tr-gold-soft);
+  --tr-goldtext-c: var(--tr-gold);
+
+  --tr-glass-bg: rgba(10, 10, 12, 0.62);
+  --tr-scroll-thumb: #2c2c34;
+  --tr-scroll-thumb-hover: #3d3d47;
+  --tr-lights-bg: #06060a;
+  --tr-scan: 0 0 0;
+  --tr-scan-strength: 0.16;
+  --tr-spot: 255 210 0;
+  --tr-nav-shadow: rgba(0, 0, 0, 0.9);
+  --tr-drawer-bg: rgba(8, 8, 10, 0.96);
 
   --tr-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --tr-shadow-md: 0 10px 30px -12px rgba(0, 0, 0, 0.75);
@@ -53,7 +125,158 @@
   --tr-gutter: clamp(20px, 5vw, 80px);
   --tr-section-y: clamp(56px, 8vw, 128px);
 
+  /* ── Backdrop lighting ───────────────────────────────────────────────────
+     The scene backgrounds are lit like a set rather than tinted like a filter:
+     a red KEY, a gold RIM, a DEEP crimson for the falloff, and — the part that
+     does the most work — a COOL counter-light. Nothing in the brand is blue,
+     which is exactly why it helps: a warm palette with no cool anywhere in it
+     reads flat, because there is nothing for the reds to be warm *against*. It
+     is used at low alpha, in shadow areas, and never as a surface colour.
+
+     Every backdrop alpha is written `calc(<n> * var(--tr-bd-lift))`, so one
+     variable dims the whole system. Light mode needs roughly half: the same
+     alpha that reads as a lit haze on near-black reads as a stain on #f4f4f6.
+     Sections carrying `.tr-on-dark` put it back to full — they are dark plates
+     in both themes. */
+  --tr-bd-key: 226 24 51;
+  --tr-bd-rim: 255 210 0;
+  --tr-bd-deep: 158 15 34;
+  --tr-bd-cool: 58 86 170;
+  --tr-bd-lift: 1;
+  /* Baja's amber as bare components, for the terrain contours. */
+  --tr-amber-rgb: 232 160 16;
+
   color-scheme: dark;
+}
+
+/* ── Light palette ─────────────────────────────────────────────────────────
+   Not white-on-white: the page sits on a warm-neutral #f4f4f6 so that cards,
+   which are pure white, still read as raised surfaces. Red replaces gold as
+   the accent (gold on white is roughly 1.5:1 — unreadable), and the "gold"
+   gradient text becomes a bronze that keeps the metallic feel while passing
+   contrast. Shadows lose most of their opacity; at dark-mode strength they
+   look like soot on a light page. */
+html[data-theme="light"] {
+  --tr-fg: 16 16 22;
+  --tr-ink: #f4f4f6;
+  --tr-ink-rgb: 244 244 246;
+  --tr-surface: #ffffff;
+  --tr-surface-2: #f7f7f9;
+  --tr-text: #101016;
+  --tr-line: rgb(var(--tr-fg) / 0.13);
+  --tr-line-strong: rgb(var(--tr-fg) / 0.26);
+
+  --tr-accent: var(--tr-red-deep);
+  --tr-gold-ink: #8a6800;
+  --tr-gold-line: #c49200;
+  --tr-platinum: #55556a;
+  --tr-amber: #9c6300;
+  --tr-red-ink: #c8122a;
+  --tr-metal-platinum: #5c5c68;
+  --tr-metal-silver: #5f6672;
+  --tr-metal-bronze: #8a5420;
+  --tr-goldtext-a: #4a3200;
+  --tr-goldtext-b: #9a7400;
+  --tr-goldtext-c: #b98c00;
+
+  --tr-glass-bg: rgba(255, 255, 255, 0.78);
+  --tr-scroll-thumb: #c6c6cf;
+  --tr-scroll-thumb-hover: #a9a9b5;
+  --tr-lights-bg: #0a0a0f;
+  --tr-scan-strength: 0.05;
+  --tr-spot: 226 24 51;
+  --tr-nav-shadow: rgba(16, 16, 22, 0.18);
+  --tr-drawer-bg: rgba(252, 252, 253, 0.97);
+
+  --tr-shadow-sm: 0 1px 2px rgba(16, 16, 22, 0.08);
+  --tr-shadow-md: 0 10px 30px -14px rgba(16, 16, 22, 0.28);
+  --tr-shadow-lg: 0 28px 60px -26px rgba(16, 16, 22, 0.34);
+  --tr-glow-red: 0 0 40px -14px rgba(226, 24, 51, 0.45);
+  --tr-glow-gold: 0 0 40px -14px rgba(198, 152, 0, 0.5);
+
+  /* Tailwind's white — see the note above. On light it maps to true black
+     rather than to --tr-text, because the whole `text-white/45 … /75` ramp
+     is mixed against it: an ink of #101016 at 50% lands around 3.5:1 on this
+     ground, while pure black at 50% keeps the ramp usable. Solid body copy
+     uses --tr-text, which is the softer #101016. */
+  --color-white: #000000;
+
+  /* Half strength, and a cooler, lighter counter-light: on a pale ground the
+     navy reads as dirt rather than as shadow. */
+  --tr-bd-cool: 84 110 190;
+  --tr-bd-lift: 0.45;
+  --tr-amber-rgb: 156 99 0;
+
+  color-scheme: light;
+}
+
+/* ── Dark islands inside a light page ──────────────────────────────────────
+   Hero sections, photo overlays and the gallery lightbox are dark whatever the
+   theme, because they sit on photographs. `.tr-on-dark` reinstates the dark
+   palette for that subtree so the white-on-photo text keeps working. It is a
+   no-op in dark mode, which means it is always safe to add. */
+.tr-on-dark,
+html[data-theme="light"] .tr-on-dark {
+  --tr-fg: 255 255 255;
+  --tr-ink: #08080a;
+  --tr-ink-rgb: 8 8 10;
+  --tr-surface: #101013;
+  --tr-surface-2: #17171d;
+  --tr-text: #ffffff;
+  --tr-line: rgb(var(--tr-fg) / 0.09);
+  --tr-line-strong: rgb(var(--tr-fg) / 0.16);
+  --tr-accent: var(--tr-gold);
+  --tr-gold-ink: var(--tr-gold);
+  --tr-gold-line: var(--tr-gold);
+  --tr-platinum: #e8e8ef;
+  --tr-amber: #e8a010;
+  --tr-red-ink: #ee2b44;
+  --tr-metal-platinum: #e5e4e2;
+  --tr-metal-silver: #c0c0c0;
+  --tr-metal-bronze: #cd7f32;
+  --tr-goldtext-a: #ffffff;
+  --tr-goldtext-b: var(--tr-gold-soft);
+  --tr-goldtext-c: var(--tr-gold);
+  --tr-glass-bg: rgba(10, 10, 12, 0.62);
+  --tr-scan-strength: 0.16;
+  --tr-spot: 255 210 0;
+  --tr-nav-shadow: rgba(0, 0, 0, 0.9);
+  --tr-shadow-md: 0 10px 30px -12px rgba(0, 0, 0, 0.75);
+  --tr-shadow-lg: 0 28px 60px -24px rgba(0, 0, 0, 0.85);
+  --color-white: #ffffff;
+  /* A custom property is substituted where it is DECLARED, so the
+     `--color-tr-*: var(--tr-*)` aliases in @theme were already resolved against
+     :root by the time they inherit here. They have to be restated, or
+     `bg-tr-ink` inside a dark island would paint the light ink. */
+  --color-tr-ink: var(--tr-ink);
+  --color-tr-surface: var(--tr-surface);
+  --color-tr-surface-2: var(--tr-surface-2);
+  --color-tr-line: var(--tr-line);
+  /* A dark island is a dark island in both themes, so the backdrop lamps come
+     back to full strength here too. */
+  --tr-bd-cool: 58 86 170;
+  --tr-bd-lift: 1;
+  --tr-amber-rgb: 232 160 16;
+  color: var(--tr-text);
+  color-scheme: dark;
+}
+
+/* The inverse: a section that is deliberately light in both themes (the gold
+   call-to-action band, sponsor logo tiles) so black text stays black. */
+.tr-on-light,
+html[data-theme="light"] .tr-on-light {
+  --tr-fg: 16 16 22;
+  --tr-text: #101016;
+  --tr-line: rgb(var(--tr-fg) / 0.13);
+  --tr-line-strong: rgb(var(--tr-fg) / 0.26);
+  --color-white: #000000;
+  --color-tr-ink: var(--tr-ink);
+  --color-tr-surface: var(--tr-surface);
+  --color-tr-surface-2: var(--tr-surface-2);
+  --color-tr-line: var(--tr-line);
+  --tr-bd-cool: 84 110 190;
+  --tr-bd-lift: 0.4;
+  color-scheme: light;
 }
 
 /* ---------------------------------------------------------------------------
@@ -74,7 +297,10 @@ html {
 html,
 body {
   background: var(--tr-ink);
-  color: #fff;
+  color: var(--tr-text);
+  /* Only the page ground is transitioned. A blanket `* { transition: color }`
+     would repaint every layer at once on switch — see the perf notes. */
+  transition: background-color 0.35s var(--tr-ease), color 0.35s var(--tr-ease);
 }
 
 body {
@@ -97,7 +323,7 @@ video {
 }
 
 :focus-visible {
-  outline: 2px solid var(--tr-gold);
+  outline: 2px solid var(--tr-accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -105,7 +331,7 @@ video {
 /* Slim, on-brand scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2c2c34 transparent;
+  scrollbar-color: var(--tr-scroll-thumb) transparent;
 }
 ::-webkit-scrollbar {
   width: 10px;
@@ -115,12 +341,12 @@ video {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2c2c34;
+  background: var(--tr-scroll-thumb);
   border-radius: 999px;
   border: 2px solid var(--tr-ink);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3d3d47;
+  background: var(--tr-scroll-thumb-hover);
 }
 
 /* Legacy helpers kept for existing markup */
@@ -152,8 +378,8 @@ video {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-image: linear-gradient(rgb(var(--tr-fg) / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--tr-fg) / 0.035) 1px, transparent 1px);
   background-size: 72px 72px;
   mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 100%);
   -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 100%);
@@ -177,7 +403,7 @@ video {
   font-weight: 500;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--tr-gold);
+  color: var(--tr-accent);
   display: inline-flex;
   align-items: center;
   gap: 0.7em;
@@ -186,7 +412,7 @@ video {
   content: "";
   width: clamp(18px, 4vw, 38px);
   height: 1px;
-  background: linear-gradient(90deg, var(--tr-gold), transparent);
+  background: linear-gradient(90deg, var(--tr-accent), transparent);
 }
 
 .tr-display {
@@ -208,7 +434,12 @@ video {
 
 /* Gold gradient text */
 .tr-text-gold {
-  background: linear-gradient(100deg, #fff 0%, var(--tr-gold-soft) 45%, var(--tr-gold) 100%);
+  background: linear-gradient(
+    100deg,
+    var(--tr-goldtext-a) 0%,
+    var(--tr-goldtext-b) 45%,
+    var(--tr-goldtext-c) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -217,7 +448,7 @@ video {
 /* Outlined display text */
 .tr-text-outline {
   color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.92);
+  -webkit-text-stroke: 1.5px rgb(var(--tr-fg) / 0.92);
   paint-order: stroke fill;
 }
 
@@ -271,7 +502,7 @@ video {
 }
 
 .tr-glass {
-  background: rgba(10, 10, 12, 0.62);
+  background: var(--tr-glass-bg);
   backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
   border-bottom: 1px solid var(--tr-line);
@@ -353,14 +584,14 @@ img.tr-zoom {
 
 .tr-btn-ghost {
   background: transparent;
-  color: #fff;
+  color: var(--tr-text);
   border-color: var(--tr-line-strong);
 }
 .tr-btn-ghost::before {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(var(--tr-fg) / 0.1);
 }
 .tr-btn-ghost:hover {
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: rgb(var(--tr-fg) / 0.4);
 }
 
 .tr-btn-dark {
@@ -370,6 +601,95 @@ img.tr-zoom {
 }
 .tr-btn-dark::before {
   background: #1c1c22;
+}
+
+/* `text-tr-gold` is a text colour, so it takes the legible variant. Fills
+   (`bg-tr-gold`, `border-tr-gold`) keep the real brand gold. */
+.text-tr-gold {
+  color: var(--tr-gold-ink);
+}
+
+/* Active nav item. Gold on dark, red on light — `--tr-accent` picks. */
+.tr-nav-active {
+  color: var(--tr-accent);
+}
+
+/* ── Light / dark toggle ──────────────────────────────────────────────────
+   Fixed square so the bar does not reflow on switch. The two glyphs are
+   stacked in the same grid cell and cross-faded with a quarter-turn, which
+   reads as the sun setting rather than as two separate icons swapping. */
+.tr-theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: rgb(var(--tr-fg) / 0.78);
+  background: rgb(var(--tr-fg) / 0.06);
+  border: 1px solid var(--tr-line);
+  transition: color 0.3s var(--tr-ease), background-color 0.3s var(--tr-ease),
+    border-color 0.3s var(--tr-ease), transform 0.3s var(--tr-ease);
+}
+.tr-theme-toggle:hover {
+  color: var(--tr-text);
+  background: rgb(var(--tr-fg) / 0.12);
+  border-color: var(--tr-line-strong);
+  transform: translateY(-1px);
+}
+.tr-theme-toggle:active {
+  transform: translateY(0);
+}
+
+/* Wide variant with a written label, for the mobile drawer. */
+.tr-theme-toggle-wide {
+  width: auto;
+  height: auto;
+  padding: 0.7em 1.1em;
+  border-radius: 14px;
+  justify-content: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.tr-theme-toggle-glyphs {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.tr-theme-glyph {
+  grid-area: 1 / 1;
+  display: block;
+  width: 18px;
+  height: 18px;
+  transition: opacity 0.35s var(--tr-ease), transform 0.45s var(--tr-ease);
+}
+.tr-theme-glyph svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Dark mode shows the sun you can switch *to*; light mode shows the moon. */
+.tr-theme-toggle[data-theme-state="dark"] .tr-theme-glyph-moon,
+.tr-theme-toggle[data-theme-state="light"] .tr-theme-glyph-sun {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.55);
+}
+.tr-theme-toggle[data-theme-state="dark"] .tr-theme-glyph-sun,
+.tr-theme-toggle[data-theme-state="light"] .tr-theme-glyph-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+.tr-theme-toggle-label {
+  white-space: nowrap;
 }
 
 /* Animated underline for text links */
@@ -525,9 +845,9 @@ img.tr-zoom {
 .tr-shimmer {
   background: linear-gradient(
     100deg,
-    rgba(255, 255, 255, 0.06) 20%,
-    rgba(255, 255, 255, 0.22) 45%,
-    rgba(255, 255, 255, 0.06) 70%
+    rgb(var(--tr-fg) / 0.06) 20%,
+    rgb(var(--tr-fg) / 0.22) 45%,
+    rgb(var(--tr-fg) / 0.06) 70%
   );
   background-size: 220% 100%;
   animation: tr-shimmer 3.4s linear infinite;
@@ -587,7 +907,8 @@ img.tr-zoom {
   content: "";
   position: absolute;
   inset: -6%;
-  will-change: transform;
+  /* No `will-change` here: the grain is static (the drift was dropped in the
+     perf pass) and promoting a layer that never moves just costs memory. */
   pointer-events: none;
   opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -629,7 +950,7 @@ img.tr-zoom {
   background: linear-gradient(
     100deg,
     transparent 20%,
-    rgba(255, 255, 255, 0.55) 48%,
+    rgb(var(--tr-fg) / 0.55) 48%,
     transparent 72%
   );
   transform: translateX(-120%);
@@ -674,7 +995,7 @@ img.tr-zoom {
   pointer-events: none;
   background: radial-gradient(
     340px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(255, 210, 0, 0.16),
+    rgb(var(--tr-spot) / 0.16),
     transparent 62%
   );
   z-index: 1;
@@ -697,7 +1018,7 @@ img.tr-zoom {
 .tr-rail {
   position: relative;
   width: 1px;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgb(var(--tr-fg) / 0.14);
   overflow: hidden;
 }
 .tr-rail::after {
@@ -705,7 +1026,7 @@ img.tr-zoom {
   position: absolute;
   inset-inline: 0;
   height: 40%;
-  background: linear-gradient(180deg, transparent, var(--tr-gold), transparent);
+  background: linear-gradient(180deg, transparent, var(--tr-accent), transparent);
   animation: tr-rail-run 2.6s var(--tr-ease) infinite;
 }
 @keyframes tr-rail-run {
@@ -717,7 +1038,7 @@ img.tr-zoom {
 .tr-stripes {
   background-image: repeating-linear-gradient(
     115deg,
-    var(--stripe-color, rgba(255, 255, 255, 0.06)) 0 12px,
+    var(--stripe-color, rgb(var(--tr-fg) / 0.06)) 0 12px,
     transparent 12px 34px
   );
 }
@@ -732,7 +1053,7 @@ img.tr-zoom {
   text-transform: uppercase;
   line-height: 0.8;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.07);
+  -webkit-text-stroke: 1px rgb(var(--tr-fg) / 0.07);
   pointer-events: none;
   user-select: none;
   z-index: 0;
@@ -752,8 +1073,25 @@ img.tr-zoom {
 }
 
 /* ============================================================================
-   Backdrops — layered, animated scene backgrounds
-   Every layer is pure CSS so nothing extra is downloaded.
+   Backdrops — layered, lit scene backgrounds
+   ----------------------------------------------------------------------------
+   Every layer is pure CSS, so nothing extra is downloaded. Three ideas hold the
+   system together:
+
+   1. LIGHTING, NOT TINTING. Each variant is built from the four lamps declared
+      at :root — key, rim, deep, cool — at `calc(<n> * var(--tr-bd-lift))` alpha,
+      so the whole system dims with one variable and follows the theme without a
+      single literal rgba in here.
+   2. DEPTH COMES FROM LIGHT, NOT FROM MOVEMENT. Layers are separated by how
+      they are lit — a cool counter-light in the shadows, beams that fall off
+      with distance, a key light for the content to sit in — because all of that
+      is paid once at paint. Separating them by motion instead was tried, and
+      measured, and removed; the note further down says what it cost.
+   3. NOTHING LOOPS ON A BIG SURFACE. The rules of thumb from the perf notes are
+      unchanged — transform and opacity only, no animated `background-position`,
+      no `filter`, no `scale` on a gradient. Where something must move on a
+      timer it is either a thin stroke (`circuit`) or a small element (embers),
+      and `content-visibility: auto` on the host parks it while off-screen.
    ========================================================================= */
 
 .tr-backdrop {
@@ -772,22 +1110,84 @@ img.tr-zoom {
   inset: 0;
 }
 
-/* ── Aurora mesh: slow drifting colour clouds ─────────────────────────────── */
+/* ── Depth: why there is no backdrop parallax ─────────────────────────────
+   There used to be. Every layer drifted at its own rate as its section crossed
+   the viewport — a CSS scroll-driven animation, which on paper is compositor
+   work and free. On this page it is neither, and it was the reason the site
+   felt heavy.
+
+   Measured, scrolling, on the sponsors route: **37 fps without it, 15 with it**
+   — and that is with exactly ONE section opted in. The cost does not scale the
+   way a paint cost would. Three animated layers per backdrop down to one: 13 →
+   14. Every layer shrunk from 144% of the viewport to 100%: no change. Swapping
+   `view()` for a shared `scroll(root)` timeline: no change. A single animated
+   backdrop is simply expensive, which is the signature of an animation that is
+   not being composited at all — every frame repaints a full-viewport gradient
+   on the main thread.
+
+   So the depth comes from the lighting instead, which costs nothing after the
+   first paint: a cool counter-light against the warm lamps, beams that fall off
+   with distance, a key light for the content to sit in. That was always doing
+   most of the work; the movement was the part that read as lag.
+
+   `.tr-bd-par` and `--bd-par` are gone. Do not reintroduce them without
+   measuring scrolling fps on a real machine first — idle fps will look fine
+   either way, which is exactly how this got shipped.
+   ------------------------------------------------------------------------ */
+
+/* ── Aurora mesh: the lit cloud bed ───────────────────────────────────────── */
 .tr-bd-mesh {
   background:
-    radial-gradient(42% 46% at 18% 22%, rgba(226, 24, 51, 0.34), transparent 62%),
-    radial-gradient(38% 42% at 82% 18%, rgba(255, 210, 0, 0.22), transparent 62%),
-    radial-gradient(46% 50% at 72% 82%, rgba(158, 15, 34, 0.32), transparent 64%),
-    radial-gradient(34% 38% at 28% 78%, rgba(255, 210, 0, 0.14), transparent 62%);
-  inset: -16%;
+    radial-gradient(48% 52% at 16% 20%, rgb(var(--tr-bd-key) / calc(0.46 * var(--tr-bd-lift))), transparent 64%),
+    radial-gradient(40% 44% at 84% 14%, rgb(var(--tr-bd-rim) / calc(0.28 * var(--tr-bd-lift))), transparent 62%),
+    radial-gradient(54% 58% at 74% 84%, rgb(var(--tr-bd-deep) / calc(0.44 * var(--tr-bd-lift))), transparent 66%),
+    radial-gradient(40% 44% at 30% 78%, rgb(var(--tr-bd-cool) / calc(0.30 * var(--tr-bd-lift))), transparent 64%);
+  inset: -22%;
+  contain: paint;
+}
+
+/* Second, sparser cloud set. Its whole job is to travel at a different rate
+   from the bed above — two gradients that move together are one gradient. */
+.tr-bd-mesh-2 {
+  background:
+    radial-gradient(32% 36% at 62% 26%, rgb(var(--tr-bd-cool) / calc(0.34 * var(--tr-bd-lift))), transparent 66%),
+    radial-gradient(36% 30% at 20% 58%, rgb(var(--tr-bd-key) / calc(0.24 * var(--tr-bd-lift))), transparent 68%);
+  inset: -28%;
+  contain: paint;
+}
+
+/* ── Volumetric beams: shafts raking across the section ───────────────────── */
+.tr-bd-beams {
+  inset: -42% -28%;
+  background:
+    linear-gradient(104deg, transparent 17%, rgb(var(--tr-bd-rim) / calc(0.15 * var(--tr-bd-lift))) 20%, transparent 24%),
+    linear-gradient(104deg, transparent 30%, rgb(var(--tr-bd-rim) / calc(0.08 * var(--tr-bd-lift))) 32.5%, transparent 35%),
+    linear-gradient(104deg, transparent 43%, rgb(var(--tr-bd-key) / calc(0.20 * var(--tr-bd-lift))) 47%, transparent 52%),
+    linear-gradient(104deg, transparent 64%, rgb(var(--tr-bd-rim) / calc(0.10 * var(--tr-bd-lift))) 67%, transparent 70.5%),
+    linear-gradient(104deg, transparent 79%, rgb(var(--tr-bd-cool) / calc(0.16 * var(--tr-bd-lift))) 82%, transparent 86%);
+  /* Beams come from a source above the frame, so they have to lose strength as
+     they fall — an un-masked shaft reads as a stripe, not as light. */
+  mask-image: radial-gradient(78% 92% at 46% -8%, #000 12%, transparent 76%);
+  -webkit-mask-image: radial-gradient(78% 92% at 46% -8%, #000 12%, transparent 76%);
+  contain: paint;
+}
+
+/* ── Key light: the hotspot the content sits in ───────────────────────────── */
+.tr-bd-keylight {
+  background: radial-gradient(
+    64% 56% at var(--key-x, 50%) var(--key-y, 16%),
+    rgb(var(--tr-bd-rim) / calc(0.18 * var(--tr-bd-lift))),
+    rgb(var(--tr-bd-key) / calc(0.07 * var(--tr-bd-lift))) 42%,
+    transparent 72%
+  );
   contain: paint;
 }
 
 /* ── Perspective floor grid receding to a horizon ─────────────────────────── */
 .tr-bd-floor {
-  top: 42%;
+  top: 40%;
   overflow: hidden;
-  opacity: 0.4;
+  opacity: 0.55;
   contain: paint;
   mask-image: linear-gradient(180deg, transparent, #000 22%, #000 62%, transparent 92%);
   -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 62%, transparent 92%);
@@ -798,20 +1198,36 @@ img.tr-zoom {
   position: absolute;
   inset: -70px 0 0 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.22) 1px, transparent 1px);
+    linear-gradient(rgb(var(--tr-fg) / 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--tr-fg) / 0.28) 1px, transparent 1px);
   background-size: 70px 70px;
   transform-origin: center top;
   transform: perspective(340px) rotateX(66deg);
   backface-visibility: hidden;
 }
 
+/* A horizon glow where the floor vanishes — the single cheapest thing that
+   turns a grid into a place. */
+.tr-bd-floor::before {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: -2px;
+  height: 34%;
+  background: linear-gradient(
+    180deg,
+    rgb(var(--tr-bd-rim) / calc(0.22 * var(--tr-bd-lift))),
+    transparent 70%
+  );
+}
+
 /* ── Flat tech grid ───────────────────────────────────────────────────────── */
 .tr-bd-grid {
   inset: calc(var(--grid-size, 76px) * -1);
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.13) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.13) 1px, transparent 1px);
+    linear-gradient(rgb(var(--tr-fg) / 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--tr-fg) / 0.15) 1px, transparent 1px);
   background-size: var(--grid-size, 76px) var(--grid-size, 76px);
   opacity: var(--grid-opacity, 0.18);
   contain: paint;
@@ -820,8 +1236,8 @@ img.tr-zoom {
 /* Finer grid to sit under the coarse one */
 .tr-bd-grid-fine {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    linear-gradient(rgb(var(--tr-fg) / 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--tr-fg) / 0.08) 1px, transparent 1px);
   background-size: 19px 19px;
   opacity: 0.5;
 }
@@ -831,7 +1247,7 @@ img.tr-zoom {
   background-image: repeating-linear-gradient(
     0deg,
     transparent 0 3px,
-    rgba(0, 0, 0, 0.16) 3px 4px
+    rgb(var(--tr-scan) / var(--tr-scan-strength, 0.16)) 3px 4px
   );
   opacity: var(--scan-opacity, 0.7);
 }
@@ -848,8 +1264,8 @@ img.tr-zoom {
   background: linear-gradient(
     180deg,
     transparent,
-    rgba(255, 210, 0, 0.09),
-    rgba(255, 255, 255, 0.05),
+    rgb(var(--tr-bd-rim) / calc(0.14 * var(--tr-bd-lift))),
+    rgb(var(--tr-fg) / 0.06),
     transparent
   );
   animation: tr-scanpass 7s var(--tr-ease) infinite;
@@ -866,7 +1282,7 @@ img.tr-zoom {
   background-image: repeating-linear-gradient(
     108deg,
     transparent 0 44px,
-    rgba(255, 255, 255, 0.055) 44px 46px,
+    rgb(var(--tr-fg) / 0.075) 44px 46px,
     transparent 46px 92px
   );
   animation: tr-speed-run 2.6s linear infinite;
@@ -880,12 +1296,36 @@ img.tr-zoom {
 
 /* ── Carbon fibre weave ───────────────────────────────────────────────────── */
 .tr-bd-carbon {
-  background-color: #0b0b0e;
+  background-color: var(--tr-surface);
   background-image:
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 4px),
-    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 4px);
+    repeating-linear-gradient(45deg, rgb(var(--tr-fg) / 0.045) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg, rgb(var(--tr-fg) / 0.04) 0 2px, transparent 2px 4px);
   background-size: 8px 8px;
   opacity: 0.9;
+}
+
+/* Raking light across the weave. Carbon is the most-used variant on the site
+   and on its own it is a flat grey texture; what makes real carbon read is the
+   way the weave catches a light source, so here is the light source. */
+.tr-bd-sheen {
+  background:
+    linear-gradient(
+      118deg,
+      transparent 6%,
+      rgb(var(--tr-bd-rim) / calc(0.11 * var(--tr-bd-lift))) 26%,
+      transparent 46%
+    ),
+    radial-gradient(
+      70% 60% at 84% 96%,
+      rgb(var(--tr-bd-key) / calc(0.22 * var(--tr-bd-lift))),
+      transparent 70%
+    ),
+    radial-gradient(
+      52% 46% at 8% 6%,
+      rgb(var(--tr-bd-cool) / calc(0.20 * var(--tr-bd-lift))),
+      transparent 72%
+    );
+  contain: paint;
 }
 
 /* ── Topographic contours (off-road / terrain) ────────────────────────────── */
@@ -893,15 +1333,20 @@ img.tr-zoom {
   background-image:
     repeating-radial-gradient(
       ellipse 62% 38% at 28% 42%,
-      rgba(232, 160, 16, 0.09) 0 2px,
-      transparent 2px 34px
+      rgb(var(--tr-amber-rgb, 232 160 16) / calc(0.16 * var(--tr-bd-lift))) 0 2px,
+      transparent 2px 30px
     ),
     repeating-radial-gradient(
       ellipse 52% 44% at 78% 68%,
-      rgba(226, 24, 51, 0.07) 0 2px,
-      transparent 2px 40px
+      rgb(var(--tr-bd-key) / calc(0.13 * var(--tr-bd-lift))) 0 2px,
+      transparent 2px 36px
+    ),
+    repeating-radial-gradient(
+      ellipse 38% 56% at 54% 8%,
+      rgb(var(--tr-bd-cool) / calc(0.10 * var(--tr-bd-lift))) 0 2px,
+      transparent 2px 44px
     );
-  inset: -10%;
+  inset: -12%;
   contain: paint;
 }
 
@@ -911,7 +1356,7 @@ img.tr-zoom {
   background-repeat: repeat-x;
   background-position: 0 center;
   background-size: 1200px 200px;
-  opacity: 0.28;
+  opacity: 0.4;
   right: auto;
   width: 200%;
   animation: tr-trace-run 24s linear infinite;
@@ -922,10 +1367,125 @@ img.tr-zoom {
   to { transform: translate3d(-50%, 0, 0); }
 }
 
+/* The trace was the single most expensive thing left on the site at rest: a
+   200%-wide layer translating on a 24s loop, page-wide on the IC route, which
+   measured **15 fps of idle cost** on its own (45 → 60 with it parked). Where
+   scroll timelines exist it runs off the scroll instead — same travel, but it
+   only moves when the visitor does, and it reads better for it: the telemetry
+   line now responds to you rather than ticking past on its own clock.
+
+   Duration is ignored on a progress-based timeline (the whole animation maps to
+   the range), and the iteration count has to drop to 1 — an infinite count has
+   no meaning against a finite scroll. */
+@supports (animation-timeline: view()) {
+  html[data-motion="cinematic"] .tr-bd-trace,
+  html[data-motion="standard"] .tr-bd-trace {
+    animation: tr-trace-run 1s linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+/* ── Circuit: a track map with a lap running round it ─────────────────────── */
+/* The path is drawn twice — a dim casing and a short bright dash that travels
+   it. `pathLength="1000"` on the element normalises the dash arithmetic, so the
+   loop closes exactly without anyone having to know the real path length. */
+.tr-bd-circuit svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.tr-bd-circuit .tr-track {
+  fill: none;
+  stroke: rgb(var(--tr-bd-rim) / calc(0.30 * var(--tr-bd-lift)));
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.tr-bd-circuit .tr-track-wide {
+  fill: none;
+  stroke: rgb(var(--tr-bd-key) / calc(0.20 * var(--tr-bd-lift)));
+  stroke-width: 12;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.tr-bd-circuit .tr-lap {
+  fill: none;
+  stroke: rgb(var(--tr-bd-rim) / calc(0.95 * var(--tr-bd-lift)));
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 46 954;
+  animation: tr-lap-run 13s linear infinite;
+}
+@keyframes tr-lap-run {
+  to { stroke-dashoffset: -1000; }
+}
+
+/* ── Checkered field ──────────────────────────────────────────────────────── */
+/* The rake lives on the ::after rather than on the host, so the host keeps a
+   clean transform for anything a section wants to add. */
+.tr-bd-flag {
+  overflow: hidden;
+  contain: paint;
+}
+.tr-bd-flag::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background-image:
+    linear-gradient(45deg, rgb(var(--tr-fg) / 0.12) 25%, transparent 25%),
+    linear-gradient(-45deg, rgb(var(--tr-fg) / 0.12) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgb(var(--tr-fg) / 0.12) 75%),
+    linear-gradient(-45deg, transparent 75%, rgb(var(--tr-fg) / 0.12) 75%);
+  background-size: 104px 104px;
+  background-position: 0 0, 0 52px, 52px -52px, -52px 0;
+  transform: rotate(-9deg);
+  /* The field has to survive further across the frame than a first pass
+     allowed, or the only checker anyone sees is behind the gutter. */
+  mask-image: linear-gradient(112deg, #000 6%, transparent 76%);
+  -webkit-mask-image: linear-gradient(112deg, #000 6%, transparent 76%);
+}
+
+/* ── Heat: exhaust shimmer rising off the floor ───────────────────────────── */
+.tr-bd-heat {
+  inset: -18%;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 24px,
+      rgb(var(--tr-bd-rim) / calc(0.12 * var(--tr-bd-lift))) 24px 28px,
+      transparent 28px 54px
+    ),
+    radial-gradient(
+      92% 84% at 50% 106%,
+      rgb(var(--tr-bd-key) / calc(0.46 * var(--tr-bd-lift))),
+      rgb(var(--tr-amber-rgb, 232 160 16) / calc(0.16 * var(--tr-bd-lift))) 46%,
+      transparent 74%
+    );
+  mask-image: radial-gradient(100% 96% at 50% 100%, #000 8%, transparent 86%);
+  -webkit-mask-image: radial-gradient(100% 96% at 50% 100%, #000 8%, transparent 86%);
+  contain: paint;
+}
+
+/* ── Strata: livery bands raked across the frame ──────────────────────────── */
+.tr-bd-strata {
+  inset: -26%;
+  background:
+    linear-gradient(102deg, transparent 0 24%, rgb(var(--tr-bd-key) / calc(0.34 * var(--tr-bd-lift))) 24% 32%, transparent 32%),
+    linear-gradient(102deg, transparent 0 33.5%, rgb(var(--tr-bd-rim) / calc(0.26 * var(--tr-bd-lift))) 33.5% 36%, transparent 36%),
+    linear-gradient(102deg, transparent 0 52%, rgb(var(--tr-bd-deep) / calc(0.30 * var(--tr-bd-lift))) 52% 64%, transparent 64%),
+    linear-gradient(102deg, transparent 0 76%, rgb(var(--tr-bd-cool) / calc(0.22 * var(--tr-bd-lift))) 76% 80%, transparent 80%);
+  contain: paint;
+}
+
 /* ── Vignette + edge fades ────────────────────────────────────────────────── */
 .tr-bd-vignette {
   background:
-    radial-gradient(ellipse 78% 66% at 50% 46%, transparent 34%, rgba(8, 8, 10, 0.86) 100%);
+    radial-gradient(
+      ellipse 76% 64% at 50% 46%,
+      transparent 32%,
+      rgb(var(--tr-ink-rgb) / 0.9) 100%
+    );
 }
 
 .tr-bd-fade-y {
@@ -985,9 +1545,9 @@ img.tr-zoom {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(226, 24, 51, 0.55),
-    rgba(255, 210, 0, 0.75),
-    rgba(226, 24, 51, 0.55),
+    rgb(var(--tr-bd-key) / 0.6),
+    rgb(var(--tr-bd-rim) / 0.8),
+    rgb(var(--tr-bd-key) / 0.6),
     transparent
   );
 }
@@ -1000,15 +1560,30 @@ img.tr-zoom {
   opacity: 0.75;
 }
 
+/* ── Level gating ─────────────────────────────────────────────────────────── */
+/* At `standard` the parallax is already gone (it only exists under
+   `cinematic`), so all that is left to park are the three timed loops. */
+html[data-motion="standard"] .tr-bd-circuit .tr-lap {
+  animation: none;
+  stroke-dasharray: none;
+  opacity: 0.35;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tr-bd-floor,
   .tr-bd-speed,
   .tr-bd-trace,
   .tr-bd-sweepline::after,
-  .tr-bd-embers span {
+  .tr-bd-embers span,
+  .tr-bd-circuit .tr-lap {
     animation: none;
   }
   .tr-bd-embers span { opacity: 0.4; }
+  .tr-bd-circuit .tr-lap { stroke-dasharray: none; opacity: 0.35; }
+}
+html[data-motion="reduced"] .tr-bd-circuit .tr-lap {
+  stroke-dasharray: none;
+  opacity: 0.35;
 }
 
 /* ============================================================================
@@ -1024,7 +1599,7 @@ img.tr-zoom {
   z-index: 300;
   display: grid;
   place-items: center;
-  background: #06060a;
+  background: var(--tr-lights-bg);
   animation: tr-lights-out 600ms var(--tr-ease) 2100ms forwards;
 }
 
@@ -1154,7 +1729,12 @@ img.tr-zoom {
   pointer-events: none;
   z-index: 5;
   background-image:
-    conic-gradient(#fff 0 25%, transparent 0 50%, #fff 0 75%, transparent 0);
+    conic-gradient(
+      rgb(var(--tr-fg)) 0 25%,
+      transparent 0 50%,
+      rgb(var(--tr-fg)) 0 75%,
+      transparent 0
+    );
   background-size: 26px 26px;
   opacity: 0;
 }
@@ -1181,9 +1761,9 @@ img.tr-zoom {
   background: linear-gradient(
     100deg,
     transparent,
-    rgba(255, 255, 255, 0.16) 45%,
-    rgba(255, 255, 255, 0.32) 50%,
-    rgba(255, 255, 255, 0.16) 55%,
+    rgb(var(--tr-fg) / 0.16) 45%,
+    rgb(var(--tr-fg) / 0.32) 50%,
+    rgb(var(--tr-fg) / 0.16) 55%,
     transparent
   );
   transform: skewX(-18deg) translate3d(0, 0, 0);
@@ -1239,4 +1819,780 @@ img.tr-zoom {
   .tr-lean { transform: none !important; }
   .is-revealed > .tr-checker { animation: none; opacity: 0; }
   .tr-headlight:hover::before { animation: none; opacity: 0; }
+}
+
+/* ============================================================================
+   CINEMA LAYER — route cuts, a scroll-driven camera, deeper entrances
+   ----------------------------------------------------------------------------
+   Everything below is gated on `data-motion` on <html> (see
+   src/components/motion.tsx):
+
+     cinematic   the full thing — scroll-linked camera, blade wipes, 3D type
+     standard    entrances, hovers and the route cut; no scroll-linked camera
+     reduced     essentially still
+
+   Two rules kept this affordable, both learned the hard way on this site:
+
+   1. The scroll-linked work is done by CSS scroll-driven animations
+      (`animation-timeline: view()` / `scroll()`), not by JavaScript. The
+      browser runs those on the compositor, off the main thread, so a dozen of
+      them cost about what one `scroll` listener used to. Anything inside
+      `@supports (animation-timeline: view())` simply does not exist in a
+      browser that cannot do it cheaply — the JS parallax stays the fallback.
+   2. Only `transform` and `opacity` are animated. No `background-position`,
+      no `filter`, no `box-shadow`, no `scale` on a gradient — the four things
+      that dropped this page to single-digit fps the last time round.
+
+   Note on `prefers-reduced-motion`: the OS request is the floor. A visitor who
+   asks their system for less motion starts at `reduced`, and the existing
+   `@media (prefers-reduced-motion: reduce)` blocks above still apply to them
+   whatever the toggle says. The toggle is there to turn cinema *down*.
+   ========================================================================= */
+
+:root {
+  /* Blade timings. src/components/transition.tsx holds the same two numbers as
+     COVER_MS / REVEAL_MS and drives the route swap off them — change both. */
+  --tr-xfade-cover: 520ms;
+  --tr-xfade-reveal: 560ms;
+  --tr-xfade-blade: 240ms;
+  --tr-xfade-blade-out: 340ms;
+}
+
+/* ---------------------------------------------------------------------------
+   The cut between pages
+   ---------------------------------------------------------------------------
+   `.tr-page` animates OPACITY ONLY, and that is not a stylistic choice: a
+   transform, filter or clip-path on this wrapper would make it the containing
+   block for every `position: fixed` descendant, which includes the navbar of
+   whichever page is inside it. The movement lives on the blades instead.
+   ------------------------------------------------------------------------ */
+.tr-page[data-phase="reveal"] {
+  animation: tr-page-in var(--tr-xfade-reveal) var(--tr-ease) both;
+}
+@keyframes tr-page-in {
+  from { opacity: 0.15; }
+  60%  { opacity: 0.85; }
+  to   { opacity: 1; }
+}
+
+/* Three angled blades, gold → red → ink, each a beat behind the last. They
+   cover the viewport, the route swaps underneath, then they carry on out to
+   the right in the reverse order. Portalled to <body> by the component. */
+.tr-xfade {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+/* Sized by insets rather than a width percentage. The rake is what decides how
+   much overhang is needed: skewX(-9deg) displaces the top and bottom edges by
+   tan(9°) × half the height, so 20vh of bleed on each side covers the corners
+   at any aspect ratio — and nothing more. An earlier 150%-wide blade was ~60%
+   more surface for no extra coverage, which on an opaque full-screen layer is
+   pure fill-rate. */
+.tr-xfade-blade {
+  position: absolute;
+  top: -14vh;
+  bottom: -14vh;
+  left: -20vh;
+  right: -20vh;
+  transform: translate3d(-135%, 0, 0) skewX(-9deg);
+  will-change: transform;
+}
+.tr-xfade-blade-gold {
+  z-index: 1;
+  background: linear-gradient(100deg, var(--tr-gold) 0%, var(--tr-gold-soft) 100%);
+}
+.tr-xfade-blade-red {
+  z-index: 2;
+  background: linear-gradient(100deg, var(--tr-red-deep) 0%, var(--tr-red) 100%);
+}
+.tr-xfade-blade-ink {
+  z-index: 3;
+  background: linear-gradient(100deg, #06060a 0%, #101016 62%, #06060a 100%);
+  border-right: 2px solid rgb(255 255 255 / 0.22);
+}
+
+.tr-xfade[data-phase="cover"] .tr-xfade-blade {
+  animation: tr-blade-in var(--tr-xfade-blade) cubic-bezier(0.7, 0, 0.28, 1) both;
+}
+.tr-xfade[data-phase="cover"] .tr-xfade-blade-red { animation-delay: 70ms; }
+.tr-xfade[data-phase="cover"] .tr-xfade-blade-ink { animation-delay: 140ms; }
+
+.tr-xfade[data-phase="reveal"] .tr-xfade-blade {
+  animation: tr-blade-out var(--tr-xfade-blade-out) cubic-bezier(0.7, 0, 0.28, 1) both;
+}
+.tr-xfade[data-phase="reveal"] .tr-xfade-blade-red { animation-delay: 100ms; }
+.tr-xfade[data-phase="reveal"] .tr-xfade-blade-gold { animation-delay: 200ms; }
+
+/* The last blade lands at 140 + 240 = 380ms; COVER_MS is 520ms, so the route
+   swaps 140ms into full cover rather than on the frame the ink blade arrives —
+   and that same 140ms is what gives the stamped page name time to be read
+   instead of flashed. On the way out the last blade clears at 200 + 340 =
+   540ms against REVEAL_MS 560ms. Retime the blades and keep both gaps. */
+@keyframes tr-blade-in {
+  from { transform: translate3d(-135%, 0, 0) skewX(-9deg); }
+  to   { transform: translate3d(0, 0, 0) skewX(-9deg); }
+}
+@keyframes tr-blade-out {
+  from { transform: translate3d(0, 0, 0) skewX(-9deg); }
+  to   { transform: translate3d(135%, 0, 0) skewX(-9deg); }
+}
+
+/* The name of the page you are heading to, stamped on the ink blade. Counter-
+   skewed so the type stays upright while the panel behind it is raked. */
+.tr-xfade-mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  transform: translate(-50%, -50%) skewX(9deg);
+  opacity: 0;
+}
+.tr-xfade[data-phase="cover"] .tr-xfade-mark {
+  animation: tr-mark-in 240ms var(--tr-ease) 170ms both;
+}
+.tr-xfade[data-phase="reveal"] .tr-xfade-mark {
+  animation: tr-mark-out 200ms var(--tr-ease) both;
+}
+@keyframes tr-mark-in {
+  from { opacity: 0; transform: translate(-50%, -42%) skewX(9deg); }
+  to   { opacity: 1; transform: translate(-50%, -50%) skewX(9deg); }
+}
+@keyframes tr-mark-out {
+  from { opacity: 1; transform: translate(-50%, -50%) skewX(9deg); }
+  to   { opacity: 0; transform: translate(-50%, -58%) skewX(9deg); }
+}
+.tr-xfade-checker {
+  display: block;
+  width: clamp(120px, 22vw, 260px);
+  height: 10px;
+  background-image:
+    linear-gradient(45deg, rgb(255 255 255 / 0.85) 25%, transparent 25%),
+    linear-gradient(-45deg, rgb(255 255 255 / 0.85) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgb(255 255 255 / 0.85) 75%),
+    linear-gradient(-45deg, transparent 75%, rgb(255 255 255 / 0.85) 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+  opacity: 0.7;
+}
+.tr-xfade-label {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: clamp(1.6rem, 6vw, 3.6rem);
+  line-height: 1;
+  white-space: nowrap;
+  color: #fff;
+  text-shadow: 0 0 40px rgb(255 210 0 / 0.35);
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll-driven camera
+   ---------------------------------------------------------------------------
+   These take their progress from the element's own trip through the viewport
+   (`view()`) or from the document scroll (`scroll(root)`), so there is no rAF
+   loop, no listener and no main-thread work at all. Unsupported browsers get
+   the static end state — every rule here is additive, so nothing is missing
+   without it, it just does not move.
+
+   `animation-range` vocabulary, since it is easy to misread:
+     entry 0% → 100%   element crossing the bottom edge into view
+     cover 0% → 100%   the element's whole trip across the viewport
+     exit  0% → 100%   element crossing the top edge out of view
+   ------------------------------------------------------------------------ */
+@supports (animation-timeline: view()) {
+  html[data-motion="cinematic"] .tr-cam-rise,
+  html[data-motion="cinematic"] .tr-cam-tilt,
+  html[data-motion="cinematic"] .tr-cam-pan-l,
+  html[data-motion="cinematic"] .tr-cam-pan-r,
+  html[data-motion="cinematic"] .tr-cam-drift {
+    animation-timeline: view();
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+  }
+
+  /* A block that lifts and settles as it comes up the screen. */
+  html[data-motion="cinematic"] .tr-cam-rise {
+    animation-name: tr-cam-rise;
+    animation-range: entry 8% cover 26%;
+  }
+  @keyframes tr-cam-rise {
+    from { opacity: 0; transform: translate3d(0, 72px, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  /* The card-deck move: the block lies back, then stands up as it arrives. */
+  html[data-motion="cinematic"] .tr-cam-tilt {
+    animation-name: tr-cam-tilt;
+    animation-range: entry 0% cover 24%;
+    transform-origin: 50% 100%;
+  }
+  @keyframes tr-cam-tilt {
+    from {
+      opacity: 0;
+      transform: perspective(1400px) rotateX(11deg) translate3d(0, 60px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: perspective(1400px) rotateX(0deg) translate3d(0, 0, 0);
+    }
+  }
+
+  /* Lateral drift across the whole trip — for ghost words and backdrop type,
+     where the movement should read as a camera pan rather than an entrance. */
+  html[data-motion="cinematic"] .tr-cam-pan-l {
+    animation-name: tr-cam-pan-l;
+    animation-range: cover 0% cover 100%;
+  }
+  html[data-motion="cinematic"] .tr-cam-pan-r {
+    animation-name: tr-cam-pan-r;
+    animation-range: cover 0% cover 100%;
+  }
+  @keyframes tr-cam-pan-l {
+    from { transform: translate3d(4%, 0, 0); }
+    to   { transform: translate3d(-4%, 0, 0); }
+  }
+  @keyframes tr-cam-pan-r {
+    from { transform: translate3d(-4%, 0, 0); }
+    to   { transform: translate3d(4%, 0, 0); }
+  }
+
+  /* Vertical parallax for a plate inside an overflow-hidden frame. */
+  html[data-motion="cinematic"] .tr-cam-drift {
+    animation-name: tr-cam-drift;
+    animation-range: cover 0% cover 100%;
+  }
+  @keyframes tr-cam-drift {
+    from { transform: translate3d(0, -7%, 0) scale(1.14); }
+    to   { transform: translate3d(0, 7%, 0) scale(1.14); }
+  }
+
+  /* Hero plate: pushes in through the first screenful of scroll. Driven by the
+     document, not by the element, because a hero starts already in view and so
+     has no `entry` range to animate over. This intentionally overrides the
+     inline transform written by `useParallax` — a CSS animation beats an inline
+     style — which is the point: same effect, none of the scroll handler. */
+  html[data-motion="cinematic"] .tr-cam-push {
+    animation: tr-cam-push linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 100vh;
+  }
+  @keyframes tr-cam-push {
+    from { transform: translate3d(0, 0, 0) scale(1.04); }
+    to   { transform: translate3d(0, 9%, 0) scale(1.22); }
+  }
+
+  /* Hero copy dissolving as the hero leaves — the shot changing, rather than
+     the text simply scrolling off the top. */
+  html[data-motion="cinematic"] .tr-cam-fade {
+    animation: tr-cam-fade linear both;
+    animation-timeline: view();
+    animation-range: exit 0% exit 72%;
+  }
+  @keyframes tr-cam-fade {
+    from { opacity: 1; transform: translate3d(0, 0, 0); }
+    to   { opacity: 0; transform: translate3d(0, -40px, 0); }
+  }
+
+  /* Letterbox bars that close over a hero as you scroll out of it. */
+  html[data-motion="cinematic"] .tr-cam-bars::before,
+  html[data-motion="cinematic"] .tr-cam-bars::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: clamp(28px, 7vh, 92px);
+    background: var(--tr-ink);
+    z-index: 20;
+    pointer-events: none;
+    animation: tr-cam-bar linear both;
+    animation-timeline: view();
+    animation-range: exit 0% exit 100%;
+  }
+  html[data-motion="cinematic"] .tr-cam-bars::before {
+    top: 0;
+    transform-origin: top center;
+  }
+  html[data-motion="cinematic"] .tr-cam-bars::after {
+    bottom: 0;
+    transform-origin: bottom center;
+  }
+  @keyframes tr-cam-bar {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+
+  /* A rule that draws itself across as its section arrives. */
+  html[data-motion="cinematic"] .tr-cam-line {
+    animation: tr-cam-line linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 18%;
+    transform-origin: left center;
+  }
+  @keyframes tr-cam-line {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Deeper entrances — new `data-reveal` variants
+   ------------------------------------------------------------------------ */
+
+/* A raked curtain that slides off the block, rather than the block fading in.
+   Built from a pseudo-element transform, not a clip-path or a mask: those
+   repaint, and a clip-path would leave this element as the containing block
+   for any fixed descendant forever after. */
+[data-reveal="wipe"] {
+  opacity: 1;
+  transform: none;
+  position: relative;
+  overflow: hidden;
+}
+[data-reveal="wipe"]::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: 3;
+  background: var(--tr-ink);
+  transform: translate3d(0, 0, 0) skewX(-8deg) scaleX(1.3);
+  transition: transform 0.95s var(--tr-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+  pointer-events: none;
+}
+[data-reveal="wipe"].is-revealed::after {
+  transform: translate3d(118%, 0, 0) skewX(-8deg) scaleX(1.3);
+}
+
+/* Lies back and stands up. Heavier than "up" — for feature blocks and cards. */
+[data-reveal="tilt"] {
+  transform: perspective(1200px) rotateX(13deg) translateY(52px);
+  transform-origin: 50% 100%;
+}
+
+/* The long entrance, for a section that deserves the extra beat. */
+[data-reveal="rise"] {
+  transform: translateY(76px) scale(0.965);
+  transition-duration: 1.05s;
+}
+
+/* Arrives off the racing line: raked in from the left, straightening up. */
+[data-reveal="slash"] {
+  transform: translate3d(-56px, 24px, 0) skewX(-7deg);
+}
+
+/* ---------------------------------------------------------------------------
+   Stagger — a cascade with no per-child markup
+   ---------------------------------------------------------------------------
+   `[data-stagger] > *` gets `--reveal-delay` from its position, and every
+   mechanism in this file already reads that variable, so children keep using
+   whatever `data-reveal` variant they like and simply come in one after the
+   other. `--stagger-step` tunes the gap.
+   ------------------------------------------------------------------------ */
+[data-stagger] > *:nth-child(1)  { --reveal-delay: calc(var(--stagger-step, 90ms) * 0); }
+[data-stagger] > *:nth-child(2)  { --reveal-delay: calc(var(--stagger-step, 90ms) * 1); }
+[data-stagger] > *:nth-child(3)  { --reveal-delay: calc(var(--stagger-step, 90ms) * 2); }
+[data-stagger] > *:nth-child(4)  { --reveal-delay: calc(var(--stagger-step, 90ms) * 3); }
+[data-stagger] > *:nth-child(5)  { --reveal-delay: calc(var(--stagger-step, 90ms) * 4); }
+[data-stagger] > *:nth-child(6)  { --reveal-delay: calc(var(--stagger-step, 90ms) * 5); }
+[data-stagger] > *:nth-child(7)  { --reveal-delay: calc(var(--stagger-step, 90ms) * 6); }
+[data-stagger] > *:nth-child(8)  { --reveal-delay: calc(var(--stagger-step, 90ms) * 7); }
+[data-stagger] > *:nth-child(9)  { --reveal-delay: calc(var(--stagger-step, 90ms) * 8); }
+[data-stagger] > *:nth-child(10) { --reveal-delay: calc(var(--stagger-step, 90ms) * 9); }
+[data-stagger] > *:nth-child(11) { --reveal-delay: calc(var(--stagger-step, 90ms) * 10); }
+[data-stagger] > *:nth-child(n + 12) { --reveal-delay: calc(var(--stagger-step, 90ms) * 11); }
+
+/* ---------------------------------------------------------------------------
+   Type that arrives a character at a time
+   ---------------------------------------------------------------------------
+   The per-word roll (`.tr-words`) is the workhorse; this is its louder sibling,
+   for hero headlines only. Each glyph sits in its own clipped slot and rolls up
+   from below on a hinge. `overflow: hidden` on the slot would otherwise eat
+   descenders, hence the padding/negative-margin pair.
+   ------------------------------------------------------------------------ */
+.tr-chars {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 0.28em;
+  perspective: 900px;
+}
+/* Characters are grouped per word: a bare flex row of glyphs would wrap in the
+   middle of a word at a narrow viewport. The words wrap, the glyphs do not. */
+.tr-char-word {
+  display: inline-flex;
+  white-space: nowrap;
+}
+.tr-char {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.tr-char > span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(108%) rotateX(-70deg);
+  transform-origin: 50% 0%;
+  transition: transform 0.9s var(--tr-ease), opacity 0.45s linear;
+  transition-delay: calc(var(--i, 0) * 32ms + var(--reveal-delay, 0ms));
+}
+.tr-chars.is-revealed .tr-char > span,
+.is-revealed .tr-char > span {
+  opacity: 1;
+  transform: none;
+}
+/* At `standard` the hinge goes; the slot roll stays. */
+html[data-motion="standard"] .tr-char > span {
+  transform: translateY(108%);
+}
+
+/* The per-word roll gains the same hinge at `cinematic`. */
+html[data-motion="cinematic"] .tr-words {
+  perspective: 1000px;
+}
+html[data-motion="cinematic"] .tr-word > span {
+  transform: translateY(105%) rotateX(-54deg);
+  transform-origin: 50% 0%;
+}
+html[data-motion="cinematic"] .is-revealed .tr-word > span,
+html[data-motion="cinematic"] .tr-words.is-revealed .tr-word > span {
+  transform: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Pointer flourishes
+   ------------------------------------------------------------------------ */
+
+/* Element leans toward the cursor. The hook writes --mag-x / --mag-y; the
+   transition is what makes it settle back rather than snap. */
+.tr-magnetic {
+  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
+  transition: transform 0.45s var(--tr-ease);
+}
+.tr-magnetic:active {
+  transition-duration: 0.1s;
+}
+
+/* A hard specular streak across a surface on hover — the headlight pass, but
+   for cards and images rather than buttons. */
+.tr-gleam {
+  position: relative;
+  overflow: hidden;
+}
+.tr-gleam::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  bottom: -60%;
+  width: 42%;
+  left: -60%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgb(255 255 255 / 0.26),
+    transparent
+  );
+  transform: skewX(-18deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.tr-gleam:hover::after,
+.group:hover .tr-gleam::after {
+  opacity: 1;
+  animation: tr-gleam-run 0.85s var(--tr-ease) 1;
+}
+@keyframes tr-gleam-run {
+  from { transform: translateX(0) skewX(-18deg); }
+  to   { transform: translateX(420%) skewX(-18deg); }
+}
+
+/* The motion control borrows the theme button's shell; it only needs its own
+   glyph box, and a nudge of the bars to the right as the level goes up. */
+.tr-motion-toggle svg {
+  display: block;
+  width: 19px;
+  height: 19px;
+}
+.tr-motion-toggle path {
+  transition: opacity 0.3s var(--tr-ease), transform 0.35s var(--tr-ease);
+}
+.tr-motion-toggle:hover path {
+  transform: translateX(1.5px);
+}
+
+/* ---------------------------------------------------------------------------
+   Level gating for everything above
+   ------------------------------------------------------------------------ */
+
+/* `standard`: keep the entrances and the route cut, drop the showiest bits. */
+html[data-motion="standard"] .tr-xfade-blade-gold,
+html[data-motion="standard"] .tr-xfade-checker {
+  display: none;
+}
+html[data-motion="standard"] [data-reveal="tilt"]:not(.is-revealed) {
+  transform: translateY(46px);
+}
+
+/* `reduced`: nothing moves. Mirrors the prefers-reduced-motion block above so
+   that a visitor who turns motion down here lands in the same place as one
+   whose operating system asked for it. */
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+html[data-motion="reduced"] [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+html[data-motion="reduced"] [data-reveal="wipe"]::after {
+  display: none;
+}
+html[data-motion="reduced"] .tr-char > span,
+html[data-motion="reduced"] .tr-word > span {
+  opacity: 1 !important;
+  transform: none !important;
+}
+html[data-motion="reduced"] .tr-xfade {
+  display: none;
+}
+html[data-motion="reduced"] .tr-lights,
+html[data-motion="reduced"] .tr-slip {
+  display: none;
+}
+html[data-motion="reduced"] .tr-lean {
+  transform: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+   The shared entrances, turned up
+   ---------------------------------------------------------------------------
+   The pages between them use several hundred `<Reveal variant="up">` and
+   friends. Rather than touch any of that markup, `cinematic` simply gives the
+   existing variants more travel and a longer beat — so the whole site gets the
+   bigger entrance, and turning the level down restores the original.
+
+   `:not(.is-revealed)` matters. `[data-reveal].is-revealed { transform: none }`
+   is specificity (0,2,0); an unqualified `html[data-motion="…"] [data-reveal="up"]`
+   would be (0,2,1) and would therefore beat the revealed state — every element
+   on the site would animate in and then sit permanently 46px low. Excluding the
+   revealed state instead of out-specifying it keeps the end state where it was.
+   ------------------------------------------------------------------------ */
+html[data-motion="cinematic"] [data-reveal]:not(.is-revealed) {
+  transition-duration: 0.95s;
+}
+html[data-motion="cinematic"] [data-reveal="up"]:not(.is-revealed) {
+  transform: translate3d(0, 46px, 0);
+}
+html[data-motion="cinematic"] [data-reveal="down"]:not(.is-revealed) {
+  transform: translate3d(0, -46px, 0);
+}
+html[data-motion="cinematic"] [data-reveal="left"]:not(.is-revealed) {
+  transform: translate3d(-56px, 0, 0) skewX(-3deg);
+}
+html[data-motion="cinematic"] [data-reveal="right"]:not(.is-revealed) {
+  transform: translate3d(56px, 0, 0) skewX(3deg);
+}
+html[data-motion="cinematic"] [data-reveal="scale"]:not(.is-revealed) {
+  transform: scale(0.9);
+}
+/* "blur" is deliberately left alone: `filter` is the one property here that
+   repaints, and widening the radius makes a big block markedly more expensive
+   for very little more drama. */
+
+/* ============================================================================
+   Fuel the Future banner
+   ----------------------------------------------------------------------------
+   Replaces the baked `Footer.webp`. See src/components/fuelbanner.tsx.
+
+   The extrude is the whole trick, and it is one `text-shadow` — a stack of hard
+   offsets stepping down-right from light grey into the page's own black, so the
+   letters read as blocks rather than as flat type with a drop shadow. Offsets
+   are in `em`, so the depth scales with the clamped font size instead of going
+   thin on a phone and stubby on a display.
+   ========================================================================= */
+
+.tr-fuel {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: clamp(26px, 4.2vw, 60px);
+  padding-inline: var(--tr-gutter);
+  background:
+    radial-gradient(130% 150% at 4% 130%, rgb(var(--tr-bd-key) / 0.26), transparent 58%),
+    radial-gradient(90% 120% at 96% 10%, rgb(var(--tr-bd-cool) / 0.18), transparent 62%),
+    #07070a;
+}
+
+/* Livery band across the top edge. */
+.tr-fuel-rail {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: clamp(9px, 1.5vw, 20px);
+  z-index: 2;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.1) 0 7px,
+      transparent 7px 14px
+    ),
+    linear-gradient(
+      90deg,
+      rgb(var(--tr-bd-deep) / 0.95),
+      rgb(var(--tr-bd-key) / 0.5) 58%,
+      transparent
+    );
+}
+
+/* The photograph, raked. Skewing the frame rather than clipping it means the
+   angled edge can carry a real border — a gold hairline along the cut — which a
+   clip-path would have shaved off. The image counter-skews so the car itself
+   stays upright. */
+.tr-fuel-art {
+  position: absolute;
+  inset: -10% 0 -10% 50%;
+  z-index: 0;
+  overflow: hidden;
+  transform: skewX(-6deg);
+  transform-origin: top left;
+  border-left: 2px solid rgb(var(--tr-bd-rim) / 0.4);
+}
+.tr-fuel-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 45%;
+  transform: skewX(6deg) scale(1.2);
+}
+.tr-fuel-art-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      #07070a 0%,
+      rgb(7 7 10 / 0.82) 16%,
+      rgb(7 7 10 / 0.1) 52%,
+      transparent 72%
+    ),
+    linear-gradient(180deg, rgb(7 7 10 / 0.5), transparent 34%, rgb(7 7 10 / 0.72));
+}
+
+.tr-fuel-copy {
+  position: relative;
+  z-index: 1;
+  /* No `ch` cap here: this is a wordmark, not prose, and a measure limit meant
+     for paragraphs is what pushed the word out past the photograph whenever the
+     display font had not loaded. */
+  max-width: 58%;
+}
+
+.tr-fuel-word {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.006em;
+  /* One line, like the printed banner it replaces. The size is driven off the
+     viewport rather than a fixed ramp so the word scales with the space it has
+     instead of relying on Barlow Condensed's narrow metrics — with a fallback
+     face loaded (no network, a blocked font) the same rule still keeps it
+     inside the copy column rather than running under the photograph. */
+  white-space: nowrap;
+  font-size: clamp(1.55rem, 5.4vw, 5.2rem);
+  color: #cfcfd6;
+  text-shadow:
+    0.012em 0.012em 0 #74747c,
+    0.024em 0.024em 0 #5f5f67,
+    0.036em 0.036em 0 #4e4e56,
+    0.048em 0.048em 0 #3f3f47,
+    0.06em 0.06em 0 #33333a,
+    0.072em 0.072em 0 #29292f,
+    0.084em 0.084em 0 #202026,
+    0.096em 0.096em 0 #191920,
+    0.108em 0.108em 0 #131319,
+    0.12em 0.12em 0.05em rgb(0 0 0 / 0.6);
+}
+
+.tr-fuel-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(12px, 2.6vw, 40px);
+  margin: clamp(14px, 2vw, 26px) 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-body);
+  font-size: clamp(0.78rem, 1.3vw, 1.02rem);
+  color: rgb(var(--tr-fg) / 0.62);
+}
+.tr-fuel-meta li {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-width: 0;
+}
+.tr-fuel-meta svg {
+  width: 1.3em;
+  height: 1.3em;
+  flex: none;
+  opacity: 0.75;
+}
+.tr-fuel-meta a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.25s var(--tr-ease);
+}
+.tr-fuel-meta a:hover,
+.tr-fuel-meta a:focus-visible {
+  color: var(--tr-text);
+}
+.tr-fuel-sep {
+  opacity: 0.45;
+}
+
+/* Narrow: the rake stops making sense once the panel is most of the width, so
+   the photograph goes full-bleed and drops behind the copy instead. */
+@media (max-width: 760px) {
+  .tr-fuel-art {
+    inset: -10% -8%;
+    transform: none;
+    border-left: 0;
+    opacity: 0.4;
+  }
+  .tr-fuel-art img {
+    transform: scale(1.1);
+  }
+  .tr-fuel-art-scrim {
+    background: linear-gradient(
+      180deg,
+      rgb(7 7 10 / 0.72),
+      rgb(7 7 10 / 0.5) 45%,
+      rgb(7 7 10 / 0.85)
+    );
+  }
+  .tr-fuel-copy {
+    max-width: none;
+  }
+  /* Below the rake breakpoint there is no photograph to run under, so the word
+     may wrap rather than shrink into illegibility. */
+  .tr-fuel-word {
+    white-space: normal;
+  }
 }

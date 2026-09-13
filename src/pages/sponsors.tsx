@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 import NavBar from "~/components/navbar";
 import Reveal from "~/components/reveal";
 import Backdrop, { Seam } from "~/components/backdrop";
-import { useSlipstream, useSpeedLean } from "~/components/velocity";
+import { useSlipstream } from "~/components/velocity";
 import { Words, useParallax, useSpotlight } from "~/components/cinematic";
+import { useTheme } from "~/components/theme";
 
 import trackPic from "../public/images/IC/track_pic.webp";
 import teamPic from "../public/images/IC/team_pic.webp";
 import liveryCar from "../public/images/IC/ic_racecar_image.webp";
-import footerImage from "../public/images/homePage/Footer.webp";
 
 /* Marquee partners, reused from the per-team sponsor pages. */
 import PartnerRELI from "../public/images/IC/sponsors/Platinum/RELI_Group.webp";
@@ -36,7 +36,10 @@ const TEAM_EMAIL = "terpsracing@umd.edu";
 interface Tier {
   name: string;
   amount: string;
+  /** Metal colour on the dark theme. */
   accent: string;
+  /** Its light-theme counterpart: same metal, dark enough to read on white. */
+  accentLight: string;
   /** Logo treatment on the vehicles, as printed in the packet. */
   livery: string;
   /** Approximate decal footprint, used by the livery diagram. */
@@ -50,6 +53,7 @@ const TIERS: Tier[] = [
     name: "Pit Crew",
     amount: "$500",
     accent: "#9aa0aa",
+    accentLight: "#5f6570",
     livery: "—",
     liveryScale: 0,
     headline: "Get in the garage",
@@ -59,6 +63,7 @@ const TIERS: Tier[] = [
     name: "Bronze",
     amount: "$1,000+",
     accent: "#c98b52",
+    accentLight: "#8a5420",
     livery: "Name listed",
     liveryScale: 0.42,
     headline: "Your name on the car",
@@ -74,6 +79,7 @@ const TIERS: Tier[] = [
     name: "Silver",
     amount: "$5,000+",
     accent: "#c9ced8",
+    accentLight: "#5d6472",
     livery: "Small logo",
     liveryScale: 0.62,
     headline: "Come to a test day",
@@ -88,6 +94,7 @@ const TIERS: Tier[] = [
     name: "Gold",
     amount: "$10,000+",
     accent: "#ffd200",
+    accentLight: "#8a6800",
     livery: "Medium logo",
     liveryScale: 0.82,
     headline: "Talk to the engineers",
@@ -102,6 +109,7 @@ const TIERS: Tier[] = [
     name: "Platinum",
     amount: "$15,000+",
     accent: "#e8e8ef",
+    accentLight: "#55556a",
     livery: "Large logo",
     liveryScale: 1,
     headline: "Front of the car, front of the room",
@@ -144,7 +152,13 @@ function Hero() {
       className="relative overflow-hidden border-b border-white/[0.08]"
       aria-label="Partner with Terps Racing"
     >
-      <Backdrop variant="carbon" vignette={false} intensity={0.9} />
+      <Backdrop
+        variant="carbon"
+        beams
+        keylight
+        vignette={false}
+        intensity={0.9}
+      />
 
       <div className="tr-shell relative z-10 grid items-center gap-10 pb-[clamp(48px,7vw,96px)] pt-[calc(var(--tr-nav-h)+clamp(48px,8vw,110px))] lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         {/* Left: the pitch */}
@@ -156,7 +170,7 @@ function Hero() {
                 borderColor: "#e21833",
                 fontFamily: "var(--font-mono)",
                 letterSpacing: "0.26em",
-                color: "rgba(255,255,255,0.6)",
+                color: "rgb(var(--tr-fg) / 0.6)",
               }}
             >
               Corporate Partnerships · 2025–26
@@ -226,7 +240,7 @@ function Hero() {
               {["3 cars", "120+ engineers", "Since 1982"].map((t) => (
                 <span
                   key={t}
-                  className="text-[0.66rem] uppercase text-white/45"
+                  className="text-[0.66rem] uppercase text-white/60"
                   style={{
                     fontFamily: "var(--font-mono)",
                     letterSpacing: "0.16em",
@@ -244,7 +258,19 @@ function Hero() {
 }
 
 /* ── Livery placement — the thing sponsors actually buy ──────────────────── */
+/** The tier's accent for the active theme. The metals are literal hex because
+    they are concatenated with alpha suffixes (`${accent}66`), which a CSS
+    variable cannot do — so the theme is resolved in JS instead. */
+function useTierAccent(onDark = false) {
+  const { theme } = useTheme();
+  return (tier: Tier) =>
+    theme === "light" && !onDark ? tier.accentLight : tier.accent;
+}
+
 function Livery() {
+  const accentFor = useTierAccent();
+  // The car panel below stays dark, so its decal keeps the dark metals.
+  const accentOnDark = useTierAccent(true);
   const [active, setActive] = useState(4); // Platinum
   const tier = TIERS[active];
 
@@ -253,14 +279,14 @@ function Livery() {
       className="tr-section relative overflow-hidden"
       aria-labelledby="livery-title"
     >
-      <Backdrop variant="hud" fade intensity={0.5} />
+      <Backdrop variant="strata" fade intensity={0.6} />
 
       <div className="tr-shell relative z-10">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
           {/* Copy + tier selector */}
           <div>
             <Reveal variant="up">
-              <span className="tr-eyebrow" style={{ color: "#e21833" }}>
+              <span className="tr-eyebrow">
                 What you actually get
               </span>
             </Reveal>
@@ -298,7 +324,7 @@ function Livery() {
                     }`}
                     style={{
                       borderColor:
-                        i === active ? t.accent : "rgba(255,255,255,0.1)",
+                        i === active ? accentFor(t) : "rgb(var(--tr-fg) / 0.1)",
                     }}
                   >
                     <span
@@ -308,7 +334,7 @@ function Livery() {
                         fontWeight: 700,
                         fontSize: "1.05rem",
                         color:
-                          i === active ? t.accent : "rgba(255,255,255,0.6)",
+                          i === active ? accentFor(t) : "rgb(var(--tr-fg) / 0.6)",
                       }}
                     >
                       {t.name}
@@ -317,7 +343,7 @@ function Livery() {
                       style={{
                         fontFamily: "var(--font-mono)",
                         fontSize: "0.76rem",
-                        color: i === active ? "#fff" : "rgba(255,255,255,0.4)",
+                        color: i === active ? "var(--tr-text)" : "rgb(var(--tr-fg) / 0.68)",
                       }}
                     >
                       {t.amount}
@@ -330,7 +356,7 @@ function Livery() {
 
           {/* The car with a scaling decal */}
           <Reveal variant="scale" delay={160}>
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.09] bg-black/50 p-6 sm:p-10">
+            <div className="tr-on-dark relative overflow-hidden rounded-2xl border border-white/[0.09] bg-black/50 p-6 sm:p-10">
               <div className="relative">
                 <img
                   src={liveryCar}
@@ -343,14 +369,14 @@ function Livery() {
                   <div
                     className="absolute flex items-center justify-center border-2 transition-all duration-[650ms] ease-[var(--tr-ease)]"
                     style={{
-                      borderColor: tier.accent,
-                      background: `${tier.accent}1f`,
+                      borderColor: accentOnDark(tier),
+                      background: `${accentOnDark(tier)}1f`,
                       left: "34%",
                       top: "44%",
                       width: `${9 + tier.liveryScale * 17}%`,
                       height: `${6 + tier.liveryScale * 11}%`,
                       transform: "translate(-50%, -50%)",
-                      boxShadow: `0 0 40px -8px ${tier.accent}88`,
+                      boxShadow: `0 0 40px -8px ${accentOnDark(tier)}88`,
                     }}
                   >
                     <span
@@ -358,7 +384,7 @@ function Livery() {
                       style={{
                         fontFamily: "var(--font-mono)",
                         fontSize: "clamp(0.5rem, 0.9vw, 0.7rem)",
-                        color: tier.accent,
+                        color: accentOnDark(tier),
                         letterSpacing: "0.1em",
                       }}
                     >
@@ -377,7 +403,7 @@ function Livery() {
                       fontFamily: "var(--font-display)",
                       fontWeight: 900,
                       fontSize: "clamp(1.2rem,2.6vw,1.7rem)",
-                      color: tier.accent,
+                      color: accentOnDark(tier),
                     }}
                   >
                     {tier.headline}
@@ -386,7 +412,7 @@ function Livery() {
                     style={{
                       fontFamily: "var(--font-mono)",
                       fontSize: "0.74rem",
-                      color: "rgba(255,255,255,0.45)",
+                      color: "rgb(var(--tr-fg) / 0.45)",
                       letterSpacing: "0.12em",
                     }}
                   >
@@ -412,7 +438,7 @@ function Livery() {
                         }ms forwards`,
                       }}
                     >
-                      <span style={{ color: tier.accent }}>▸</span>
+                      <span style={{ color: accentOnDark(tier) }}>▸</span>
                       {b}
                     </li>
                   ))}
@@ -423,7 +449,7 @@ function Livery() {
         </div>
 
         <p
-          className="mt-6 text-white/35"
+          className="mt-6 text-white/55"
           style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem" }}
         >
           Diagram is illustrative — exact placement is agreed with each partner.
@@ -438,6 +464,7 @@ function Livery() {
 /* ── Tier cards ──────────────────────────────────────────────────────────── */
 function TierCard({ tier, index }: { tier: Tier; index: number }) {
   const { ref, onMouseMove } = useSpotlight<HTMLDivElement>();
+  const accent = useTierAccent()(tier);
   const top = tier.name === "Platinum";
 
   return (
@@ -447,15 +474,15 @@ function TierCard({ tier, index }: { tier: Tier; index: number }) {
         onMouseMove={onMouseMove}
         className="tr-spotlight tr-headlight relative flex h-full flex-col border p-6 transition-all duration-500 ease-[var(--tr-ease)] hover:-translate-y-1.5"
         style={{
-          borderColor: top ? `${tier.accent}66` : "rgba(255,255,255,0.09)",
+          borderColor: top ? `${accent}66` : "rgb(var(--tr-fg) / 0.09)",
           background: top
-            ? "rgba(255,255,255,0.045)"
-            : "rgba(255,255,255,0.02)",
+            ? "rgb(var(--tr-fg) / 0.045)"
+            : "rgb(var(--tr-fg) / 0.02)",
         }}
       >
         <span
           className="absolute left-0 top-0 h-full w-[3px]"
-          style={{ background: tier.accent, opacity: top ? 1 : 0.5 }}
+          style={{ background: accent, opacity: top ? 1 : 0.5 }}
           aria-hidden="true"
         />
         <span
@@ -463,7 +490,7 @@ function TierCard({ tier, index }: { tier: Tier; index: number }) {
           style={{
             fontFamily: "var(--font-mono)",
             letterSpacing: "0.22em",
-            color: tier.accent,
+            color: accent,
           }}
         >
           {tier.name}
@@ -475,7 +502,7 @@ function TierCard({ tier, index }: { tier: Tier; index: number }) {
           {tier.amount}
         </span>
         <span
-          className="mt-1 text-white/45"
+          className="mt-1 text-white/60"
           style={{ fontFamily: "var(--font-body)", fontSize: "0.84rem" }}
         >
           {tier.headline}
@@ -492,7 +519,7 @@ function TierCard({ tier, index }: { tier: Tier; index: number }) {
                 lineHeight: 1.5,
               }}
             >
-              <span style={{ color: tier.accent }}>▸</span>
+              <span style={{ color: accent }}>▸</span>
               {b}
             </li>
           ))}
@@ -525,7 +552,7 @@ function Tiers() {
         <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-white/[0.09] pb-6">
           <div>
             <Reveal variant="up">
-              <span className="tr-eyebrow" style={{ color: "#e21833" }}>
+              <span className="tr-eyebrow">
                 Levels
               </span>
             </Reveal>
@@ -594,7 +621,7 @@ function InKind() {
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
           <div>
             <Reveal variant="up">
-              <span className="tr-eyebrow" style={{ color: "#e21833" }}>
+              <span className="tr-eyebrow">
                 Not just cash
               </span>
             </Reveal>
@@ -635,7 +662,7 @@ function InKind() {
               <Reveal key={item.title} variant="up" delay={i * 90}>
                 <div className="h-full bg-tr-ink p-6 transition-colors duration-400 hover:bg-white/[0.03]">
                   <span
-                    className="text-[0.62rem] uppercase text-white/35"
+                    className="text-[0.62rem] uppercase text-white/55"
                     style={{
                       fontFamily: "var(--font-mono)",
                       letterSpacing: "0.22em",
@@ -718,7 +745,7 @@ function Partners() {
 
         <Reveal variant="up" delay={200}>
           <p
-            className="mt-6 text-white/40"
+            className="mt-6 text-white/60"
             style={{ fontFamily: "var(--font-body)", fontSize: "0.88rem" }}
           >
             A selection of the organisations backing Formula IC, Formula
@@ -748,7 +775,7 @@ function Talent() {
   return (
     <section
       ref={ref}
-      className="tr-grain relative overflow-hidden"
+      className="tr-on-dark tr-grain relative overflow-hidden"
       aria-labelledby="talent-title"
     >
       <div className="absolute inset-0">
@@ -756,7 +783,7 @@ function Talent() {
           src={teamPic}
           ref={targetRef as React.RefObject<HTMLImageElement>}
           alt=""
-          className="h-full w-full object-cover"
+          className="tr-cam-drift h-full w-full object-cover"
           loading="lazy"
         />
         <div
@@ -769,7 +796,7 @@ function Talent() {
       <div className="tr-shell relative z-10 grid items-center gap-10 py-[clamp(52px,8vw,110px)] lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
         <div>
           <Reveal variant="up">
-            <span className="tr-eyebrow" style={{ color: "#e21833" }}>
+            <span className="tr-eyebrow">
               Résumé book access
             </span>
           </Reveal>
@@ -850,7 +877,7 @@ function GetInvolved() {
       <div className="tr-shell relative z-10">
         <div className="mb-12">
           <Reveal variant="up">
-            <span className="tr-eyebrow" style={{ color: "#e21833" }}>
+            <span className="tr-eyebrow">
               Three steps
             </span>
           </Reveal>
@@ -914,7 +941,7 @@ function Contact() {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden"
+      className="tr-on-dark relative overflow-hidden"
       id="contact"
       aria-labelledby="contact-title"
     >
@@ -923,7 +950,7 @@ function Contact() {
           src={trackPic}
           ref={targetRef as React.RefObject<HTMLImageElement>}
           alt=""
-          className="h-full w-full object-cover"
+          className="tr-cam-drift h-full w-full object-cover"
           loading="lazy"
         />
         <div
@@ -934,7 +961,13 @@ function Contact() {
           }}
         />
       </div>
-      <Backdrop variant="carbon" vignette={false} intensity={0.35} />
+      <Backdrop
+        variant="carbon"
+        keylight
+        keyPos={["50%", "30%"]}
+        vignette={false}
+        intensity={0.45}
+      />
 
       <div className="tr-shell relative z-10 py-[clamp(56px,9vw,130px)]">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16">
@@ -1018,25 +1051,7 @@ function Contact() {
 /* ── Footer ──────────────────────────────────────────────────────────────── */
 function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-tr-ink" role="contentinfo">
-      <div
-        className="relative w-full overflow-hidden"
-        style={{ minHeight: 100 }}
-      >
-        <img
-          src={footerImage}
-          alt=""
-          className="w-full object-cover"
-          loading="lazy"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, var(--tr-ink) 0%, rgba(8,8,10,0.6) 45%, var(--tr-ink) 100%)",
-          }}
-        />
-      </div>
+    <footer className="tr-on-dark relative overflow-hidden bg-tr-ink" role="contentinfo">
       <div className="tr-shell flex flex-col items-center gap-4 border-t border-white/[0.07] py-8 text-center sm:flex-row sm:justify-between sm:text-left">
         <Link
           to="/"
@@ -1046,7 +1061,7 @@ function Footer() {
           ← Back to Terps Racing
         </Link>
         <p
-          className="text-[0.75rem] text-white/35"
+          className="text-[0.75rem] text-white/55"
           style={{ fontFamily: "var(--font-mono)" }}
         >
           © {new Date().getFullYear()} Terps Racing · University of Maryland
@@ -1058,13 +1073,12 @@ function Footer() {
 
 /* ── Page ────────────────────────────────────────────────────────────────── */
 export default function Sponsors() {
-  const leanRef = useSpeedLean<HTMLDivElement>(0.8);
   useSlipstream(true, "rgba(226,24,51,0.85)");
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-tr-ink text-white">
-      <NavBar />
-      <main ref={leanRef} className="tr-lean">
+      <NavBar overMedia={false} />
+      <main>
         <Hero />
         <Livery />
         <Seam />

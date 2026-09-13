@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import NavBar from "~/components/navbar";
 import Backdrop, { Seam } from "~/components/backdrop";
-import { useSlipstream, useSpeedLean } from "~/components/velocity";
+import { useSlipstream } from "~/components/velocity";
 
 import heroImg from "../public/images/newMembers/heroTRNM2400.webp";
 import sparksImg from "../public/images/newMembers/sparks.webp";
@@ -16,8 +16,11 @@ import driveImg from "../public/images/newMembers/drive.webp";
 // rather than borrowing EV's amber. What it borrows from EV is the structure:
 // layered background accents, monospace eyebrow labels, gradient rules and
 // scroll-triggered reveals.
-const RED = "#C30000";
-const GOLD = "#FFD200";
+const RED = "var(--tr-red-ink)";
+/* Fills and rules keep the brand gold; text takes the ink variant, which is a
+   legible bronze on the light theme and the same gold inside `.tr-on-dark`. */
+const GOLD = "var(--tr-gold)";
+const GOLD_TEXT = "var(--tr-gold-ink)";
 
 const FONT_DISPLAY = "var(--font-display)";
 const FONT_BODY = "var(--font-body)";
@@ -87,7 +90,7 @@ function GridOverlay({
       style={{
         opacity,
         backgroundImage:
-          "linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)",
+          "linear-gradient(rgb(var(--tr-fg) / 0.15) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--tr-fg) / 0.15) 1px, transparent 1px)",
         backgroundSize: `${size}px ${size}px`,
       }}
     />
@@ -204,7 +207,7 @@ function Rule({
 const bodyText: React.CSSProperties = {
   fontFamily: FONT_BODY,
   fontWeight: 400,
-  color: "rgba(235,235,235,0.82)",
+  color: "rgb(var(--tr-fg) / 0.82)",
   lineHeight: 1.65,
 };
 
@@ -218,7 +221,7 @@ function Hero() {
   return (
     <section
       id="about"
-      className="relative w-full flex items-center justify-center py-[3rem] px-[clamp(20px,5vw,80px)]"
+      className="tr-on-dark tr-cam-bars relative w-full flex items-center justify-center overflow-hidden py-[3rem] px-[clamp(20px,5vw,80px)]"
       style={{
         minHeight: "calc(100dvh - 3.5rem)",
         background: "var(--tr-ink)",
@@ -227,7 +230,7 @@ function Hero() {
       <img
         src={heroImg}
         alt="Terps Racing members on the international competition stage"
-        className="absolute inset-0 z-0 w-full h-full object-cover"
+        className="tr-cam-push absolute inset-0 z-0 w-full h-full object-cover"
         style={{
           objectPosition: "center 80%",
           filter: "brightness(0.62) saturate(1.15)",
@@ -246,8 +249,9 @@ function Hero() {
         variant="carbon"
         embers={9}
         emberColor="#FFD200"
+        beams
         vignette={false}
-        intensity={0.5}
+        intensity={0.6}
       />
       <Glow
         color="rgba(195,0,0,0.38)"
@@ -276,7 +280,7 @@ function Hero() {
             <br />
             <span
               style={{
-                WebkitTextStroke: "2px rgba(255,255,255,0.9)",
+                WebkitTextStroke: "2px rgb(var(--tr-fg) / 0.9)",
                 color: "transparent",
               }}
             >
@@ -284,7 +288,7 @@ function Hero() {
             </span>{" "}
             ON THE
             <br />
-            <span style={{ color: GOLD }}>INTERNATIONAL STAGE</span>
+            <span style={{ color: GOLD_TEXT }}>INTERNATIONAL STAGE</span>
           </h1>
         </Reveal>
 
@@ -303,7 +307,7 @@ function Hero() {
             fontFamily: FONT_LABEL,
             fontSize: "0.6rem",
             letterSpacing: "0.3em",
-            color: "rgba(255,255,255,0.6)",
+            color: "rgb(var(--tr-fg) / 0.6)",
           }}
         >
           SCROLL
@@ -357,7 +361,7 @@ const REQ_CARDS: ReqCard[] = [
 ];
 
 const CARD_IDLE = {
-  borderColor: "rgba(255,255,255,0.1)",
+  borderColor: "rgb(var(--tr-fg) / 0.1)",
   transform: "translateY(0)",
   boxShadow: "none",
 };
@@ -381,7 +385,7 @@ function Requirements() {
     <section
       ref={ref}
       id="requirements"
-      className="relative overflow-hidden px-6 sm:px-10 md:px-16 py-20 md:py-28"
+      className="tr-on-dark relative overflow-hidden px-6 sm:px-10 md:px-16 py-20 md:py-28"
     >
       <img
         src={rqbgImg}
@@ -424,7 +428,7 @@ function Requirements() {
             className="mt-6 mb-14 max-w-lg"
             style={{
               ...bodyText,
-              color: GOLD,
+              color: GOLD_TEXT,
               fontSize: "clamp(0.95rem, 1.2vw, 1.15rem)",
             }}
           >
@@ -444,7 +448,7 @@ function Requirements() {
                 className="group h-full flex flex-col overflow-hidden"
                 style={{
                   border: `1px solid ${CARD_IDLE.borderColor}`,
-                  background: "rgba(255,255,255,0.02)",
+                  background: "rgb(var(--tr-fg) / 0.02)",
                   transition:
                     "border-color 0.3s, transform 0.3s, box-shadow 0.3s",
                 }}
@@ -477,7 +481,7 @@ function Requirements() {
                       fontFamily: FONT_LABEL,
                       fontSize: "0.65rem",
                       letterSpacing: "0.2em",
-                      color: GOLD,
+                      color: GOLD_TEXT,
                     }}
                   >
                     {String(i + 1).padStart(2, "0")}
@@ -559,7 +563,7 @@ function Commitment() {
                     className="flex items-center gap-4 py-2 pl-5 text-white transition-colors duration-300 hover:bg-white/[0.03]"
                     style={{
                       ...bodyText,
-                      color: "#fff",
+                      color: "var(--tr-text)",
                       fontSize: "clamp(0.9rem, 1.1vw, 1.1rem)",
                       borderLeft: `2px solid ${GOLD}`,
                     }}
@@ -569,7 +573,7 @@ function Commitment() {
                         fontFamily: FONT_LABEL,
                         fontSize: "0.7rem",
                         letterSpacing: "0.15em",
-                        color: GOLD,
+                        color: GOLD_TEXT,
                       }}
                     >
                       {String(i + 1).padStart(2, "0")}
@@ -605,7 +609,7 @@ function Commitment() {
                     fontFamily: FONT_LABEL,
                     fontSize: "0.62rem",
                     letterSpacing: "0.24em",
-                    color: "rgba(255,255,255,0.9)",
+                    color: "rgb(var(--tr-fg) / 0.9)",
                   }}
                 >
                   Late nights, all weather
@@ -684,7 +688,7 @@ function Teams() {
                 className="group flex h-full flex-col p-6"
                 style={{
                   border: `1px solid ${CARD_IDLE.borderColor}`,
-                  background: "rgba(255,255,255,0.02)",
+                  background: "rgb(var(--tr-fg) / 0.02)",
                   textDecoration: "none",
                   transition:
                     "border-color 0.3s, transform 0.3s, box-shadow 0.3s",
@@ -712,7 +716,7 @@ function Teams() {
                       fontFamily: FONT_LABEL,
                       fontSize: "0.62rem",
                       letterSpacing: "0.2em",
-                      color: GOLD,
+                      color: GOLD_TEXT,
                     }}
                   >
                     VIEW TEAM →
@@ -742,7 +746,7 @@ function Teams() {
                   style={{
                     ...bodyText,
                     fontSize: "clamp(0.82rem, 1vw, 0.98rem)",
-                    color: "rgba(255,253,244,0.7)",
+                    color: "rgb(var(--tr-fg) / 0.7)",
                   }}
                 >
                   <span
@@ -794,7 +798,7 @@ function Footer() {
           >
             Just show up to a meeting
             <br />
-            and <span style={{ color: GOLD }}>start your engine</span>
+            and <span style={{ color: GOLD_TEXT }}>start your engine</span>
           </h2>
         </Reveal>
         <Reveal show={inView} delay={0.4} className="mt-10 w-full">
@@ -833,7 +837,6 @@ function Footer() {
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function Members() {
-  const leanRef = useSpeedLean<HTMLDivElement>(0.8);
   useSlipstream(true);
 
   return (
@@ -841,7 +844,7 @@ export default function Members() {
       <NavBar />
       {/* Lean wraps content only — a transformed ancestor would become the
           containing block for the fixed navbar above. */}
-      <div ref={leanRef} className="tr-lean">
+      <div>
         <Hero />
         <Requirements />
         <Commitment />

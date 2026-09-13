@@ -1,8 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import "./app.css";
+
+import { ThemeProvider } from "./components/theme";
+import { MotionProvider } from "./components/motion";
+import RouteTransition from "./components/transition";
 
 import Home from "./pages/home";
 import Members from "./pages/members";
@@ -13,42 +17,42 @@ import Gallery from "./pages/gallery";
 import Sponsors from "./pages/sponsors";
 import NotFound from "./pages/notfound";
 
-/** Jump to the top of the page on every navigation. */
-function ScrollToTop() {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
-  }, [pathname]);
-
-  return null;
-}
-
+/**
+ * Every navigation goes through the blade wipe in `RouteTransition`, which also
+ * owns the scroll reset: it jumps to the top *while the viewport is covered*,
+ * so the new hero is already in place by the time it is uncovered. (The old
+ * smooth `scrollTo` meant the incoming page animated in mid-slide.) Routes are
+ * rendered against the transition's own lagging location, not the live one.
+ */
 export default function App() {
   return (
-    <>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="about" element={<Home />} />
-        <Route path="members" element={<Members />} />
-        <Route path="baja" element={<Baja />} />
-        <Route path="ic" element={<IC />} />
-        <Route path="ev" element={<EV />} />
-        <Route path="gallery" element={<Gallery />} />
-        <Route path="sponsors" element={<Sponsors />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </>
+    <RouteTransition>
+      {(location) => (
+        <Routes location={location}>
+          <Route path="/" element={<Home />} />
+          <Route path="about" element={<Home />} />
+          <Route path="members" element={<Members />} />
+          <Route path="baja" element={<Baja />} />
+          <Route path="ic" element={<IC />} />
+          <Route path="ev" element={<EV />} />
+          <Route path="gallery" element={<Gallery />} />
+          <Route path="sponsors" element={<Sponsors />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      )}
+    </RouteTransition>
   );
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     {/* basename comes from vite's `base`, so this works at / and at /terps-racing/ */}
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
+    <ThemeProvider>
+      <MotionProvider>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <App />
+        </BrowserRouter>
+      </MotionProvider>
+    </ThemeProvider>
+  </React.StrictMode>,
 );
