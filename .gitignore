@@ -12,3 +12,7 @@
 
 # Local vite dev-server cache
 /.vite/
+
+# image tagger
+tools/image-tagger/*.backup.json
+tools/image-tagger/*.tmp

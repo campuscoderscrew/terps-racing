@@ -15,6 +15,7 @@ import IC from "./pages/ic";
 import EV from "./pages/ev";
 import Gallery from "./pages/gallery";
 import Sponsors from "./pages/sponsors";
+import News from "./pages/news";
 import NotFound from "./pages/notfound";
 
 /**
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="ev" element={<EV />} />
           <Route path="gallery" element={<Gallery />} />
           <Route path="sponsors" element={<Sponsors />} />
+          <Route path="news" element={<News />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       )}

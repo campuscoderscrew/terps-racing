@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 import NavBar from "~/components/navbar";
 import Reveal from "~/components/reveal";
 import Backdrop, { Seam } from "~/components/backdrop";
-import { useSlipstream } from "~/components/velocity";
 import { Words, useParallax, useSpotlight } from "~/components/cinematic";
 import { useTheme } from "~/components/theme";
 
 import trackPic from "../public/images/IC/track_pic.webp";
 import teamPic from "../public/images/IC/team_pic.webp";
-import liveryCar from "../public/images/IC/ic_racecar_image.webp";
+import heroCar from "../public/images/sponsors/tr26_hero.webp";
+import liveryCar from "../public/images/sponsors/livery_side.webp";
 
 /* Marquee partners, reused from the per-team sponsor pages. */
 import PartnerRELI from "../public/images/IC/sponsors/Platinum/RELI_Group.webp";
@@ -29,6 +29,10 @@ import PartnerST from "../public/images/IC/sponsors/Gold/ST_Engineering.webp";
 import PartnerSurrey from "../public/images/IC/sponsors/Gold/Surrey_Sensors.webp";
 import PartnerChell from "../public/images/IC/sponsors/Gold/Chell_Instruments.webp";
 import PartnerMoTech from "../public/images/IC/sponsors/Gold/MotionTech.webp";
+import PartnerScanivalve from "../public/images/IC/sponsors/Silver/Scanivalve.webp";
+import PartnerEpson from "../public/images/IC/sponsors/Silver/EPSON.webp";
+import PartnerL3 from "../public/images/IC/sponsors/Silver/L3_Harris.webp";
+import PartnerDeWalt from "../public/images/IC/sponsors/Bronze/DeWalt.webp";
 
 const TEAM_EMAIL = "terpsracing@umd.edu";
 
@@ -95,14 +99,15 @@ const TIERS: Tier[] = [
     amount: "$10,000+",
     accent: "#ffd200",
     accentLight: "#8a6800",
-    livery: "Medium logo",
+    livery: "Large logo",
     liveryScale: 0.82,
     headline: "Talk to the engineers",
     benefits: [
       "Everything in Silver",
-      "Medium logo on vehicles",
+      "Large logo on vehicles",
       "2× social media features",
       "Info session / tech talk",
+      "Real-world testing data access",
     ],
   },
   {
@@ -110,12 +115,12 @@ const TIERS: Tier[] = [
     amount: "$15,000+",
     accent: "#e8e8ef",
     accentLight: "#55556a",
-    livery: "Large logo",
+    livery: "Premier logo",
     liveryScale: 1,
     headline: "Front of the car, front of the room",
     benefits: [
       "Everything in Gold",
-      "Large logo on vehicles",
+      "Premier logo placement on vehicles",
       "3× social media features",
       "Logo on the team trailer",
       "Invitation to competitions*",
@@ -123,7 +128,13 @@ const TIERS: Tier[] = [
   },
 ];
 
+// Featured partners from the TR26 packet (Siemens, Northrop Grumman, L3Harris,
+// DeWalt) lead, then the rest of the roster.
 const PARTNERS = [
+  { name: "Siemens", logo: PartnerSiemens },
+  { name: "Northrop Grumman", logo: PartnerGrumman },
+  { name: "L3Harris", logo: PartnerL3 },
+  { name: "DeWalt", logo: PartnerDeWalt },
   { name: "RELI Group", logo: PartnerRELI },
   { name: "X Corp", logo: PartnerXcorp },
   { name: "Tesla", logo: PartnerTesla },
@@ -133,13 +144,13 @@ const PARTNERS = [
   { name: "About:Energy", logo: PartnerAboutEnergy },
   { name: "UMD ECE", logo: PartnerUMDECE },
   { name: "Lockheed Martin", logo: PartnerLockheed },
-  { name: "Northrop Grumman", logo: PartnerGrumman },
-  { name: "Siemens", logo: PartnerSiemens },
   { name: "SKF", logo: PartnerSKF },
   { name: "ST Engineering", logo: PartnerST },
   { name: "Surrey Sensors", logo: PartnerSurrey },
   { name: "Chell Instruments", logo: PartnerChell },
   { name: "MotionTech", logo: PartnerMoTech },
+  { name: "Scanivalve", logo: PartnerScanivalve },
+  { name: "Epson", logo: PartnerEpson },
 ];
 
 /* ── Hero: split-screen, editorial, no centred display type ──────────────── */
@@ -173,7 +184,7 @@ function Hero() {
                 color: "rgb(var(--tr-fg) / 0.6)",
               }}
             >
-              Corporate Partnerships · 2025–26
+              Corporate Partnerships · 2026–27
             </span>
           </Reveal>
 
@@ -230,14 +241,14 @@ function Hero() {
                 <span />
               </div>
               <img
-                src={liveryCar}
+                src={heroCar}
                 ref={targetRef as React.RefObject<HTMLImageElement>}
-                alt="The Terps Racing Formula IC car"
-                className="w-full object-contain"
+                alt="TR26, the 2026 Terps Racing Formula IC car, on the University of Maryland campus"
+                className="aspect-[4/3] w-full object-cover"
               />
             </div>
             <div className="mt-3 flex justify-between">
-              {["3 cars", "120+ engineers", "Since 1982"].map((t) => (
+              {["3 cars", "270+ students", "Since 1982"].map((t) => (
                 <span
                   key={t}
                   className="text-[0.66rem] uppercase text-white/60"
@@ -371,8 +382,8 @@ function Livery() {
                     style={{
                       borderColor: accentOnDark(tier),
                       background: `${accentOnDark(tier)}1f`,
-                      left: "34%",
-                      top: "44%",
+                      left: "40%",
+                      top: "56%",
                       width: `${9 + tier.liveryScale * 17}%`,
                       height: `${6 + tier.liveryScale * 11}%`,
                       transform: "translate(-50%, -50%)",
@@ -1017,21 +1028,12 @@ function Contact() {
                   lineHeight: 1.75,
                 }}
               >
-                Terps Racing is a registered non-profit. Contributions may be
-                tax deductible — check with your tax advisor.
+                Gifts are accepted and managed by the University of Maryland
+                College Park Foundation, a 501(c)(3), and are tax deductible as
+                allowed by law — check with your tax advisor.
               </p>
               <p
                 className="mt-4 text-white/40"
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.78rem",
-                  letterSpacing: "0.1em",
-                }}
-              >
-                EIN 52-2197313
-              </p>
-              <p
-                className="mt-1 text-white/40"
                 style={{
                   fontFamily: "var(--font-mono)",
                   fontSize: "0.78rem",
@@ -1073,19 +1075,18 @@ function Footer() {
 
 /* ── Page ────────────────────────────────────────────────────────────────── */
 export default function Sponsors() {
-  useSlipstream(true, "rgba(226,24,51,0.85)");
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-tr-ink text-white">
       <NavBar overMedia={false} />
       <main>
         <Hero />
+        <Talent />
         <Livery />
         <Seam />
         <Tiers />
         <InKind />
         <Partners />
-        <Talent />
         <GetInvolved />
         <Contact />
       </main>

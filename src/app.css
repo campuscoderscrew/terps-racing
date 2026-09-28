@@ -941,6 +941,12 @@ img.tr-zoom {
 .tr-sweep {
   position: relative;
   overflow: hidden;
+  /* The clip box has to be bigger than the glyphs: italic display type leans
+     past its own advance width, and .tr-stamp's offset shadow sits below-right
+     of it. Without this the last letter (the S of TERPS) is sliced off. The
+     negative margin cancels the padding so layout does not move. */
+  padding: 0.08em 0.2em 0.14em 0.04em;
+  margin: -0.08em -0.2em -0.14em -0.04em;
 }
 .tr-sweep.is-revealed::after,
 .is-revealed .tr-sweep::after {
@@ -966,12 +972,18 @@ img.tr-zoom {
 .tr-words {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 0 0.28em;
+  gap: 0 0.38em;
 }
 .tr-word {
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
+  /* Same reason as .tr-sweep: the per-word clip slot must leave room for the
+     italic lean on the right, the tight 0.82 line-height of .tr-mega at the
+     top, and descenders/stamp shadow at the bottom — otherwise headings read
+     as cut off. Padding + equal negative margin keeps the layout unchanged. */
+  padding: 0.1em 0.16em 0.14em 0.04em;
+  margin: -0.1em -0.16em -0.14em -0.04em;
 }
 .tr-word > span {
   display: inline-block;
@@ -1995,153 +2007,14 @@ html[data-motion="reduced"] .tr-bd-circuit .tr-lap {
 }
 
 /* ---------------------------------------------------------------------------
-   Scroll-driven camera
+   Scroll-driven camera — REMOVED (Sept 2026 client feedback)
    ---------------------------------------------------------------------------
-   These take their progress from the element's own trip through the viewport
-   (`view()`) or from the document scroll (`scroll(root)`), so there is no rAF
-   loop, no listener and no main-thread work at all. Unsupported browsers get
-   the static end state — every rule here is additive, so nothing is missing
-   without it, it just does not move.
-
-   `animation-range` vocabulary, since it is easy to misread:
-     entry 0% → 100%   element crossing the bottom edge into view
-     cover 0% → 100%   the element's whole trip across the viewport
-     exit  0% → 100%   element crossing the top edge out of view
+   The `.tr-cam-*` utilities moved heroes, ghost words and plates in step with
+   the scroll position. The client found it read as the page shaking, with a
+   visible lag behind the scroll wheel, and asked for it to go. The class names
+   are still on the markup (harmless — nothing styles them now); `useParallax`
+   in cinematic.tsx was retired for the same reason.
    ------------------------------------------------------------------------ */
-@supports (animation-timeline: view()) {
-  html[data-motion="cinematic"] .tr-cam-rise,
-  html[data-motion="cinematic"] .tr-cam-tilt,
-  html[data-motion="cinematic"] .tr-cam-pan-l,
-  html[data-motion="cinematic"] .tr-cam-pan-r,
-  html[data-motion="cinematic"] .tr-cam-drift {
-    animation-timeline: view();
-    animation-timing-function: linear;
-    animation-fill-mode: both;
-  }
-
-  /* A block that lifts and settles as it comes up the screen. */
-  html[data-motion="cinematic"] .tr-cam-rise {
-    animation-name: tr-cam-rise;
-    animation-range: entry 8% cover 26%;
-  }
-  @keyframes tr-cam-rise {
-    from { opacity: 0; transform: translate3d(0, 72px, 0); }
-    to   { opacity: 1; transform: translate3d(0, 0, 0); }
-  }
-
-  /* The card-deck move: the block lies back, then stands up as it arrives. */
-  html[data-motion="cinematic"] .tr-cam-tilt {
-    animation-name: tr-cam-tilt;
-    animation-range: entry 0% cover 24%;
-    transform-origin: 50% 100%;
-  }
-  @keyframes tr-cam-tilt {
-    from {
-      opacity: 0;
-      transform: perspective(1400px) rotateX(11deg) translate3d(0, 60px, 0);
-    }
-    to {
-      opacity: 1;
-      transform: perspective(1400px) rotateX(0deg) translate3d(0, 0, 0);
-    }
-  }
-
-  /* Lateral drift across the whole trip — for ghost words and backdrop type,
-     where the movement should read as a camera pan rather than an entrance. */
-  html[data-motion="cinematic"] .tr-cam-pan-l {
-    animation-name: tr-cam-pan-l;
-    animation-range: cover 0% cover 100%;
-  }
-  html[data-motion="cinematic"] .tr-cam-pan-r {
-    animation-name: tr-cam-pan-r;
-    animation-range: cover 0% cover 100%;
-  }
-  @keyframes tr-cam-pan-l {
-    from { transform: translate3d(4%, 0, 0); }
-    to   { transform: translate3d(-4%, 0, 0); }
-  }
-  @keyframes tr-cam-pan-r {
-    from { transform: translate3d(-4%, 0, 0); }
-    to   { transform: translate3d(4%, 0, 0); }
-  }
-
-  /* Vertical parallax for a plate inside an overflow-hidden frame. */
-  html[data-motion="cinematic"] .tr-cam-drift {
-    animation-name: tr-cam-drift;
-    animation-range: cover 0% cover 100%;
-  }
-  @keyframes tr-cam-drift {
-    from { transform: translate3d(0, -7%, 0) scale(1.14); }
-    to   { transform: translate3d(0, 7%, 0) scale(1.14); }
-  }
-
-  /* Hero plate: pushes in through the first screenful of scroll. Driven by the
-     document, not by the element, because a hero starts already in view and so
-     has no `entry` range to animate over. This intentionally overrides the
-     inline transform written by `useParallax` — a CSS animation beats an inline
-     style — which is the point: same effect, none of the scroll handler. */
-  html[data-motion="cinematic"] .tr-cam-push {
-    animation: tr-cam-push linear both;
-    animation-timeline: scroll(root block);
-    animation-range: 0 100vh;
-  }
-  @keyframes tr-cam-push {
-    from { transform: translate3d(0, 0, 0) scale(1.04); }
-    to   { transform: translate3d(0, 9%, 0) scale(1.22); }
-  }
-
-  /* Hero copy dissolving as the hero leaves — the shot changing, rather than
-     the text simply scrolling off the top. */
-  html[data-motion="cinematic"] .tr-cam-fade {
-    animation: tr-cam-fade linear both;
-    animation-timeline: view();
-    animation-range: exit 0% exit 72%;
-  }
-  @keyframes tr-cam-fade {
-    from { opacity: 1; transform: translate3d(0, 0, 0); }
-    to   { opacity: 0; transform: translate3d(0, -40px, 0); }
-  }
-
-  /* Letterbox bars that close over a hero as you scroll out of it. */
-  html[data-motion="cinematic"] .tr-cam-bars::before,
-  html[data-motion="cinematic"] .tr-cam-bars::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: clamp(28px, 7vh, 92px);
-    background: var(--tr-ink);
-    z-index: 20;
-    pointer-events: none;
-    animation: tr-cam-bar linear both;
-    animation-timeline: view();
-    animation-range: exit 0% exit 100%;
-  }
-  html[data-motion="cinematic"] .tr-cam-bars::before {
-    top: 0;
-    transform-origin: top center;
-  }
-  html[data-motion="cinematic"] .tr-cam-bars::after {
-    bottom: 0;
-    transform-origin: bottom center;
-  }
-  @keyframes tr-cam-bar {
-    from { transform: scaleY(0); }
-    to   { transform: scaleY(1); }
-  }
-
-  /* A rule that draws itself across as its section arrives. */
-  html[data-motion="cinematic"] .tr-cam-line {
-    animation: tr-cam-line linear both;
-    animation-timeline: view();
-    animation-range: entry 10% cover 18%;
-    transform-origin: left center;
-  }
-  @keyframes tr-cam-line {
-    from { transform: scaleX(0); }
-    to   { transform: scaleX(1); }
-  }
-}
 
 /* ---------------------------------------------------------------------------
    Deeper entrances — new `data-reveal` variants
@@ -2234,8 +2107,9 @@ html[data-motion="reduced"] .tr-bd-circuit .tr-lap {
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
-  padding-bottom: 0.14em;
-  margin-bottom: -0.14em;
+  /* room for the italic lean (right) and the tight display line-height (top) */
+  padding: 0.1em 0.12em 0.14em 0;
+  margin: -0.1em -0.12em -0.14em 0;
 }
 .tr-char > span {
   display: inline-block;

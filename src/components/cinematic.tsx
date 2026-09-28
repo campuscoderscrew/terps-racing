@@ -74,64 +74,26 @@ export function useSpotlight<T extends HTMLElement = HTMLDivElement>() {
   return { ref, onMouseMove };
 }
 
-/* ── Parallax ────────────────────────────────────────────────────────────── */
+/* ── Parallax (retired) ──────────────────────────────────────────────────── */
 
 /**
- * Returns a translateY offset derived from how far the element has travelled
- * through the viewport. `speed` is a fraction of the scrolled distance.
+ * Formerly moved a hero image in step with the scroll position. Retired after
+ * client feedback (Sept 2026): driven from a scroll listener it always trails
+ * the wheel by a frame, which on real hardware read as the page shaking.
+ *
+ * Kept as a no-op with the same signature so the pages that call it need no
+ * changes; it now just clears any transform so the image sits still.
  */
 export function useParallax<T extends HTMLElement = HTMLDivElement>(
-  speed = 0.18,
-  { scale = 1 }: { scale?: number } = {}
+  _speed = 0.18,
+  _opts: { scale?: number } = {}
 ) {
   const ref = useRef<T>(null);
   const targetRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const node = ref.current;
-    const target = targetRef.current;
-    if (!node || !target) return;
-
-    const base = scale === 1 ? "" : ` scale(${scale})`;
-    target.style.willChange = "transform";
-    target.style.backfaceVisibility = "hidden";
-
-    const reduced = window.matchMedia?.(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (reduced) {
-      target.style.transform = base.trim();
-      return;
-    }
-
-    let ticking = false;
-    const apply = () => {
-      const r = node.getBoundingClientRect();
-      const progress =
-        (window.innerHeight - r.top) / (window.innerHeight + r.height);
-      const offset = (progress - 0.5) * 2 * speed * r.height;
-      // Written straight to the node: routing this through React state would
-      // re-render the whole section on every scroll frame.
-      target.style.transform = `translate3d(0, ${offset.toFixed(
-        2
-      )}px, 0)${base}`;
-      ticking = false;
-    };
-
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(apply);
-    };
-
-    apply();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [speed, scale]);
+    if (targetRef.current) targetRef.current.style.transform = "none";
+  }, []);
 
   return { ref, targetRef };
 }
@@ -147,6 +109,8 @@ interface MarqueeBandProps {
   tilt?: number;
   background?: string;
   color?: string;
+  /** Run the strip left-to-right instead of right-to-left. */
+  reverse?: boolean;
 }
 
 /** An endlessly scrolling strip of short phrases. */
@@ -157,6 +121,7 @@ export function MarqueeBand({
   tilt = 0,
   background = "var(--tr-gold)",
   color = "#111",
+  reverse = false,
 }: MarqueeBandProps) {
   const tiled = [...items, ...items];
   const ref = useRef<HTMLDivElement>(null);
@@ -193,7 +158,10 @@ export function MarqueeBand({
     >
       <div
         className="tr-marquee-track items-center py-2.5"
-        style={{ ["--marquee-duration" as string]: `${duration}s` }}
+        style={{
+          ["--marquee-duration" as string]: `${duration}s`,
+          animationDirection: reverse ? "reverse" : undefined,
+        }}
       >
         {tiled.map((item, i) => (
           <span

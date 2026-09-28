@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import NavBar from "~/components/navbar";
 import Backdrop, { Seam } from "~/components/backdrop";
-import { useSlipstream } from "~/components/velocity";
 
 import heroImg from "../public/images/newMembers/heroTRNM2400.webp";
 import sparksImg from "../public/images/newMembers/sparks.webp";
@@ -646,7 +645,7 @@ const TEAMS: TeamEntry[] = [
     to: "/ic",
     desc: "Terps Racing Formula SAE is an engineering project team that designs, builds, and races a formula style racecar to compete in the SAE Collegiate Formula Design Series.",
     meeting:
-      "IC meets in J.M Patterson Hall 1225 on Mondays and Wednesdays at 5 PM and Saturdays at 10 AM",
+      "IC meets in J.M Patterson Hall 1225 on Mondays and Wednesdays at 6:30 PM and Saturdays at 11 AM",
   },
   {
     name: "Formula EV",
@@ -837,7 +836,6 @@ function Footer() {
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function Members() {
-  useSlipstream(true);
 
   return (
     <div className="bg-tr-ink text-white overflow-x-hidden">

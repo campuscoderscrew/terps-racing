@@ -4,15 +4,16 @@ import NavBar from "~/components/navbar";
 import Reveal from "~/components/reveal";
 import ActiveAero from "~/components/activeaero";
 import Backdrop, { Seam } from "~/components/backdrop";
-import { useSlipstream } from "~/components/velocity";
 
-import race_car_image from "../public/images/IC/ic_racecar_image.webp";
+import race_car_image from "../public/images/IC/ic_hero_night.webp";
+import tr26_campus from "../public/images/IC/tr26_campus.webp";
 import race_schedule_car from "../public/images/IC/race_schedule_car.webp";
 import { Link } from "react-router-dom";
 
 import Header from "~/components/header";
 import Paragraph from "~/components/paragraph";
 import statsOverlayImage from "../public/images/IC/stats_overlay_image.webp";
+import { MarqueeBand } from "~/components/cinematic";
 import car_model_simcenter_bg from "../public/images/IC/car_model_simcenter.webp";
 
 import SponsorRELI from "../public/images/IC/sponsors/Platinum/RELI_Group.webp";
@@ -48,7 +49,7 @@ import SponsorSHD from "../public/images/IC/sponsors/Bronze/SHD_Composites.webp"
 import SponsorSunlu from "../public/images/IC/sponsors/Bronze/SUNLU.webp";
 
 import Chasis from "../public/images/IC/subteams/Chassis.webp";
-import Powertrain from "../public/images/IC/subteams/Manufacturing.webp";
+import Powertrain from "../public/images/IC/subteams/Powertrain.webp";
 import Manufacturing from "../public/images/IC/subteams/Manufacturing.webp";
 import Electronics from "../public/images/IC/subteams/Electronics.webp";
 import Testing from "../public/images/IC/subteams/Testing.webp";
@@ -64,8 +65,8 @@ function TopImage() {
     <div className="tr-on-dark tr-cam-bars relative overflow-hidden">
       <img
         src={race_car_image}
-        alt="Cool race car"
-        className="tr-cam-push mt-[72px] w-full object-cover"
+        alt="A Terps Racing Formula SAE car at speed during a night test session"
+        className="mt-[72px] max-h-[86svh] w-full object-cover object-[center_60%]"
       />
       <div
         className="pointer-events-none absolute inset-0"
@@ -77,7 +78,7 @@ function TopImage() {
       <div className="tr-shell absolute inset-x-0 bottom-[6%]">
         <Reveal variant="up">
           <span className="tr-eyebrow">
-            University of Maryland · Since 1983
+            University of Maryland · Since 1982
           </span>
         </Reveal>
         <Reveal variant="up" delay={120}>
@@ -94,15 +95,115 @@ function TopImage() {
 }
 
 // ── Who We Are ────────────────────────────────────────────────────────────────
-function WhoWeAre() {
-  const whoWeAreText =
-    "Terps Racing Formula Internal Combustion is the University of Maryland's Formula SAE team. Since 1983, we've provided hands-on project-based engineering experiences for students. We are always looking to use our prior innovations and experience to further enhance our projects to continue to excel on the elite level.";
+// Leads with the car and its 2026 result, then hands off to the divisions below.
+// Source: TR26 sponsorship packet (2025–26) and the 2026 Excellence in Technical
+// Innovation Award submission.
+const TR26_RESULTS = [
+  { value: "11th", label: "In the world", sub: "FSAE Michigan 2026 · ~140 teams" },
+  { value: "9th", label: "In the nation", sub: "Best finish in two decades" },
+  { value: "P11", label: "Design finalists", sub: "First finals in ~20 years" },
+  { value: "P3", label: "Cummins award", sub: "Sustainable Power & Performance" },
+];
 
+const TR26_FEATURES = [
+  {
+    kicker: "Active aerodynamics",
+    title: "Autonomous active aero — on a combustion car",
+    body: "One of the only FSAE teams running active aero on a combustion car. A three-state system moves the wings in real time from six onboard sensors, with no driver input.",
+  },
+  {
+    kicker: "Carbon monocoque",
+    title: "An in-house carbon-fibre chassis",
+    body: "Laid up, machined and FEA-validated by students. A lighter, stiffer platform that raises the ceiling on suspension, aero loads and driver protection.",
+  },
+  {
+    kicker: "Electronics & controls",
+    title: "A custom electronics stack, built from scratch",
+    body: "Dual Raspberry Pi controllers on a CANBUS network run aero actuation, telemetry and a custom driver dashboard. No off-the-shelf ECU, no black boxes.",
+  },
+];
+
+function WhoWeAre() {
   return (
-    <div className="tr-shell tr-section relative z-10 !py-[clamp(40px,6vw,88px)]">
-      <Header text="Who We Are" />
-      <Paragraph text={whoWeAreText} />
-    </div>
+    <section className="tr-shell tr-section relative z-10 !py-[clamp(40px,6vw,88px)]">
+      <Header text="Who We Are" eyebrow="TR26 · The 2026 car" />
+
+      <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div>
+          <Paragraph text="Terps Racing Formula IC is the University of Maryland's Formula SAE combustion team. Since 1982, students have designed, built and raced a new open-wheel car nearly every year. It is one of the longest continuous Formula SAE programs in the country." />
+          <Paragraph
+            delay={80}
+            text="TR26 is our strongest car in two decades. At FSAE Michigan 2026 it finished 11th in the world and 9th in the nation, made the design finals for the first time in roughly twenty years, and completed every lap of the 22 km endurance event, where many teams fail to finish."
+          />
+          <Paragraph
+            delay={140}
+            text="Today 150+ engineers across nine divisions, from aerodynamics to business, build every part of the car. Pick a division below to see what each one owns."
+          />
+        </div>
+
+        <Reveal variant="left" delay={120}>
+          <figure className="tr-on-dark relative overflow-hidden rounded-2xl border border-white/[0.08]">
+            <img
+              src={tr26_campus}
+              alt="TR26, car #111, parked in front of the flower-bed M on the University of Maryland campus"
+              loading="lazy"
+              className="aspect-[3/2] w-full object-cover"
+            />
+            <figcaption
+              className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 to-transparent px-5 pb-4 pt-10 text-white/80"
+              style={{ fontFamily: "var(--font-mono)", fontSize: "0.72rem", letterSpacing: "0.14em", textTransform: "uppercase" }}
+            >
+              TR26 · Car #111
+            </figcaption>
+          </figure>
+        </Reveal>
+      </div>
+
+      {/* 2026 performance */}
+      <div className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {TR26_RESULTS.map((r, i) => (
+          <Reveal key={r.label} variant="up" delay={i * 90}>
+            <div className="tr-card h-full border-l-2 !border-l-tr-gold p-5">
+              <span
+                className="tr-display block text-tr-gold"
+                style={{ fontSize: "clamp(1.8rem, 4.4vw, 2.8rem)", lineHeight: 1.05 }}
+              >
+                {r.value}
+              </span>
+              <span
+                className="mt-1 block text-white"
+                style={{ fontFamily: "var(--font-display)", fontWeight: 700, textTransform: "uppercase", fontSize: "0.98rem" }}
+              >
+                {r.label}
+              </span>
+              <span className="mt-1 block text-white/50" style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem" }}>
+                {r.sub}
+              </span>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+
+      {/* What makes TR26 different */}
+      <div className="mt-6 grid gap-3 md:grid-cols-3">
+        {TR26_FEATURES.map((f, i) => (
+          <Reveal key={f.kicker} variant="up" delay={i * 100}>
+            <div className="tr-card h-full p-6">
+              <span className="tr-eyebrow">{`0${i + 1} · ${f.kicker}`}</span>
+              <h3
+                className="mt-3 text-white"
+                style={{ fontFamily: "var(--font-display)", fontWeight: 700, textTransform: "uppercase", fontSize: "clamp(1.02rem, 1.8vw, 1.2rem)", lineHeight: 1.25 }}
+              >
+                {f.title}
+              </h3>
+              <p className="mt-3 text-white/60" style={{ fontFamily: "var(--font-body)", fontSize: "0.92rem", lineHeight: 1.65 }}>
+                {f.body}
+              </p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -310,20 +411,23 @@ function RacesTab() {
   );
 }
 
-// Year-over-year competition placings, with the team's stated TR26 targets.
-// Source: 2025-26 sponsorship presentation, "Past -> Present -> Future".
+// Year-over-year competition placings at FSAE Michigan, with the team's
+// stated TR27 targets. Source: Fall 2026 General Interest Meeting slides,
+// "Past → Present → Future". (TR24/TR25 pending a corrected results doc from
+// the team — update here when it arrives.)
 const PROGRESSION: {
   event: string;
   tr24: string;
   tr25: string;
   tr26: string;
+  tr27: string;
 }[] = [
-  { event: "Design", tr24: "T-30th", tr25: "T-11th", tr26: "Finals (top 10)" },
-  { event: "Acceleration", tr24: "24th", tr25: "24th", tr26: "Top 10" },
-  { event: "Skidpad", tr24: "3rd", tr25: "T-21st", tr26: "Top 5" },
-  { event: "Autocross", tr24: "43rd", tr25: "25th", tr26: "Top 15" },
-  { event: "Endurance", tr24: "DNS", tr25: "35th", tr26: "Top 15" },
-  { event: "Overall", tr24: "43rd", tr25: "25th", tr26: "Top 10" },
+  { event: "Design", tr24: "T-30th", tr25: "T-11th", tr26: "11th (Finals)", tr27: "7th (Finals)" },
+  { event: "Acceleration", tr24: "24th", tr25: "24th", tr26: "17th", tr27: "Top 10" },
+  { event: "Skidpad", tr24: "3rd", tr25: "T-21st", tr26: "13th", tr27: "Top 5" },
+  { event: "Autocross", tr24: "43rd", tr25: "25th", tr26: "18th", tr27: "Top 5" },
+  { event: "Endurance", tr24: "DNS", tr25: "35th", tr26: "14th", tr27: "Top 10" },
+  { event: "Overall", tr24: "43rd", tr25: "25th", tr26: "11th", tr27: "Top 5" },
 ];
 
 function ResultsTab() {
@@ -372,14 +476,14 @@ function ResultsTab() {
 
         <Reveal variant="up">
           <div className="tr-card overflow-x-auto !p-0">
-            <table className="w-full min-w-[520px] border-collapse text-left">
+            <table className="w-full min-w-[620px] border-collapse text-left">
               <caption className="sr-only">
-                Formula SAE placings by event for TR24 and TR25, with TR26
-                targets
+                Formula SAE placings by event for TR24, TR25 and TR26, with
+                TR27 targets
               </caption>
               <thead>
                 <tr>
-                  {["Event", "TR24", "TR25", "TR26 Goal"].map((h, i) => (
+                  {["Event", "TR24", "TR25", "TR26", "TR27 Goal"].map((h, i) => (
                     <th
                       key={h}
                       scope="col"
@@ -393,7 +497,7 @@ function ResultsTab() {
                         textTransform: "uppercase",
                         fontWeight: 400,
                         color:
-                          i === 3 ? "var(--tr-gold-ink)" : "rgb(var(--tr-fg) / 0.5)",
+                          i === 4 ? "var(--tr-gold-ink)" : "rgb(var(--tr-fg) / 0.5)",
                       }}
                     >
                       {h}
@@ -425,7 +529,7 @@ function ResultsTab() {
                       >
                         {row.event}
                       </th>
-                      {[row.tr24, row.tr25, row.tr26].map((cell, i) => (
+                      {[row.tr24, row.tr25, row.tr26, row.tr27].map((cell, i) => (
                         <td
                           key={i}
                           className="border-b border-l border-white/[0.06] p-4 text-center"
@@ -434,9 +538,9 @@ function ResultsTab() {
                             fontWeight: 700,
                             fontSize: "1.05rem",
                             color:
-                              i === 2
+                              i === 3
                                 ? "var(--tr-gold-ink)"
-                                : i === 1
+                                : i === 2
                                 ? "var(--tr-text)"
                                 : "rgb(var(--tr-fg) / 0.45)",
                           }}
@@ -456,7 +560,7 @@ function ResultsTab() {
           className="mt-4 text-white/40"
           style={{ fontFamily: "var(--font-mono)", fontSize: "0.72rem" }}
         >
-          TR26 figures are team targets, not results.
+          TR27 figures are team targets, not results.
         </p>
       </div>
     </div>
@@ -478,7 +582,7 @@ function Season2026() {
             fontSize: "clamp(2rem, 6vw, 3.5rem)",
           }}
         >
-          2026 Season
+          The Season
         </h2>
 
         {/* Tabs */}
@@ -522,72 +626,68 @@ function Season2026() {
   );
 }
 
-// ── Stats Overlay ─────────────────────────────────────────────────────────────
-const stats = [
-  { topLeft: true, heading: "Top 10", sub: "in Aerodynamics" },
-  { topLeft: false, heading: "Top 25", sub: "at Formula SAE 2025" },
-  { topLeft: true, heading: "1st Place", sub: "at Formula SAE West 2008" },
-  { topLeft: false, heading: "1st Place", sub: "at Formula SAE 1987" },
+// ── Stats band ────────────────────────────────────────────────────────────────
+// Two tickers running opposite ways over the car: this season on top, the
+// program's heritage underneath. Uses the shared MarqueeBand, which pauses
+// itself off-screen and animates transform only.
+const TICKER_SEASON = [
+  "11th in the world · FSAE Michigan 2026",
+  "9th in the nation",
+  "Design finalists — first time in ~20 years",
+  "3rd · Cummins Sustainable Power & Performance Award",
+  "Endurance — every lap completed",
+  "Top 11 · Cost & Manufacturing",
+];
+const TICKER_HERITAGE = [
+  "Est. 1982",
+  "65+ trophies",
+  "150+ student engineers",
+  "9 divisions",
+  "1st place · Formula SAE 1987",
+  "1st place · Formula SAE West 2008",
+  "44 years of racing",
 ];
 
 function StatsOverlay({ image }: { image: string }) {
   return (
-    <div
+    <section
       className="tr-on-dark relative w-full overflow-hidden"
-      style={{ aspectRatio: "16/9" }}
+      aria-label="Terps Racing by the numbers"
     >
       <img
         src={image}
         alt="Terps Racing car on track at night"
-        className="w-full h-full object-cover"
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover"
       />
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(8,8,10,0.55), rgba(8,8,10,0.25) 45%, rgba(8,8,10,0.75))",
+            "linear-gradient(180deg, rgba(8,8,10,0.7), rgba(8,8,10,0.2) 35%, rgba(8,8,10,0.2) 65%, rgba(8,8,10,0.75))",
         }}
       />
-      <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 px-[clamp(20px,5vw,80px)] py-[clamp(12px,4vw,48px)]">
-        {stats.map(({ topLeft, heading, sub }, index) => (
-          <div
-            key={sub}
-            className={`flex flex-col gap-[2px]
-              ${topLeft ? "items-start" : "items-end"}
-              ${index >= 2 ? "justify-end" : "justify-start"}
-              ${!topLeft && "text-right"}
-            `}
-          >
-            <span
-              style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: 900,
-                fontStyle: "italic",
-                fontSize: "clamp(1rem, 4.5vw, 3.8rem)",
-                color: "#ffd200",
-                lineHeight: 1.1,
-                textShadow: "2px 2px 8px rgba(0,0,0,0.8)",
-              }}
-            >
-              {heading}
-            </span>
-            <span
-              style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: 700,
-                fontStyle: "italic",
-                fontSize: "clamp(0.6rem, 2vw, 1.5rem)",
-                color: "#ffd200",
-                lineHeight: 1.2,
-                textShadow: "1px 1px 6px rgba(0,0,0,0.9)",
-              }}
-            >
-              {sub}
-            </span>
-          </div>
-        ))}
+      <div className="relative flex min-h-[clamp(300px,52vw,640px)] flex-col justify-between py-[clamp(14px,3vw,36px)]">
+        <MarqueeBand
+          items={TICKER_SEASON}
+          duration={46}
+          color="#ffd200"
+          background="rgba(8,8,10,0.55)"
+        />
+        <MarqueeBand
+          items={TICKER_HERITAGE}
+          duration={40}
+          reverse
+          color="#ffffff"
+          background="rgba(226,24,51,0.78)"
+        />
       </div>
-    </div>
+      <ul className="sr-only">
+        {[...TICKER_SEASON, ...TICKER_HERITAGE].map((t) => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -599,63 +699,63 @@ const SUBTEAMS = [
     image: Chasis,
     area: "chassis",
     description:
-      "Designs and manufactures the car's carbon fibre composite monocoque and rear frame \u2014 the structural backbone that carries every load on the vehicle. The subteam runs structural analysis, submits the Structural Equivalency Spreadsheet to SAE, and builds the moulds and jigs the chassis is laid up in.",
+      "Designs and manufactures the car's in-house carbon fibre monocoque and rear frame — the structural backbone that carries every load on the vehicle. The subteam runs structural analysis and composite design-for-manufacture, submits the Structural Equivalency Spreadsheet to SAE, and builds the moulds and jigs the chassis is laid up in.",
   },
   {
     name: "Powertrain",
     image: Powertrain,
     area: "powertrain",
     description:
-      "Owns everything that turns fuel into forward motion: engine tuning, intake and exhaust design, cooling, and the drivetrain that puts power to the wheels. The subteam validates its work on the dyno before the car ever reaches a track.",
+      "Owns everything that turns fuel into forward motion: the engine, intake and exhaust, drivetrain, cooling and oil systems. The subteam validates its work on the dyno before the car ever reaches a track.",
   },
   {
     name: "Manufacturing",
     image: Manufacturing,
     area: "manufacturing",
     description:
-      "Turns CAD into hardware. The subteam runs CNC machining, composite layup, welding and 3D-printed tooling to produce parts in-house \u2014 every component on the car is made by students at the Clark School.",
+      "Turns CAD into hardware. The subteam owns design-for-manufacture, CNC machining, welding and fabrication — every component on the car is made by students at the Clark School.",
   },
   {
     name: "Electronics",
     image: Electronics,
     area: "electronics",
     description:
-      "Builds the car's nervous system: wiring harnesses, sensors, microcontrollers and the data acquisition stack. The subteam wrote the finite state machine that reads seven onboard sensors live and drives the active aerodynamics package.",
+      "Builds the car's nervous system: the wiring harness, fusebox, dashboard controls and data acquisition stack. Its dual Raspberry Pi controllers talk over CANBUS and run the finite state machine that reads six onboard sensors live and drives the active aero.",
   },
   {
     name: "Testing",
     image: Testing,
     area: "testing",
     description:
-      "Plans and runs test days, then turns what happens on track into decisions. The subteam collects telemetry, validates simulation against reality, and feeds hard numbers back to every other division.",
+      "Plans and runs test days, then turns what happens on track into decisions. The subteam writes test plans, trains drivers, integrates sensors and runs data acquisition, feeding hard numbers back to every other division.",
   },
   {
-    name: "ECS",
+    name: "Ergonomics & Controls",
     image: ECS,
     area: "ecs",
     description:
-      "Engine Control Systems develops the tuning, calibration and control strategy that keeps the powertrain running at its best across every dynamic event \u2014 from a standing-start acceleration run to a 22 km endurance race.",
+      "ECS designs everything the driver touches: the steering wheel and paddle shifters, dashboard, seat and pedal box. TR26's multi-layout touchscreen dash, LED tachometer and alert system, and cut-by-gear shifting all came out of this division.",
   },
   {
     name: "Business",
     image: Business,
     area: "business",
     description:
-      "Runs the side of the team that keeps the cars funded and the doors open: sponsor relations, financial planning, budgeting, supply chain and procurement. The subteam also delivers the cost and business presentations scored at competition.",
+      "Runs the side of the team that keeps the cars funded and the doors open: sponsorships, logistics, events, social media and merchandise. The subteam also delivers the cost and business presentations scored at competition.",
   },
   {
     name: "Aerodynamics",
     image: Aerodynamics,
     area: "aerodynamics",
     description:
-      "Designs the wings, undertray and bodywork that press the car into the track. TR25's active aero package \u2014 developed over 280 CFD iterations on the university's Zaratan supercomputing cluster \u2014 won second place for Innovation at competition.",
+      "Designs the aero package — wings, undertray and bodywork — in CAD, proves it in CFD and validates it with track data. The team's active aero, developed over 280 CFD iterations on the university's Zaratan cluster, won second place for Innovation at competition.",
   },
   {
     name: "Vehicle Dynamics",
     image: VehicleDynamics,
     area: "dynamics",
     description:
-      "Defines how the car behaves at the limit: suspension geometry, kinematics, tyre modelling, damper tuning and weight distribution. The subteam sets the targets that chassis and testing then build and validate against.",
+      "Defines how the car behaves at the limit: suspension, wheels and tyres, tuning and the mathematical validation behind them, all designed in CAD. The subteam sets the targets that chassis and testing then build and validate against.",
   },
 ];
 
@@ -1307,7 +1407,6 @@ function SponsorsSection() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function IC() {
-  useSlipstream(true, "rgba(226,24,51,0.85)");
 
   return (
     <div className="relative overflow-x-hidden bg-tr-ink">
@@ -1323,10 +1422,10 @@ export default function IC() {
       <div>
         <TopImage />
         <WhoWeAre />
-        <Season2026 />
-        <StatsOverlay image={statsOverlayImage} />
-        <ActiveAero image={car_model_simcenter_bg} />
         <SubteamsGrid />
+        <StatsOverlay image={statsOverlayImage} />
+        <Season2026 />
+        <ActiveAero image={car_model_simcenter_bg} />
         <Seam />
         <Gallery />
         <SponsorsSection />

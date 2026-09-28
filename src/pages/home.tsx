@@ -15,9 +15,10 @@ import {
 import Backdrop, { Seam } from "~/components/backdrop";
 import StartLights from "~/components/startlights";
 import Gauge from "~/components/gauge";
-import { useSlipstream } from "~/components/velocity";
 import CountUp from "~/components/countup";
 import { header2_style } from "~/siteInfo";
+import { NEWS } from "~/data/news";
+import { NewsCard } from "./news";
 
 import logo from "../public/images/homePage/TR_logo.webp";
 import hero_bg from "../public/images/homePage/hero_bg.webp";
@@ -247,9 +248,9 @@ function Hero() {
               ...enter(420),
             }}
           >
-            Three cars. One hundred and twenty students. We design, build, test
-            and race formula and off-road vehicles against the best programs in
-            the world.
+            Three cars. More than 270 students. We design, build, test and race
+            formula and off-road vehicles against the best programs in the
+            world.
           </div>
 
           <div className="mt-9 flex flex-wrap gap-3" style={enter(560)}>
@@ -283,7 +284,7 @@ function Hero() {
 /* ── Stats ───────────────────────────────────────────────────────────────── */
 const STATS = [
   {
-    value: 120,
+    value: 270,
     suffix: "+",
     label: "Active members",
     dial: 0.8,
@@ -358,14 +359,17 @@ function StatsBar() {
 }
 
 /* ── About ───────────────────────────────────────────────────────────────── */
-const RESULTS_2025 = [
-  ["25th", "Overall — top 20%"],
-  ["11th", "Design"],
-  ["12th", "Cost"],
-  ["8th", "Business"],
-  ["24th", "Acceleration"],
-  ["21st", "Skidpad"],
-  ["25th", "Autocross"],
+// Formula IC at FSAE Michigan 2026 (TR26). Source: TR26 sponsorship packet
+// and the Fall 2026 General Interest Meeting slides.
+const RESULTS_2026 = [
+  ["11th", "Overall — 9th in the nation"],
+  ["11th", "Design — finalists"],
+  ["3rd", "Cummins Sustainable Power Award"],
+  ["T-11th", "Cost & Manufacturing"],
+  ["17th", "Acceleration"],
+  ["13th", "Skidpad"],
+  ["18th", "Autocross"],
+  ["14th", "Endurance — every lap finished"],
 ];
 
 function AboutSection() {
@@ -385,7 +389,7 @@ function AboutSection() {
               title="From Blueprint to Podium"
               ghost="About"
             />
-            <Paragraph text="Founded in 1982, Terps Racing is the University of Maryland's premier collegiate motorsports program — over 120 driven engineers who design, build and race three high-performance vehicles each season: Formula IC, Formula Electric and Baja SAE." />
+            <Paragraph text="Founded in 1982, Terps Racing is the University of Maryland's premier collegiate motorsports program — more than 270 engineers who design, build and race three high-performance vehicles each season: Formula IC, Formula Electric and Baja SAE." />
             <Paragraph
               delay={100}
               text="We fuse academic theory with hands-on grit, giving students real-world experience in CAD, FEA, CFD, fabrication and dynamic testing. Every vehicle is designed and manufactured entirely by students, then proven in national SAE competitions across acceleration, skidpad, autocross and endurance."
@@ -400,7 +404,7 @@ function AboutSection() {
           {/* Results card */}
           <Reveal variant="left" delay={140}>
             <div className="tr-card tr-card-glow h-full p-7">
-              <span className="tr-eyebrow">2025 Formula SAE</span>
+              <span className="tr-eyebrow">2026 Formula SAE · Formula IC</span>
               <h3
                 className="mt-3 mb-6 uppercase text-white"
                 style={{
@@ -411,7 +415,7 @@ function AboutSection() {
                 Competitive Success
               </h3>
               <ul className="flex flex-col">
-                {RESULTS_2025.map(([place, what], i) => (
+                {RESULTS_2026.map(([place, what], i) => (
                   <li
                     key={what}
                     className="flex items-baseline justify-between gap-4 border-b border-white/[0.07] py-2.5 last:border-b-0 transition-colors hover:bg-white/[0.03]"
@@ -826,6 +830,27 @@ function History() {
   );
 }
 
+/* ── In the news ─────────────────────────────────────────────────────────── */
+function InTheNews() {
+  return (
+    <section className="tr-section relative overflow-hidden" aria-labelledby="news-title">
+      <div className="tr-shell relative z-10">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <Scene id="news-title" eyebrow="Press" title="In the News" ghost="News" />
+          <Link to="/news" className="tr-btn tr-btn-ghost mb-6">
+            All articles
+          </Link>
+        </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {NEWS.slice(0, 3).map((item, i) => (
+            <NewsCard key={item.url} item={item} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── CTA ─────────────────────────────────────────────────────────────────── */
 function SponsorBand() {
   return (
@@ -858,7 +883,7 @@ function SponsorBand() {
           >
             Maryland gives us lab and shop space. Everything else — parts,
             manufacturing and travel to competition — is funded by sponsors
-            and donors. Partners get their logo on the cars, r\u00e9sum\u00e9
+            and donors. Partners get their logo on the cars, résumé
             book access and a front-row seat to what these students build.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
@@ -953,6 +978,7 @@ function Footer() {
               ["EV", "/ev"],
               ["Baja", "/baja"],
               ["Gallery", "/gallery"],
+              ["News", "/news"],
               ["Sponsors", "/sponsors"],
               ["Join Us", "/members"],
             ].map(([label, to]) => (
@@ -981,7 +1007,6 @@ function Footer() {
 
 /* ── Page ────────────────────────────────────────────────────────────────── */
 export default function Home() {
-  useSlipstream(true);
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-tr-ink text-white">
@@ -1006,6 +1031,7 @@ export default function Home() {
           duration={40}
         />
         <History />
+        <InTheNews />
         <Seam />
         <SponsorBand />
       </main>

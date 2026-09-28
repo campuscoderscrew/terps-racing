@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { label: "EV", route: "/ev", style: "" },
   { label: "Baja", route: "/baja", style: "" },
   { label: "Gallery", route: "/gallery", style: "" },
+  { label: "News", route: "/news", style: "" },
   { label: "Sponsors", route: "/sponsors", style: "" },
   { label: "Join Us", route: "/members", style: "cta" },
 ];

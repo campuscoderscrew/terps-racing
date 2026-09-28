@@ -5,7 +5,6 @@ import NavBar from "~/components/navbar";
 import Reveal from "~/components/reveal";
 import CountUp from "~/components/countup";
 import Backdrop, { Seam } from "~/components/backdrop";
-import { useSlipstream } from "~/components/velocity";
 import { Words, useParallax, useSpotlight } from "~/components/cinematic";
 
 import bajaHero from "../public/images/homePage/baja.webp";
@@ -1086,7 +1085,6 @@ function BajaSponsorsSection() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function Baja() {
-  useSlipstream(true, "rgba(232,160,16,0.85)");
 
   return (
     <div

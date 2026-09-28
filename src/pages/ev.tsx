@@ -687,7 +687,7 @@ function CompeteSection() {
               letterSpacing: "-0.02em",
             }}
           >
-            &gt;100
+            80+
           </p>
           <p
             style={{
