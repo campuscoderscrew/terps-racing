@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import SiteCredit from "~/components/sitecredit";
 import { createPortal } from "react-dom";
 import NavBar from "~/components/navbar";
 import Reveal from "~/components/reveal";
@@ -1430,6 +1431,7 @@ export default function IC() {
         <Gallery />
         <SponsorsSection />
       </div>
+      <SiteCredit />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import Reveal from "~/components/reveal";
 import Backdrop, { Seam } from "~/components/backdrop";
 import { Words, useParallax, useSpotlight } from "~/components/cinematic";
 import { useTheme } from "~/components/theme";
+import { CreditText } from "~/components/sitecredit";
 
 import trackPic from "../public/images/IC/track_pic.webp";
 import teamPic from "../public/images/IC/team_pic.webp";
@@ -1062,12 +1063,7 @@ function Footer() {
         >
           ← Back to Terps Racing
         </Link>
-        <p
-          className="text-[0.75rem] text-white/55"
-          style={{ fontFamily: "var(--font-mono)" }}
-        >
-          © {new Date().getFullYear()} Terps Racing · University of Maryland
-        </p>
+        <CreditText />
       </div>
     </footer>
   );

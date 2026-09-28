@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SiteCredit from "~/components/sitecredit";
 import { Link } from "react-router-dom";
 
 import NavBar from "~/components/navbar";
@@ -1103,6 +1104,7 @@ export default function Baja() {
         <Video />
         <BajaSponsorsSection />
       </main>
+      <SiteCredit />
     </div>
   );
 }

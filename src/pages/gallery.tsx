@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import SiteCredit from "~/components/sitecredit";
 import { createPortal } from "react-dom";
 import NavBar from "../components/navbar";
 import Header from "~/components/header";
@@ -527,6 +528,7 @@ export default function Gallery() {
         </div>
         <GalleryOpt />
       </main>
+      <SiteCredit />
     </div>
   );
 }
