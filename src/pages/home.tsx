@@ -16,6 +16,7 @@ import Backdrop, { Seam } from "~/components/backdrop";
 import StartLights from "~/components/startlights";
 import Gauge from "~/components/gauge";
 import CountUp from "~/components/countup";
+import { CreditText } from "~/components/sitecredit";
 import { header2_style } from "~/siteInfo";
 import { NEWS } from "~/data/news";
 import { NewsCard } from "./news";
@@ -994,12 +995,7 @@ function Footer() {
             ))}
           </ul>
         </nav>
-        <p
-          className="text-[0.75rem] text-white/55"
-          style={{ fontFamily: "var(--font-mono)" }}
-        >
-          © {new Date().getFullYear()} Terps Racing
-        </p>
+        <CreditText />
       </div>
     </footer>
   );

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SiteCredit from "~/components/sitecredit";
 import { Link } from "react-router-dom";
 
 import NavBar from "~/components/navbar";
@@ -99,6 +100,7 @@ export default function News() {
           </p>
         </div>
       </main>
+      <SiteCredit />
     </div>
   );
 }

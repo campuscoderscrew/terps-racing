@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import SiteCredit from "~/components/sitecredit";
 import { Link } from "react-router-dom";
 import NavBar from "~/components/navbar";
 import Backdrop, { Seam } from "~/components/backdrop";
@@ -850,6 +851,7 @@ export default function Members() {
         <Teams />
         <Footer />
       </div>
+      <SiteCredit />
     </div>
   );
 }

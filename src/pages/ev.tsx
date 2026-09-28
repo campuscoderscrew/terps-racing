@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import SiteCredit from "~/components/sitecredit";
 import ev_car from "../public/images/EV/ev_car.webp";
 import ev_hero_background from "../public/images/EV/ev_hero_background.webp";
 import middle_background from "../public/images/EV/ev_middle_background.webp";
@@ -1144,6 +1145,7 @@ export default function EV() {
       <AboutSection />
       <CompeteSection />
       <SponsorsSection />
+      <SiteCredit />
     </div>
   );
 }
