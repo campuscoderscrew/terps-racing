@@ -4,6 +4,13 @@
 
     node tools/image-tagger/tagger.mjs                 # roots from tagger.config.json
     node tools/image-tagger/tagger.mjs "D:\some\folder" # override the root(s)
+    node tools/image-tagger/tagger.mjs "drive:https://drive.google.com/drive/folders/…"
+
+  A root is either a folder on disk or a Google Drive folder ("drive:<link or id>",
+  or { "drive": "<link>", "name": "Display name" } in the config). Drive folders are
+  read through the Drive API (tools/drive) — nothing is downloaded except the
+  previews you look at, which go into a size-capped cache. Drive also renders
+  HEIC / NEF / TIFF previews, which browsers can't.
 
   Walks every image under the configured root folder(s), serves a small web UI on
   http://localhost:5178, and saves tags to tags.json as
@@ -22,12 +29,26 @@ import fs from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { spawn } from "node:child_process";
+import { Readable } from "node:stream";
 import { fileURLToPath } from "node:url";
+import { DriveClient, parseDriveId } from "../drive/googledrive.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const CONFIG_FILE = path.join(HERE, "tagger.config.json");
 
 /* ── config ─────────────────────────────────────────────────────────────── */
+
+/** Folder aliases ("pictures", "ev", …) shared with the drive CLI's drive.config.json. */
+function driveId(ref) {
+  let aliases = {};
+  try {
+    aliases = JSON.parse(fs.readFileSync(path.join(HERE, "..", "drive", "drive.config.json"), "utf8")).folders || {};
+  } catch {
+    /* no aliases */
+  }
+  const key = String(ref).replace(/^drive:/i, "").trim();
+  return parseDriveId(aliases[key] || key);
+}
 
 function loadConfig() {
   let cfg = {};
@@ -38,13 +59,19 @@ function loadConfig() {
   }
   const cliRoots = process.argv.slice(2).filter((a) => !a.startsWith("--"));
   const portArg = process.argv.find((a) => a.startsWith("--port="));
-  const roots = (cliRoots.length ? cliRoots : cfg.roots || []).map((r) => path.resolve(HERE, r));
+  const roots = (cliRoots.length ? cliRoots : cfg.roots || []).map((r) => {
+    if (typeof r === "object" && r?.drive) return { kind: "drive", id: driveId(r.drive), name: r.name };
+    if (typeof r === "string" && /^drive:/i.test(r)) return { kind: "drive", id: driveId(r) };
+    const abs = path.resolve(HERE, String(r));
+    return { kind: "local", abs, name: path.basename(abs) };
+  });
   return {
     roots,
     port: portArg ? Number(portArg.split("=")[1]) : cfg.port || 5178,
     tagsFile: path.resolve(HERE, cfg.tagsFile || "tags.json"),
     customTagsFile: path.resolve(HERE, cfg.customTagsFile || "custom-tags.json"),
     openBrowser: cfg.openBrowser !== false && !process.argv.includes("--no-open"),
+    drive: cfg.drive || {},
   };
 }
 
@@ -55,17 +82,30 @@ if (!CFG.roots.length) {
   process.exit(1);
 }
 for (const r of CFG.roots) {
-  if (!fs.existsSync(r) || !fs.statSync(r).isDirectory()) {
-    console.error(`Image folder not found: ${r}\nEdit "roots" in ${CONFIG_FILE}.`);
+  if (r.kind === "local" && (!fs.existsSync(r.abs) || !fs.statSync(r.abs).isDirectory())) {
+    console.error(`Image folder not found: ${r.abs}\nEdit "roots" in ${CONFIG_FILE}.`);
     process.exit(1);
   }
+}
+
+const drive = CFG.roots.some((r) => r.kind === "drive")
+  ? new DriveClient({
+      credentialsFile: CFG.drive.credentials && path.resolve(HERE, CFG.drive.credentials),
+      tokenFile: CFG.drive.token && path.resolve(HERE, CFG.drive.token),
+      cacheMB: CFG.drive.cacheMB,
+    })
+  : null;
+if (drive && !drive.hasToken()) {
+  console.error("This config includes a Google Drive folder, but you're not signed in yet.\nRun once:  node tools/drive/drive.mjs login");
+  process.exit(1);
 }
 
 /* ── files ──────────────────────────────────────────────────────────────── */
 
 // Browsers render these directly.
 const PREVIEWABLE = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".bmp", ".avif"]);
-// Images a browser cannot draw (camera RAW, HEIC, TIFF). Still taggable; the UI offers "open in default app".
+// Images a browser cannot draw (camera RAW, HEIC, TIFF). Still taggable; local ones offer
+// "open in default app", Drive ones get a preview rendered by Drive.
 const OTHER_IMAGES = new Set([".heic", ".heif", ".nef", ".cr2", ".cr3", ".arw", ".dng", ".tif", ".tiff"]);
 const MIME = {
   ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp",
@@ -73,12 +113,22 @@ const MIME = {
 };
 const SKIP_DIRS = new Set([".git", "node_modules", "$RECYCLE.BIN", "System Volume Information"]);
 
-const toPosix = (p) => p.split(path.sep).join("/");
 const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+const isImageName = (name) => {
+  const ext = path.extname(name).toLowerCase();
+  return PREVIEWABLE.has(ext) || OTHER_IMAGES.has(ext);
+};
 
-/** Walk one root. Paths are "<root folder name>/<relative path>" so several roots can share a tags.json. */
-async function scanRoot(root) {
-  const base = path.basename(root);
+/**
+ * Every image the tool knows about, by its stored path. Paths are
+ * "<root name>/<relative path>" for both kinds of root, so a Drive folder and a
+ * downloaded copy of it produce the same tags.json keys.
+ */
+let INDEX = new Map();
+
+/** Walk one local root. */
+async function scanLocal(root) {
+  const base = root.name;
   const images = [];
   const folders = new Set([base]);
   async function walk(dir, rel) {
@@ -95,47 +145,65 @@ async function scanRoot(root) {
       if (e.isDirectory()) {
         folders.add(`${base}/${relPath}`);
         await walk(abs, relPath);
-      } else if (e.isFile()) {
+      } else if (e.isFile() && isImageName(e.name)) {
         const ext = path.extname(e.name).toLowerCase();
-        if (PREVIEWABLE.has(ext) || OTHER_IMAGES.has(ext)) {
-          images.push({ path: `${base}/${relPath}`, ext, previewable: PREVIEWABLE.has(ext) });
-        }
+        images.push({ path: `${base}/${relPath}`, ext, previewable: PREVIEWABLE.has(ext), source: "local", abs });
       }
     }
   }
-  await walk(root, "");
+  await walk(root.abs, "");
   return { images, folders: [...folders] };
 }
 
-async function scanAll() {
+/** List one Drive root through the API (cached for a day unless refresh). */
+async function scanDrive(root, refresh) {
+  const idx = await drive.walkCached(root.id, {
+    name: root.name,
+    refresh,
+    onProgress: ({ folders, files }) => process.stdout.isTTY && process.stdout.write(`\r  scanning Drive… ${folders} folders, ${files} files `),
+  });
+  if (process.stdout.isTTY) process.stdout.write("\r\x1b[K");
+  root.name = idx.root.name;
+  const images = idx.files
+    .filter((f) => f.mimeType?.startsWith("image/") || isImageName(f.name))
+    .map((f) => {
+      const ext = path.extname(f.name).toLowerCase();
+      return {
+        path: f.path,
+        ext,
+        // Drive renders a preview for almost any image, including HEIC and RAW.
+        previewable: Boolean(f.thumbnailLink) || PREVIEWABLE.has(ext),
+        source: "drive",
+        meta: f,
+      };
+    });
+  return { images, folders: idx.folders.map((f) => f.path) };
+}
+
+let lastScan = null;
+async function scanAll({ refresh = false } = {}) {
+  if (lastScan && !refresh) return lastScan;
   const images = [];
   const folders = new Set();
   for (const r of CFG.roots) {
-    const s = await scanRoot(r);
+    const s = r.kind === "drive" ? await scanDrive(r, refresh) : await scanLocal(r);
     images.push(...s.images);
     s.folders.forEach((f) => folders.add(f));
   }
   images.sort((a, b) => collator.compare(a.path, b.path));
+  INDEX = new Map(images.map((i) => [i.path, i]));
   // Only keep folders that actually lead to an image — empty admin folders are noise in the tag tree.
   const used = new Set();
   for (const img of images) {
     const parts = img.path.split("/").slice(0, -1);
     for (let i = 1; i <= parts.length; i++) used.add(parts.slice(0, i).join("/"));
   }
-  return { images, folders: [...folders].filter((f) => used.has(f)).sort(collator.compare) };
+  lastScan = { images, folders: [...folders].filter((f) => used.has(f)).sort(collator.compare) };
+  return lastScan;
 }
 
-/** Map a stored image path back to a file on disk, refusing anything outside the roots. */
-function resolveImage(p) {
-  if (typeof p !== "string") return null;
-  const [head, ...rest] = p.split("/");
-  const root = CFG.roots.find((r) => path.basename(r) === head);
-  if (!root) return null;
-  const abs = path.resolve(root, ...rest);
-  const rel = path.relative(root, abs);
-  if (rel.startsWith("..") || path.isAbsolute(rel)) return null;
-  return abs;
-}
+/** What the browser needs per image — no absolute paths or Drive metadata. */
+const publicImage = (i) => ({ path: i.path, ext: i.ext, previewable: i.previewable, source: i.source });
 
 /* ── storage ────────────────────────────────────────────────────────────── */
 
@@ -202,25 +270,50 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === "GET" && url.pathname === "/api/state") {
-      const { images, folders } = await scanAll();
-      return send(res, 200, { roots: CFG.roots.map((r) => path.basename(r)), images, folders, records, customTags, tagsFile: CFG.tagsFile });
+      const { images, folders } = await scanAll({ refresh: url.searchParams.get("refresh") === "1" });
+      return send(res, 200, {
+        roots: CFG.roots.map((r) => r.name),
+        hasDrive: Boolean(drive),
+        images: images.map(publicImage),
+        folders,
+        records,
+        customTags,
+        tagsFile: CFG.tagsFile,
+      });
     }
 
     if (req.method === "GET" && url.pathname === "/img") {
-      const abs = resolveImage(url.searchParams.get("p"));
-      const type = abs && MIME[path.extname(abs).toLowerCase()];
-      if (!abs || !type || !fs.existsSync(abs)) return send(res, 404, { error: "not found" });
-      res.writeHead(200, { "Content-Type": type, "Cache-Control": "max-age=3600" });
-      return fs.createReadStream(abs).pipe(res);
+      const img = INDEX.get(url.searchParams.get("p"));
+      if (!img) return send(res, 404, { error: "not found" });
+      // size: the longest edge wanted. The grid asks for small previews, the editor for large.
+      const size = Math.min(Math.max(Number(url.searchParams.get("size")) || 1600, 120), 2400);
+      if (img.source === "local") {
+        const type = MIME[img.ext];
+        if (!type || !fs.existsSync(img.abs)) return send(res, 404, { error: "not found" });
+        res.writeHead(200, { "Content-Type": type, "Cache-Control": "max-age=3600" });
+        return fs.createReadStream(img.abs).pipe(res);
+      }
+      const thumb = await drive.thumbnail(img.meta, size);
+      if (thumb) {
+        res.writeHead(200, { "Content-Type": thumb.type, "Cache-Control": "max-age=86400" });
+        return fs.createReadStream(thumb.file).pipe(res);
+      }
+      if (MIME[img.ext]) {
+        // No Drive thumbnail yet (e.g. just uploaded) — stream the original once.
+        const { res: dl } = await drive.download(img.meta.id);
+        res.writeHead(200, { "Content-Type": MIME[img.ext], "Cache-Control": "max-age=3600" });
+        return Readable.fromWeb(dl.body).pipe(res);
+      }
+      return send(res, 404, { error: "no preview" });
     }
 
     if (req.method === "POST" && url.pathname === "/api/tag") {
       const { path: p, tags } = await readBody(req);
-      if (!resolveImage(p)) return send(res, 400, { error: "bad path" });
+      if (!INDEX.has(p)) return send(res, 400, { error: "unknown image" });
       const clean = cleanTags(tags);
       await queueSave(async () => {
         const i = records.findIndex((r) => r.path === p);
-        if (i >= 0) records[i] = { path: p, tags: clean };
+        if (i >= 0) records[i] = { ...records[i], path: p, tags: clean };
         else records.push({ path: p, tags: clean });
         records.sort((a, b) => collator.compare(a.path, b.path));
         await writeJsonAtomic(CFG.tagsFile, records);
@@ -253,7 +346,7 @@ const server = http.createServer(async (req, res) => {
       const swap = (t) => (t === from ? to.trim() : t.startsWith(from + "/") ? to.trim() + t.slice(from.length) : t);
       await queueSave(async () => {
         customTags = cleanTags(customTags.map(swap));
-        records = records.map((r) => ({ path: r.path, tags: cleanTags(r.tags.map(swap)) }));
+        records = records.map((r) => ({ ...r, tags: cleanTags(r.tags.map(swap)) }));
         await writeJsonAtomic(CFG.customTagsFile, customTags);
         await writeJsonAtomic(CFG.tagsFile, records);
       });
@@ -262,9 +355,15 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === "POST" && url.pathname === "/api/open") {
       const { path: p } = await readBody(req);
-      const abs = resolveImage(p);
-      if (!abs || !fs.existsSync(abs)) return send(res, 404, { error: "not found" });
-      openInDefaultApp(abs);
+      const img = INDEX.get(p);
+      if (!img) return send(res, 404, { error: "not found" });
+      if (img.source === "drive") {
+        const link = img.meta.webViewLink || `https://drive.google.com/file/d/${img.meta.id}/view`;
+        DriveClient.openInBrowser(link);
+        return send(res, 200, { ok: true, link });
+      }
+      if (!fs.existsSync(img.abs)) return send(res, 404, { error: "not found" });
+      openInDefaultApp(img.abs);
       return send(res, 200, { ok: true });
     }
 
@@ -284,18 +383,24 @@ server.on("error", (err) => {
 });
 
 server.listen(CFG.port, "127.0.0.1", async () => {
-  const { images } = await scanAll();
+  let images = [];
+  try {
+    ({ images } = await scanAll());
+  } catch (err) {
+    console.error(`\nCould not read the image folders: ${err.message}`);
+    process.exit(1);
+  }
   const done = new Set(records.map((r) => r.path));
   const tagged = images.filter((i) => done.has(i.path)).length;
   const url = `http://localhost:${CFG.port}`;
   console.log(`\nTerps Racing image tagger`);
-  CFG.roots.forEach((r) => console.log(`  folder : ${r}`));
+  CFG.roots.forEach((r) => console.log(`  folder : ${r.kind === "drive" ? `${r.name} (Google Drive ${r.id})` : r.abs}`));
   console.log(`  tags   : ${CFG.tagsFile}`);
   console.log(`  images : ${images.length} found, ${tagged} tagged, ${images.length - tagged} to go`);
   console.log(`\n  Open ${url}  (Ctrl+C to stop — every save is written immediately)\n`);
   if (CFG.openBrowser) {
     const [cmd, args] =
-      process.platform === "win32" ? ["cmd", ["/c", "start", "", url]] : process.platform === "darwin" ? ["open", [url]] : ["xdg-open", [url]];
+      process.platform === "win32" ? ["rundll32", ["url.dll,FileProtocolHandler", url]] : process.platform === "darwin" ? ["open", [url]] : ["xdg-open", [url]];
     try {
       spawn(cmd, args, { detached: true, stdio: "ignore" }).on("error", () => {}).unref();
     } catch {

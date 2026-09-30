@@ -16,3 +16,8 @@
 # image tagger
 tools/image-tagger/*.backup.json
 tools/image-tagger/*.tmp
+
+# Google Drive tool — private OAuth client + sign-in, and local caches
+tools/drive/credentials.json
+tools/drive/token.json
+tools/.cache/
