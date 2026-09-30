@@ -1,0 +1,11 @@
+{
+  "credentials": "credentials.json",
+  "token": "token.json",
+  "cacheMB": 400,
+  "folders": {
+    "pictures": "PASTE-THE-PICTURES/VIDEOS-FOLDER-LINK-HERE",
+    "business": "PASTE-THE-BUSINESS-FOLDER-LINK-HERE",
+    "ev": "PASTE-THE-EV-FOLDER-LINK-HERE",
+    "baja": "PASTE-THE-BAJA-FOLDER-LINK-HERE"
+  }
+}

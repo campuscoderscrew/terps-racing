@@ -24,6 +24,19 @@ different folder for a single run, pass it as an argument:
 node tools/image-tagger/tagger.mjs "C:\Users\Brennen\Desktop\Terps Racing Folders\Media-20260927T222324Z-1-001\Media"
 ```
 
+## Tagging Google Drive folders (no download)
+
+A root can also be a Google Drive folder, read through the Drive API. It needs the one-time
+setup in `tools/drive/README.md`.
+
+```json
+{ "roots": ["drive:pictures", "C:\\Users\\Brennen\\Desktop\\Terps Racing Folders\\Terps Racing Business Folder"] }
+```
+
+`drive:pictures` uses an alias from `tools/drive/drive.config.json`; a full folder link works too.
+Only the previews you view are fetched, into a size-capped cache. Drive also renders HEIC / NEF
+previews. **↻ Rescan** picks up new uploads, and **Open in Drive ↗** opens the original.
+
 ## What gets saved
 
 `tags.json` is an array with one entry per image:

@@ -141,6 +141,7 @@
       <button data-mode="all">All<span class="n" id="nAll"></span></button>
     </div>
     <div class="spacer"></div>
+    <button class="btn" id="rescanBtn" style="padding:5px 12px;font-size:12px" title="Look for new or moved images (for Drive folders this re-reads the folder listing)">↻ Rescan</button>
     <span class="status" id="status">Loading…</span>
   </header>
 
@@ -151,6 +152,7 @@
         <span class="file" id="fileName"></span>
         <span class="badge" id="stateBadge"></span>
         <span class="dir" id="dirName"></span>
+        <button class="btn" id="openOrig" style="padding:4px 10px;font-size:12px" title="Open the original file">Open ↗</button>
         <span class="spacer"></span>
         <button class="btn hidden" id="backToGrid" style="padding:4px 10px;font-size:12px">← Back to grid</button>
       </div>
@@ -235,7 +237,7 @@ const parentOf = (t) => (t.includes("/") ? t.slice(0, t.lastIndexOf("/")) : "");
 const ancestors = (t) => { const out = []; let p = parentOf(t); while (p) { out.push(p); p = parentOf(p); } return out; };
 const folderOf = (p) => parentOf(p);
 const folderTagsFor = (p) => { const f = folderOf(p); return f ? [f, ...ancestors(f)] : []; };
-const imgUrl = (p) => "/img?p=" + encodeURIComponent(p);
+const imgUrl = (p, size = 1600) => "/img?p=" + encodeURIComponent(p) + "&size=" + size;
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 async function api(url, body) {
@@ -246,14 +248,15 @@ async function api(url, body) {
 function status(text, kind = "") { const el = $("status"); el.textContent = text; el.className = "status " + kind; }
 
 /* ───────────────────────── load ───────────────────────── */
-async function load() {
-  const st = await api("/api/state");
+async function load(refresh = false) {
+  const st = await api("/api/state" + (refresh ? "?refresh=1" : ""));
+  S.hasDrive = st.hasDrive;
   S.images = st.images;
   S.folders = st.folders;
   S.customTags = st.customTags;
   S.records = new Map(st.records.map((r) => [r.path, r.tags]));
   const missing = st.records.filter((r) => !st.images.some((i) => i.path === r.path)).length;
-  status(missing ? `${missing} tagged file(s) no longer on disk — kept in tags.json` : `Saving to ${st.tagsFile}`);
+  status(missing ? `${missing} tagged file(s) not found in the current folders — kept in tags.json` : `Saving to ${st.tagsFile}`);
   const last = st.records[st.records.length - 1];
   S.lastSaved = last ? [...last.tags] : null;
   S.lastSavedPath = last ? last.path : null;
@@ -444,6 +447,7 @@ function renderEditor() {
     $("stateBadge").className = "hidden";
     ["prevBtn", "nextBtn", "saveBtn", "copyBtn"].forEach((id) => ($(id).disabled = true));
     $("untagBtn").classList.add("hidden");
+    $("openOrig").classList.add("hidden");
     $("tree").innerHTML = ""; $("selected").innerHTML = ""; $("quick").innerHTML = "";
     return;
   }
@@ -458,14 +462,18 @@ function renderEditor() {
   $("nextBtn").firstChild.textContent = S.mode === "todo" ? "Skip → " : "Next → ";
   $("copyBtn").disabled = !S.lastSaved;
   $("untagBtn").classList.toggle("hidden", !isTagged(S.current));
+  $("openOrig").classList.remove("hidden");
 
   view.innerHTML = img.previewable
     ? `<img src="${imgUrl(img.path)}" alt="${esc(leaf(img.path))}" />`
     : `<div class="noprev"><div class="ext">${esc(img.ext.replace(".", "").toUpperCase())}</div>
-         <div>Your browser can't preview ${esc(img.ext)} files.</div>
-         <button class="btn" id="openExt">Open in default app</button></div>`;
+         <div>${img.source === "drive" ? "Google Drive has no preview for this file yet." : `Your browser can't preview ${esc(img.ext)} files.`}</div>
+         <button class="btn" id="openExt">${img.source === "drive" ? "Open in Google Drive" : "Open in default app"}</button></div>`;
+  const openIt = () => api("/api/open", { path: img.path }).catch((e) => status(e.message, "err"));
   const o = $("openExt");
-  if (o) o.onclick = () => api("/api/open", { path: img.path }).catch((e) => status(e.message, "err"));
+  if (o) o.onclick = openIt;
+  $("openOrig").onclick = openIt;
+  $("openOrig").textContent = img.source === "drive" ? "Open in Drive ↗" : "Open ↗";
   // preload the next image so moving on feels instant
   const nxt = S.images.find((i) => i.path === S.queue[S.idx + 1]);
   if (nxt && nxt.previewable) new Image().src = imgUrl(nxt.path);
@@ -559,7 +567,7 @@ function renderGrid() {
     const tags = S.records.get(p) || [];
     const deepest = tags.filter((t) => !tags.some((o) => o.startsWith(t + "/")));
     return `<button class="card" data-open="${S.reviewPage * PAGE + i}" title="${esc(p)}">
-      <div class="thumb">${img && img.previewable ? `<img loading="lazy" decoding="async" src="${imgUrl(p)}" alt="" />` : `<span class="ext">${esc((img?.ext || "").replace(".", "").toUpperCase())}</span>`}</div>
+      <div class="thumb">${img && img.previewable ? `<img loading="lazy" decoding="async" src="${imgUrl(p, 480)}" alt="" />` : `<span class="ext">${esc((img?.ext || "").replace(".", "").toUpperCase())}</span>`}</div>
       <div class="meta"><div class="fn">${esc(leaf(p))}</div><div class="chips">${deepest.map((t) => chip(t)).join("")}</div></div></button>`;
   }).join("") : `<div class="banner">${S.records.size ? "Nothing matches these filters." : "Nothing tagged yet — start in <b>To tag</b>."}</div>`;
   $("pager").innerHTML = pages > 1
@@ -579,6 +587,11 @@ $("nextBtn").onclick = () => move(1);
 $("saveBtn").onclick = () => save();
 $("copyBtn").onclick = copyLast;
 $("untagBtn").onclick = untag;
+$("rescanBtn").onclick = async () => {
+  if (S.dirty && !confirm("You have unsaved changes on this image. Rescan anyway?")) return;
+  status("Rescanning…");
+  try { await load(true); status("Rescanned", "saved"); } catch (e) { status("Rescan failed: " + e.message, "err"); }
+};
 $("backToGrid").onclick = async () => { if (S.dirty) await save({ advance: false }); S.inGrid = true; render(); };
 $("expandAll").onclick = () => { allTagIds().forEach((t) => S.expanded.add(t)); renderTagPanel(); };
 $("collapseAll").onclick = () => { S.expanded.clear(); renderTagPanel(); };
